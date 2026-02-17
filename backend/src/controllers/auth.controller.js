@@ -77,15 +77,15 @@ const loginController = async (req, res) => {
     const { identifier, password } = req.body;
 
     //  input validation
-    if(!identifier || !password){
+    if (!identifier || !password) {
       return res.status(400).json({
-        message:"identifier and password are required"
-      })
+        message: "identifier and password are required",
+      });
     }
     const user = await UserModel.findOne({
       $or: [{ userName: identifier }, { email: identifier }],
     }).select("+password");
- 
+
     if (!user) {
       return res.status(401).json({
         message: "Invalid userName and email ❌",
@@ -93,10 +93,8 @@ const loginController = async (req, res) => {
     }
 
     // check block user are not login
-    if(!user.isActive){
-      return res.status(403).json({
-        message:"your account are blocked "
-      });
+    if (!user.isActive) {
+      return res.status();
     }
     // // check if password is correct or not!
     const isValidPassword = await bcryptjs.compare(password, user.password);
@@ -105,7 +103,7 @@ const loginController = async (req, res) => {
         message: "Invalid password ❌",
       });
     }
- 
+
     // jwt safety check✅
     if (!process.env.JWT_SECRET_KEY) {
       throw new Error("JWT secret not defined");
@@ -143,16 +141,28 @@ const loginController = async (req, res) => {
     });
   }
 };
-
-const getCurrentUser = async (req,res)=>{
+const getCurrentUser = async (req, res) => {
   return res.status(200).json({
-    message:'user fetched successfully🎉',
-    user:req.user
+    message: "user fetched successfully🎉",
+    user: req.user,
   });
-}
+};
+const logoutController = async (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
+    return res.status(200).json({ message: "logout successfully🎉" });
+  } catch (error) {
+    res.status(500).json({ message: "internal server error in user logout" });
+  }
+};
 
 module.exports = {
   userRegisterController,
   loginController,
-  getCurrentUser
+  getCurrentUser,
+  logoutController,
 };

@@ -27,7 +27,8 @@ const createNotice = async (req, res) => {
 // get all notice (public/ student);
 const getAllNotice = async (req, res) => {
   try {
-    const notices = await noticeModel.find()
+    const notices = await noticeModel
+      .find()
       .populate("createdBy", "userName email")
       .sort({ createdAt: -1 });
 
@@ -44,24 +45,56 @@ const getAllNotice = async (req, res) => {
 // const DeleteNotice (Admin only);
 const deleteNotice = async (req, res) => {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
     const notice = await noticeModel.findById(id);
 
-    if(!notice){
-        return res.status(404).json({message:"notice not found"});
+    if (!notice) {
+      return res.status(404).json({ message: "notice not found" });
     }
     await notice.deleteOne();
     res.status(200).json({
-        message:"notice deleted successfully🎉"
-    })
+      message: "notice deleted successfully🎉",
+    });
   } catch (error) {
     console.error("delete notice error", error);
     res.status(500).json({ message: "internal server error" });
   }
 };
 
+// update notice (admin only);
+const updateNotice = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description } = req.body;
+
+    if (!title || !description) {
+      return res.status(400).json({ message: "noting to updated" });
+    }
+    const notice = await noticeModel.findById(id);
+
+    if (!notice) {
+      return res.status(404).json({ message: "notice not found" });
+    }
+    if (title) notice.title = title;
+    if (description) notice.description = description;
+    
+    await notice.save();
+
+    return res.status(200).json({
+      message: "notice updated successfully 🎉",
+      notice,
+    });
+  } catch (error) {
+    console.error("notice update error", error);
+    res.status(500).json({ message: "internal server error" });
+  }
+};
+
+// 
+
 module.exports = {
   createNotice,
-  getAllNotice, 
-  deleteNotice
+  getAllNotice,
+  deleteNotice,
+  updateNotice
 };

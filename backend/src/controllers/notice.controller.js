@@ -27,14 +27,27 @@ const createNotice = async (req, res) => {
 // get all notice (public/ student);
 const getAllNotice = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
+
+    const query = search ? { title: { $regex: search, $options: "i" } } : {};
+
+    const total = await noticeModel.countDocuments(query);
+
     const notices = await noticeModel
-      .find()
-      .populate("createdBy", "userName email")
-      .sort({ createdAt: -1 });
+      .find(query)
+      .populate("createdBy", " userName email")
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
 
     return res.status(200).json({
       message: "notices fetched successfully🎉",
-      notices,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalNotices: total,
+      notices
     });
   } catch (error) {
     console.error("get notice error", error);
@@ -77,7 +90,7 @@ const updateNotice = async (req, res) => {
     }
     if (title) notice.title = title;
     if (description) notice.description = description;
-    
+
     await notice.save();
 
     return res.status(200).json({
@@ -90,11 +103,11 @@ const updateNotice = async (req, res) => {
   }
 };
 
-// 
+//
 
 module.exports = {
   createNotice,
   getAllNotice,
   deleteNotice,
-  updateNotice
+  updateNotice,
 };

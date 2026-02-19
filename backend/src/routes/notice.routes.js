@@ -13,6 +13,6 @@ router.post("/create", authMiddleware, adminMiddleware, createNotice);
 // update notice (admin only)
 router.put("/:id",authMiddleware, adminMiddleware, updateNotice);
 // delete notice (admin only);
-router.patch("/:id", authMiddleware, adminMiddleware, deleteNotice)
+router.delete("/:id", authMiddleware, adminMiddleware, deleteNotice)
 
 module.exports = router;

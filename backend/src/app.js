@@ -3,6 +3,7 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth.routes");
 const adminRoutes = require("./routes/admin.routes");
 const noticeRouters = require("./routes/notice.routes");
+const achievementRouters = require("./routes/achievement.routes")
 const cookieParser = require("cookie-parser");
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(cookieParser());
 // routes
 app.use("/api/auth", authRoutes);
 app.use('/api/admin', adminRoutes);
-app.use("/api/notice", noticeRouters)
+app.use("/api/notice", noticeRouters);
+app.use("/api/achievements", achievementRouters)
 
 module.exports = app;

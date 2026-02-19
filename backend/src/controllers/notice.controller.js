@@ -103,8 +103,6 @@ const updateNotice = async (req, res) => {
   }
 };
 
-//
-
 module.exports = {
   createNotice,
   getAllNotice,

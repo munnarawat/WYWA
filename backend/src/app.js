@@ -5,6 +5,7 @@ const adminRoutes = require("./routes/admin.routes");
 const noticeRouters = require("./routes/notice.routes");
 const achievementRouters = require("./routes/achievement.routes");
 const thinkTankRouters = require("./routes/thinkTank.routes");
+const libraryRouters = require("./routes/library.routes");
 const cookieParser = require("cookie-parser");
 const app = express();
 
@@ -18,6 +19,7 @@ app.use("/api/auth", authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use("/api/notice", noticeRouters);
 app.use("/api/achievements", achievementRouters);
-app.use("/api/thinkTank", thinkTankRouters)
+app.use("/api/thinkTank", thinkTankRouters);
+app.use("/api/library", libraryRouters);
 
 module.exports = app;

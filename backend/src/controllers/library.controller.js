@@ -1,0 +1,176 @@
+const Book = require("../models/book.model");
+const Issue = require("../models/issue.model");
+
+// add a book to the library admin only
+
+const addBook = async (req, res) => {
+  try {
+    const { title, author, quantity } = req.body;
+
+    if (!title || !author || !quantity) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    if (quantity < 0) {
+      return res.status(400).json({ message: "Quantity cannot be negative" });
+    }
+    const book = await Book.create({
+      title,
+      author,
+      quantity,
+      createdBy: req.user._id,
+    });
+    return res
+      .status(201)
+      .json({ message: "Book added successfully 🎉", book });
+  } catch (error) {
+    console.error("add book error", error);
+    return res.status(500).json({ message: "Error adding book" });
+  }
+};
+
+// get all books in the library
+const getAllBooks = async (req, res) => {
+  try {
+    const books = await Book.find().populate("createdBy", "userName email");
+
+    return res.status(200).json({
+      message: "Books retrieved successfully",
+      books,
+    });
+  } catch (error) {
+    console.error("get book error", error);
+    res.status(500).json({ message: "internal server error" });
+  }
+};
+
+// update book details admin only
+const updateBook = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, author, quantity } = req.body;
+    const book = await Book.findById(id);
+
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    if (title) book.title = title;
+    if (author) book.author = author;
+    if (quantity !== undefined) {
+      if (quantity < 0) {
+        return res.status(400).json({ message: "Quantity cannot be negative" });
+      }
+      const diff = quantity - book.quantity;
+      book.quantity = quantity;
+      book.available = Math.max(0, book.available + diff);
+    }
+    await book.save();
+    return res.status(200).json({
+      message: "Book updated successfully 🎉",
+      book,
+    });
+  } catch (error) {
+    console.error("update book error", error);
+    return res.status(500).json({ message: "Error updating book" });
+  }
+};
+// delete book admin only
+
+const deleteBook = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const book = await Book.findById(id);
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+    await book.deleteOne();
+    return res.status(200).json({ message: "Book deleted successfully 🎉" });
+  } catch (error) {
+    console.error("delete book error", error);
+    return res.status(500).json({ message: "Error deleting book" });
+  }
+};
+
+// issue book to  admin only
+const issueBook = async (req, res) => {
+  try {
+    const { bookId, studentId } = req.body;
+    if (!bookId || !studentId) {
+      return res
+        .status(400)
+        .json({ message: "Book ID and Student ID are required" });
+    }
+    const book = await Book.findById(bookId);
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+    if (book.available <= 0) {
+      return res.status(400).json({ message: "Book is not available" });
+    }
+    const issue = await Issue.create({
+      book: bookId,
+      student: studentId,
+      issuedBy: req.user._id,
+    });
+    book.available -= 1;
+    await book.save();
+    return res
+      .status(201)
+      .json({ message: "Book issued successfully 🎉", issue });
+  } catch (error) {
+    console.error("issue book error", error);
+    return res.status(500).json({ message: "Error issuing book" });
+  }
+};
+// return book admin only
+const returnBook = async (req, res) => {
+    try {
+        const { issueId } = req.body;
+        const issue = await Issue.findById(issueId).populate('book');
+        if (!issue) {
+            return res.status(404).json({ message: "Issue not found" });
+        }
+        if(issue.status === 'returned'){
+            return res.status(400).json({ message: "Book already returned" });
+        }
+        issue.status = 'returned';
+        issue.returnedAt = new Date();
+        await issue.save();
+
+        const book = await Book.findById(issue.book._id);
+        book.available +=1;
+        await book.save();
+
+        return res.status(200).json({ message: "Book returned successfully 🎉", issue });
+
+    } catch (error) {
+        console.error("return book error", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+// get all issued  by student or all
+const getIssued = async (req, res) => {
+    try {
+       const {studentId} = req.query;
+       const query = studentId ? {student: studentId} :{};
+       const records = await Issue.find(query)
+       .populate('book', "title author")
+       .populate('student', "userName email")
+       .sort({ issuedAt: -1 });
+
+       return res.status(200).json({ message: "Issued records retrieved successfully 🎉", records });
+    } catch (error) {
+        console.error("get issued error", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+module.exports = {
+  addBook,
+  getAllBooks,
+  updateBook,
+  deleteBook,
+  issueBook,
+  returnBook,
+  getIssued
+};

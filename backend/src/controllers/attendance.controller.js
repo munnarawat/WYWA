@@ -39,6 +39,46 @@ const markAttendance = async (req, res) => {
   }
 };
 
+// get monthly attendance for student
+const getMonthlyAttendance = async (req, res) => {
+  try {
+    const { studentId, year, month } = req.query;
+
+    if (!studentId || year === undefined || month === undefined) {
+      return res.status(400).json({
+        message: "studentId, year, month are required",
+      });
+    }
+    const start = new Date(year, month, 1);
+    const end = new Date(year, Number(month) + 1, 0, 23, 59, 59);
+
+    const records = await Attendance.find({
+      student: studentId,
+      date: { $gte: start, $lte: end },
+    }).sort({ date: 1 });
+
+    const totalDays = records.length;
+    const presentDay = records.filter((r) => r.status === "present").length;
+    const absentDay = totalDays - presentDay;
+
+    return res.status(200).json({
+      message: "Monthly attendance fetched",
+      summary: {
+        totalDays,
+        presentDay,
+        absentDay,
+        percentage:
+          totalDays === 0 ? 0 : Math.round((presentDay / totalDays) * 100),
+      },
+      records,
+    });
+  } catch (error) {
+    console.error("Get monthly attendance error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
-    markAttendance,
-}
+  markAttendance,
+  getMonthlyAttendance
+};

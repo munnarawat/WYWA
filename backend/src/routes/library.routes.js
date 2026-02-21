@@ -22,6 +22,6 @@ router.post("/books", authMiddleware, adminMiddleware, addBook);
 router.put("/books/:id", authMiddleware, adminMiddleware, updateBook );
 router.delete("/books/:id", authMiddleware, adminMiddleware, deleteBook );
 router.post("/issue", authMiddleware, adminMiddleware, issueBook);
-router.patch("/return/:issuedId",  authMiddleware, adminMiddleware, returnBook);
+router.patch("/return/:issueId",  authMiddleware, adminMiddleware, returnBook);
 
 module.exports = router;

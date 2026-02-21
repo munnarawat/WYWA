@@ -125,8 +125,10 @@ const issueBook = async (req, res) => {
 // return book admin only
 const returnBook = async (req, res) => {
     try {
-        const { issueId } = req.body;
+        const { issueId } = req.params;
+        console.log("ISSUE ID FROM PARAM:", issueId);
         const issue = await Issue.findById(issueId).populate('book');
+        console.log("FOUND ISSUE:", issue);
         if (!issue) {
             return res.status(404).json({ message: "Issue not found" });
         }

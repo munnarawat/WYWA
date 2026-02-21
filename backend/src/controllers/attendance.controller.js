@@ -78,7 +78,66 @@ const getMonthlyAttendance = async (req, res) => {
   }
 };
 
+// 3) Leaderboard (Top attendance in a month)
+
+const getLeaderboard = async (req, res) => {
+  try {
+    const { year, month, limit = 10 } = req.query;
+    if (year === undefined || month === undefined) {
+      return res.status(400).json({ message: "year and month are required" });
+    }
+    const start = new Date(year, month, 1);
+    const end = new Date(year, Number(month) + 1, 0, 23, 59, 59);
+
+    const leaderboard = await Attendance.aggregate([
+      {
+        $match: {
+          date: { $gte: start, $lte: end },
+          status: "present",
+        },
+      },
+      {
+        $group: {
+          _id: "$student",
+          presentCount: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { presentCount: -1 },
+      },
+      { $limit: Number(limit) },
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "_id",
+          as: "student",
+        },
+      },
+      {
+        $unwind: "$student",
+      },
+      {
+        $project: {
+          _id: 0,
+          studentId: "$student._id",
+          userName: "$student.userName",
+          email: "$student.email",
+          presentCount: 1,
+        },
+      },
+    ]);
+    return res.status(200).json({
+      message: "Leaderboard fetched successfully 🏆",
+      leaderboard,
+    });
+  } catch (error) {
+    console.error("Leaderboard error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 module.exports = {
   markAttendance,
-  getMonthlyAttendance
+  getMonthlyAttendance,
+  getLeaderboard
 };

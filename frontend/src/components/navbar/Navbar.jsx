@@ -73,17 +73,17 @@ const Navbar = () => {
           </div>
           {/* auth-  profile and login-register */}
           <div className="hidden md:flex items-center gap-4">
-            {/* <Link
+            <Link
             to="/login"
             className=" text-gray-300/80 hover:text-white transition ">
             Login
           </Link>
           <Link to="/register" className="px-5 py-2 text-sm font-semibold hover:bg-teal-700 bg-white/90 text-black hover:text-white rounded-full transition-all shadow-lg shadow-white/10 hover:shadow-teal-700/40 ">
             Register
-          </Link> */}
+          </Link>
 
             {/* profile when user login  */}
-            <div className=" relative">
+            {/* <div className=" relative">
               <button
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                 className="flex items-center gap-2 p-1 pr-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition">
@@ -95,7 +95,7 @@ const Navbar = () => {
                   className={`text-gray-400 transition-transform duration-300 ${isProfileOpen ? "rotate-180" : ""}`}
                 />
               </button>
-            </div>
+            </div> */}
             <AnimatePresence>
               {isProfileOpen && (
                 <motion.div
@@ -126,11 +126,80 @@ const Navbar = () => {
             </AnimatePresence>
           </div>
           {/* mobile toggle button*/}
-          <button className="md:hidden p-2 text-white hover:bg-white/10 rounded-lg transition">
+          <button
+            onClick={() => setIsMobileOpen(!isMobileOpen)}
+            className="md:hidden p-2 text-white hover:bg-white/10 rounded-lg transition">
             {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </motion.nav>
+      {/* mobile view  */}
+      <AnimatePresence>
+        {isMobileOpen && (
+          <motion.div
+            initial={{ x: "100%", opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: "100%", opacity: 0 }}
+            transition={{ damping: 25, type: "spring", stiffness: 200 }}
+            className="fixed heading z-50 inset-0 w-full  min-h-screen bg-black/95 backdrop-blur-xl md:hidden pt-24 px-6 flex-col">
+            {/* when user login- email and userName show */}
+            <div className="flex items-center justify-center gap-4 bg-white/5 border border-white/10 p-4 rounded-xl mb-8">
+              <div className="w-12 h-12 rounded-full bg-linear-to-tr from-teal-500 to-lime-500 flex items-center justify-center text-lg font-bold text-white shadow-lg">
+                M
+              </div>
+              <div className="overflow-hidden">
+                <h3 className="text-white font-bold truncate">
+                  Munna
+                </h3>
+                <p className="text-white/50 text-sm truncate">munna@gmai.com</p>
+              </div>
+            </div>
+            {/* links without login */}
+            <div className=" flex flex-col gap-4 items-center ">
+              {NavLinks.map((item, index) => (
+                <Link
+                  key={index}
+                  to={item.path}
+                  className={`relative text-3xl h-8  group  font-medium overflow-hidden text-gray-300/80 hover:text-white transition-colors ${location.pathname == item.path ? "text-white" : "text-gray-300/80"}`}>
+                  <motion.div
+                    initial={{ y: 0 }}
+                    whileHover={{ y: "-50%" }}
+                    className="flex flex-col ">
+                    <h2 className="flex items-center">{item.title}</h2>
+                    <h2 className="flex items-center text-emerald-500">
+                      {item.title}
+                    </h2>
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
+            {/* line */}
+            <div className="h-px bg-white/10 my-4" />
+            {/* auth- login logout - register */}
+            {/* <div className="grid grid-cols-2 gap-4">
+              <Link className="py-3 text-center rounded-xl bg-white/5 text-white hover:bg-white/10 border border-white/10 transition">
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="py-3 text-center rounded-xl bg-teal-500 text-white font-bold hover:bg-teal-600 transition">
+                Register
+              </Link>
+            </div> */}
+            <div className="flex flex-col gap-3">
+              <Link
+                to="/profile"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="py-3 w-full rounded-xl bg-white/5 text-white hover:bg-white/10 border border-white/10 flex items-center justify-center gap-2 transition">
+                <User size={18} /> View Profile
+              </Link>
+              <button className="py-3 w-full rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500 hover:text-white flex items-center justify-center gap-2 transition">
+                <LogOut size={18} /> Logout
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

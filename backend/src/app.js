@@ -11,7 +11,12 @@ const cookieParser = require("cookie-parser");
 const app = express();
 
 // middleware
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+    headers: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE"]
+}));
 app.use(express.json());
 app.use(cookieParser());
 

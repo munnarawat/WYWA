@@ -1,4 +1,4 @@
-import { ArrowRight, Lock, Mail, Mountain, User } from "lucide-react";
+import { AlertCircle, ArrowRight, Lock, Mail, Mountain, User } from "lucide-react";
 import { motion } from "motion/react";
 import React from "react";
 import { useForm } from "react-hook-form";

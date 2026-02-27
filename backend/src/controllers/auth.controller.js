@@ -38,22 +38,40 @@ const userRegisterController = async (req, res) => {
     });
 
     // token generate
-    if (!process.env.JWT_SECRET_KEY) {
-      throw new Error("JWT secret not defined");
+    if (!process.env.ACCESS_TOKEN_SECRET) {
+      throw new Error("ACCESS_TOKEN_SECRET not defined");
     }
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
       { id: user._id, role: user.role },
-      process.env.JWT_SECRET_KEY,
+      process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "1D",
+        expiresIn: "15m",
       },
     );
-    res.cookie("token", token, {
+    const refreshToken = jwt.sign(
+      {
+        id: user._id,
+      },
+      process.env.REFRESH_TOKEN_SECRET,
+      {
+        expiresIn: "7d",
+      },
+    );
+    // set cookie
+    res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 24 * 60 * 60 * 1000, //1 day
+      maxAge: 15 * 60 * 1000, //15min
     });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, //7 day
+    });
+    user.refreshToken = refreshToken;
+    await user.save();
     // return response
     return res.status(201).json({
       message: "user register successfully 🎉",
@@ -79,7 +97,7 @@ const loginController = async (req, res) => {
     //  input validation
     if (!identifier || !password) {
       return res.status(400).json({
-        message: "identifier and password are required",
+        message: "invalid credentials",
       });
     }
     const user = await UserModel.findOne({
@@ -88,13 +106,14 @@ const loginController = async (req, res) => {
 
     if (!user) {
       return res.status(401).json({
-        message: "Invalid userName and email ❌",
+        message: "invalid credentials",
       });
     }
-
     // check block user are not login
     if (!user.isActive) {
-      return res.status();
+      return res.status(403).json({
+        message: "Your account has been blocked. Please contact support.",
+      });
     }
     // // check if password is correct or not!
     const isValidPassword = await bcryptjs.compare(password, user.password);
@@ -104,25 +123,41 @@ const loginController = async (req, res) => {
       });
     }
 
-    // jwt safety check✅
-    if (!process.env.JWT_SECRET_KEY) {
-      throw new Error("JWT secret not defined");
+    // token generate
+    if (!process.env.ACCESS_TOKEN_SECRET) {
+      throw new Error("ACCESS_TOKEN_SECRET not defined");
     }
-    // JWT token
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
       { id: user._id, role: user.role },
-      process.env.JWT_SECRET_KEY,
+      process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "1d",
+        expiresIn: "15m",
       },
     );
-    res.cookie("token", token, {
+    const refreshToken = jwt.sign(
+      {
+        id: user._id,
+      },
+      process.env.REFRESH_TOKEN_SECRET,
+      {
+        expiresIn: "7d",
+      },
+    );
+    // set cookie
+    res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 24 * 60 * 60 * 1000, //1 day
+      maxAge: 15 * 60 * 1000, // 15min
     });
-
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000, //7 day
+    });
+    user.refreshToken = refreshToken;
+    await user.save();
     // return user
     return res.status(200).json({
       message: "user login successfully🎉",
@@ -149,14 +184,56 @@ const getCurrentUser = async (req, res) => {
 };
 const logoutController = async (req, res) => {
   try {
-    res.clearCookie("token", {
+    res.clearCookie("accessToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     });
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
+    user = await UserModel.findById(req.user.id);
+    if (user) {
+      user.refreshToken = null;
+      await user.save();
+    }
     return res.status(200).json({ message: "logout successfully🎉" });
   } catch (error) {
     res.status(500).json({ message: "internal server error in user logout" });
+  }
+};
+// refreshController
+const refreshController = async (req, res) => {
+  try {
+    const token = req.cookies.refreshToken;
+    if (!token) {
+      return res.status(401).json({ message: "no refresh token found" });
+    }
+    const user = await UserModel.findOne({ refreshToken: token });
+
+    if (!user) {
+      return res.status(403).json({ message: "Session expired" });
+    }
+    const decoded =  jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+    const newAccessToken = jwt.sign(
+      { id: decoded.id, },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "15m" },
+      );
+
+      res.cookie("accessToken", newAccessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      });
+      return res.status(200).json({ message: "access token refreshed successfully" });
+  } catch (error) {
+    console.error("Error in refreshing token:", error);
+    return res
+      .status(500)
+      .json({ message: "internal server error in token refresh" });
   }
 };
 
@@ -165,4 +242,5 @@ module.exports = {
   loginController,
   getCurrentUser,
   logoutController,
+  refreshController,
 };

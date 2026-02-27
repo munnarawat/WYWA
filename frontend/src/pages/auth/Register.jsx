@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../images/logo.png";
 import axios from "axios";
+import api from "../../utils/api";
 const Register = () => {
   const {
     register,
@@ -12,7 +13,6 @@ const Register = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
-
   const onSubmit = async (data) => {
     const payload = {
       fullName: {
@@ -26,14 +26,10 @@ const Register = () => {
     console.log("PAYLOAD 👉", payload);
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/auth/register",
-        payload,
-        {
+      const response = await api.post('/auth/register', payload,{
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true,
         },
       );
 
@@ -69,7 +65,7 @@ const Register = () => {
           </h2>
         </div>
         {/* form data */}
-        <form onClick={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {/* fullName */}
           <div className="fullName-box flex gap-4">
             {/* firstName fields */}

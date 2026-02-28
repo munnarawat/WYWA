@@ -16,12 +16,39 @@ const Navbar = () => {
 
   const { isAuthenticate, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const NavLinks = [
+  // public navLink
+  const PublicLinks = [
     { title: "Home", path: "/" },
     { title: "About", path: "/about" },
     { title: "Contact", path: "/contact" },
-    { title: "Achievements", path: "/achievements" },
   ];
+
+  // student navLinks
+  const studentLink = [
+    { title: "Dashboard", path: "/student/dashboard" },
+    { title: "Attendance", path: "/student/attendance" },
+    { title: "Achievements", path: "/student/achievements" },
+  ];
+
+  const adminLink = [
+    { title: "Dashboard", path: "/admin/dashboard" },
+    { title: "Students", path: "/admin/students" },
+    { title: "Attendance", path: "/admin/attendance" },
+    { title: "Reports", path: "/admin/reports" },
+  ];
+
+  const getNavLink = () => {
+    if (!isAuthenticate) return PublicLinks;
+    switch (user?.role) {
+      case "admin":
+        return [...PublicLinks, ...adminLink];
+      case "student":
+        return [...PublicLinks, ...studentLink];
+      default:
+        return PublicLinks;
+    }
+  };
+  const NavLinks = getNavLink();
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -37,17 +64,17 @@ const Navbar = () => {
   }, [location]);
 
   // logOut function
-  const handleLogOut = async ()=>{
+  const handleLogOut = async () => {
     try {
-       await api.post("/auth/logout");
+      await api.post("/auth/logout");
     } catch (error) {
-     console.error("logout failed", error)
-    }finally{
-      dispatch(clearUser())
-      navigate('/login');
-      setIsProfileOpen(false)
+      console.error("logout failed", error);
+    } finally {
+      dispatch(clearUser());
+      navigate("/login");
+      setIsProfileOpen(false);
     }
-  }
+  };
   return (
     <>
       <motion.nav
@@ -145,7 +172,9 @@ const Navbar = () => {
                       className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-300 hover:bg-white/5 hover:text-white rounded-lg transition">
                       <User size={16} className="text-emerald-400" /> My Profile
                     </Link>
-                    <button onClick={handleLogOut} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition text-left">
+                    <button
+                      onClick={handleLogOut}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition text-left">
                       <LogOut size={16} /> Logout
                     </button>
                   </div>
@@ -213,7 +242,9 @@ const Navbar = () => {
             {!isAuthenticate ? (
               // auth- login logout - register
               <div className="grid grid-cols-2 gap-4">
-                <Link to='/login' className="py-3 text-center rounded-xl bg-white/5 text-white hover:bg-white/10 border border-white/10 transition">
+                <Link
+                  to="/login"
+                  className="py-3 text-center rounded-xl bg-white/5 text-white hover:bg-white/10 border border-white/10 transition">
                   Login
                 </Link>
                 <Link
@@ -230,7 +261,9 @@ const Navbar = () => {
                   className="py-3 w-full rounded-xl bg-white/5 text-white hover:bg-white/10 border border-white/10 flex items-center justify-center gap-2 transition">
                   <User size={18} /> View Profile
                 </Link>
-                <button onClick={()=>handleLogOut()} className="py-3 w-full rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500 hover:text-white flex items-center justify-center gap-2 transition">
+                <button
+                  onClick={() => handleLogOut()}
+                  className="py-3 w-full rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500 hover:text-white flex items-center justify-center gap-2 transition">
                   <LogOut size={18} /> Logout
                 </button>
               </div>

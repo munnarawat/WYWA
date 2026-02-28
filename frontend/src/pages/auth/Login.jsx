@@ -5,8 +5,11 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../images/logo.png";
 import api from "../../utils/api";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../store/slice/authSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -26,11 +29,12 @@ const Login = () => {
     try {
       const response = await api.post('/auth/login',payload);
       if (response.data.user) {
+        dispatch(setUser(response.data.user));
         navigate("/");
       }
       // console.log(response.data.user);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       const errorMessage =
         error.response?.data?.message ||
         "Network error. Please try again later.";
@@ -137,7 +141,7 @@ const Login = () => {
             whileTap={{ scale: 0.98 }}
             type="submit"
             className={`w-full bg-linear-to-r from-teal-600 to-lime-600 text-white font-bold py-3.5 rounded-xl shadow-lg hover:shadow-teal-600/40 transition-all flex items-center justify-center gap-2 ${isLoading ? "opacity-70 cursor-not-allowed" : " "}`}>
-            {isLoading ? "Logging in.." : "Log IN"}
+            {isLoading ? "Logging in..." : "Log In"}
             {!isLoading && <ArrowRight size={18} />}
           </motion.button>
         </form>

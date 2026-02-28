@@ -12,7 +12,10 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../images/logo.png";
 import api from "../../utils/api";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../store/slice/authSlice";
 const Register = () => {
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -33,15 +36,14 @@ const Register = () => {
       email: data.email,
       password: data.password,
     };
-    console.log("PAYLOAD 👉", payload);
-
     try {
       const response = await api.post("/auth/register", payload, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-      if (response.data) {
+      if (response.data.user) {
+        dispatch(setUser(response.data.user));
         navigate("/");
       }
       // console.log("Response 👉", response.data);

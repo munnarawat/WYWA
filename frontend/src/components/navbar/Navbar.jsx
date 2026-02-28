@@ -1,13 +1,21 @@
 import { AnimatePresence, motion } from "motion/react";
 import React, { useEffect, useState } from "react";
 import logo from "../../images/logo.png";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ChevronDown, LogOut, Menu, Mountain, User, X } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import api from "../../utils/api";
+import { clearUser } from "../../store/slice/authSlice";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const { isAuthenticate, user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const NavLinks = [
     { title: "Home", path: "/" },
     { title: "About", path: "/about" },
@@ -21,11 +29,25 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
   //  close menu on routes change
   useEffect(() => {
     setIsProfileOpen(false);
     setIsMobileOpen(false);
   }, [location]);
+
+  // logOut function
+  const handleLogOut = async ()=>{
+    try {
+       await api.post("/auth/logout");
+    } catch (error) {
+     console.error("logout failed", error)
+    }finally{
+      dispatch(clearUser())
+      navigate('/login');
+      setIsProfileOpen(false)
+    }
+  }
   return (
     <>
       <motion.nav
@@ -72,30 +94,36 @@ const Navbar = () => {
             </div>
           </div>
           {/* auth-  profile and login-register */}
-          <div className="hidden md:flex items-center gap-4">
-            <Link
-            to="/login"
-            className=" text-gray-300/80 hover:text-white transition ">
-            Login
-          </Link>
-          <Link to="/register" className="px-5 py-2 text-sm font-semibold hover:bg-teal-700 bg-white/90 text-black hover:text-white rounded-full transition-all shadow-lg shadow-white/10 hover:shadow-teal-700/40 ">
-            Register
-          </Link>
-
-            {/* profile when user login  */}
-            {/* <div className=" relative">
-              <button
-                onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center gap-2 p-1 pr-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition">
-                <div className="w-8 h-8 rounded-full bg-linear-to-tr from-teal-500 to-lime-600 flex items-center justify-center text-xs font-bold text-white shadow-inner">
-                  M
-                </div>
-                <ChevronDown
-                  size={14}
-                  className={`text-gray-400 transition-transform duration-300 ${isProfileOpen ? "rotate-180" : ""}`}
-                />
-              </button>
-            </div> */}
+          <div className="hidden  md:flex items-center gap-4">
+            {!isAuthenticate ? (
+              <>
+                <Link
+                  to="/login"
+                  className=" text-gray-300/80 hover:text-white transition ">
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="px-5 py-2 text-sm font-semibold hover:bg-teal-700 bg-white/90 text-black hover:text-white rounded-full transition-all shadow-lg shadow-white/10 hover:shadow-teal-700/40 ">
+                  Register
+                </Link>
+              </>
+            ) : (
+              // profile when user login
+              <div className=" relative">
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex items-center gap-2 p-1 pr-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition">
+                  <div className="w-8 h-8 rounded-full bg-linear-to-tr from-teal-500 to-lime-600 flex items-center justify-center text-xs font-bold text-white shadow-inner">
+                    {user?.userName?.[0]?.toUpperCase()}
+                  </div>
+                  <ChevronDown
+                    size={14}
+                    className={`text-gray-400 transition-transform duration-300 ${isProfileOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
+              </div>
+            )}
             <AnimatePresence>
               {isProfileOpen && (
                 <motion.div
@@ -105,10 +133,10 @@ const Navbar = () => {
                   className="absolute right-5 mt-56 w-56 bg-[#0a0a0c] border border-white/10 rounded-xl shadow-2xl backdrop-blur-3xl overflow-hidden ring-1 ring-white/5">
                   <div className="px-4 py-4 border-b border-white/5 bg-white/5">
                     <p className="text-sm text-white font-medium truncate">
-                      {"User"}
+                      {user?.userName}
                     </p>
                     <p className="text-xs text-gray-400 truncate mt-0.5">
-                      {"user@moody.com"}
+                      {user?.email}
                     </p>
                   </div>
                   <div className="p-1">
@@ -117,7 +145,7 @@ const Navbar = () => {
                       className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-300 hover:bg-white/5 hover:text-white rounded-lg transition">
                       <User size={16} className="text-emerald-400" /> My Profile
                     </Link>
-                    <button className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition text-left">
+                    <button onClick={handleLogOut} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition text-left">
                       <LogOut size={16} /> Logout
                     </button>
                   </div>
@@ -133,6 +161,7 @@ const Navbar = () => {
           </button>
         </div>
       </motion.nav>
+
       {/* mobile view  */}
       <AnimatePresence>
         {isMobileOpen && (
@@ -143,17 +172,22 @@ const Navbar = () => {
             transition={{ damping: 25, type: "spring", stiffness: 200 }}
             className="fixed heading z-50 inset-0 w-full  min-h-screen bg-black/95 backdrop-blur-xl md:hidden pt-24 px-6 flex-col">
             {/* when user login- email and userName show */}
-            <div className="flex items-center justify-center gap-4 bg-white/5 border border-white/10 p-4 rounded-xl mb-8">
-              <div className="w-12 h-12 rounded-full bg-linear-to-tr from-teal-500 to-lime-500 flex items-center justify-center text-lg font-bold text-white shadow-lg">
-                M
+            {isAuthenticate && user && (
+              <div className="flex items-center justify-center gap-4 bg-white/5 border border-white/10 p-4 rounded-xl mb-8">
+                <div className="w-12 h-12 rounded-full bg-linear-to-tr from-teal-500 to-lime-500 flex items-center justify-center text-lg font-bold text-white shadow-lg">
+                  {user?.userName?.[0]?.toUpperCase()}
+                </div>
+                <div className="overflow-hidden">
+                  <h3 className="text-white font-bold truncate">
+                    {user?.userName}
+                  </h3>
+                  <p className="text-white/50 text-sm truncate">
+                    {user?.email}
+                  </p>
+                </div>
               </div>
-              <div className="overflow-hidden">
-                <h3 className="text-white font-bold truncate">
-                  Munna
-                </h3>
-                <p className="text-white/50 text-sm truncate">munna@gmai.com</p>
-              </div>
-            </div>
+            )}
+
             {/* links without login */}
             <div className=" flex flex-col gap-4 items-center ">
               {NavLinks.map((item, index) => (
@@ -175,28 +209,32 @@ const Navbar = () => {
             </div>
             {/* line */}
             <div className="h-px bg-white/10 my-4" />
-            {/* auth- login logout - register */}
-            {/* <div className="grid grid-cols-2 gap-4">
-              <Link className="py-3 text-center rounded-xl bg-white/5 text-white hover:bg-white/10 border border-white/10 transition">
-                Login
-              </Link>
-              <Link
-                to="/register"
-                className="py-3 text-center rounded-xl bg-teal-500 text-white font-bold hover:bg-teal-600 transition">
-                Register
-              </Link>
-            </div> */}
-            <div className="flex flex-col gap-3">
-              <Link
-                to="/profile"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="py-3 w-full rounded-xl bg-white/5 text-white hover:bg-white/10 border border-white/10 flex items-center justify-center gap-2 transition">
-                <User size={18} /> View Profile
-              </Link>
-              <button className="py-3 w-full rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500 hover:text-white flex items-center justify-center gap-2 transition">
-                <LogOut size={18} /> Logout
-              </button>
-            </div>
+
+            {!isAuthenticate ? (
+              // auth- login logout - register
+              <div className="grid grid-cols-2 gap-4">
+                <Link to='/login' className="py-3 text-center rounded-xl bg-white/5 text-white hover:bg-white/10 border border-white/10 transition">
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="py-3 text-center rounded-xl bg-teal-500 text-white font-bold hover:bg-teal-600 transition">
+                  Register
+                </Link>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                <Link
+                  to="/profile"
+                  onClick={() => setIsMobileOpen(false)}
+                  className="py-3 w-full rounded-xl bg-white/5 text-white hover:bg-white/10 border border-white/10 flex items-center justify-center gap-2 transition">
+                  <User size={18} /> View Profile
+                </Link>
+                <button onClick={()=>handleLogOut()} className="py-3 w-full rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500 hover:text-white flex items-center justify-center gap-2 transition">
+                  <LogOut size={18} /> Logout
+                </button>
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

@@ -4,27 +4,26 @@ const authSlice = createSlice({
     name:"auth",
     initialState:{
         user:null,
-        token : localStorage.getItem("token") || null ,
-        isAuthenticate : !!localStorage.getItem("token"),
+        isAuthenticate : false,
+        isLoading:true
     },
     reducers:{
-        loginSuccess:(state, action)=>{
-            state.user = action.payload.user;
-            state.token = action.payload.token;
-            state.isAuthenticate = true;
-            localStorage.setItem("token", action.payload.token)
-        },
         setUser:(state,action)=>{
             state.user = action.payload;
             state.isAuthenticate = true;
+            state.isLoading = false;
         },
-        logOut:(state)=>{
+        clearUser:(state)=>{
             state.user = null;
             state.isAuthenticate = false;
+            state.isLoading = false;
+        },
+        setLoading:(state,action)=>{
+            state.isLoading = action.payload;
         }
     }
 });
 
-export const {loginSuccess, setUser, logOut} = authSlice.actions;
+export const {setUser, clearUser, setLoading} = authSlice.actions;
 
 export default authSlice.reducer;

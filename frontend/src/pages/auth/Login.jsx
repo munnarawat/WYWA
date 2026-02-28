@@ -28,9 +28,6 @@ const Login = () => {
       if (response.data.user) {
         navigate("/");
       }
-      // token save
-      localStorage.setItem("token",response.data.token);
-
       // console.log(response.data.user);
     } catch (error) {
       console.log(error);
@@ -144,7 +141,6 @@ const Login = () => {
             {!isLoading && <ArrowRight size={18} />}
           </motion.button>
         </form>
-
         {/* if account have already exits  */}
         <p className="text-center text-white/40 text-sm mt-8">
           Don't have a account?{" "}

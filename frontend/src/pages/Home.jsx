@@ -2,7 +2,7 @@ import React from "react";
 
 const Home = () => {
   return (
-    <div className="relative min-h-[200vh] flex items-center text-white pt-20 overflow-hidden">
+    <div className="relative min-h-screen flex items-center text-white pt-20 overflow-hidden">
       {/* Background Gradients (The Dark Premium Vibe) */}
       <div className="absolute inset-0 bg-slate-950">
         <div className="absolute top-0 -left-40 w-96 h-96 bg-emerald-600/20 rounded-full mix-blend-screen filter blur-[100px] opacity-50 animate-blob"></div>

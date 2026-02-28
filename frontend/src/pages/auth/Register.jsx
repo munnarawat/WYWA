@@ -1,10 +1,16 @@
-import { AlertCircle, ArrowRight, Lock, Mail, Mountain, User } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowRight,
+  Lock,
+  Mail,
+  Mountain,
+  User,
+} from "lucide-react";
 import { motion } from "motion/react";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../images/logo.png";
-import axios from "axios";
 import api from "../../utils/api";
 const Register = () => {
   const {
@@ -13,7 +19,11 @@ const Register = () => {
     formState: { errors },
   } = useForm();
   const navigate = useNavigate();
+  const [serverError, setServerError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const onSubmit = async (data) => {
+    serverError("");
+    isLoading(true);
     const payload = {
       fullName: {
         firstName: data.firstName,
@@ -26,19 +36,19 @@ const Register = () => {
     console.log("PAYLOAD 👉", payload);
 
     try {
-      const response = await api.post('/auth/register', payload,{
-          headers: {
-            "Content-Type": "application/json",
-          },
+      const response = await api.post("/auth/register", payload, {
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
-
+      });
       if (response.data) {
-        navigate("/login");
+        navigate("/");
       }
-      console.log("Response 👉", response.data);
+      // console.log("Response 👉", response.data);
     } catch (error) {
-        console.log(error.response?.data || error.message);
+      setServerError(error.response?.data?.message || "Something went wrong");
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -66,6 +76,13 @@ const Register = () => {
         </div>
         {/* form data */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          {/*error handling print  */}
+          {serverError && (
+            <div className="p-3 bg-red-500/10 border border-red-500/50 rounded-lg flex items-center gap-2 text-red-400 text-sm">
+              <AlertCircle size={16} />
+              <span>{serverError}</span>
+            </div>
+          )}
           {/* fullName */}
           <div className="fullName-box flex gap-4">
             {/* firstName fields */}
@@ -84,7 +101,7 @@ const Register = () => {
                   type="text"
                   className={`w-full placeholder:text-sm  placeholder:text-zinc-500  bg-black/20 border rounded-xl py-3 pl-12 pr-4 focus:outline-none transition-all
                     ${
-                      errors.lastName
+                      errors.firstName
                         ? "border-red-500/50 focus:border-red-500"
                         : "border-white/10 focus:border-teal-500/50"
                     }
@@ -222,7 +239,7 @@ const Register = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="submit"
-            className="w-full bg-linear-to-r from-teal-600 to-lime-600 text-white font-bold py-3.5 rounded-xl shadow-lg hover:shadow-teal-600/40 transition-all flex items-center justify-center gap-2">
+            className={`w-full bg-linear-to-r from-teal-600 to-lime-600 text-white font-bold py-3.5 rounded-xl shadow-lg hover:shadow-teal-600/40 transition-all flex items-center justify-center gap-2 ${isLoading ? "opacity-70 cursor-not-allowed" : " "}`}>
             Sign Up <ArrowRight size={18} />
           </motion.button>
         </form>

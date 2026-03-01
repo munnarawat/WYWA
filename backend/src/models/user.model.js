@@ -45,6 +45,11 @@ const userSchema = new mongoose.Schema(
     },
     refreshToken:{
       type:String,
+    },
+    branch:{
+      type:String,
+      enum:["dehradun", "haldwani"],
+      required:true,
     }
   },
   {

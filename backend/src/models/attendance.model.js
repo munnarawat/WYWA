@@ -1,31 +1,39 @@
 const mongoose = require("mongoose");
 
-const attendanceSchema = new mongoose.Schema({
-    student:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"User",
-        required:true,
+const attendanceSchema = new mongoose.Schema(
+  {
+    student: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    date:{
-        type:Date,
-        require:true,
+    date: {
+      type: Date,
+      require: true,
     },
-    status:{
-        type:String,
-        enum:["present", "absent"],
-        default:"present",
+    status: {
+      type: String,
+      enum: ["present", "absent"],
+      default: "present",
     },
-    markedBy:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"User" , //admin
-        required:true,
+    markedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", //admin
+      required: true,
     },
-},{
-    timestamps:true,
-});
+    branch: {
+      type: String,
+      enum: ["dehradun", "haldwani"],
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
 
 // One record per student per day
-attendanceSchema.index({student:1, date:1},{unique:true});
+attendanceSchema.index({ student: 1, date: 1, branch:1 }, { unique: true });
 
 const Attendance = mongoose.model("Attendance", attendanceSchema);
 

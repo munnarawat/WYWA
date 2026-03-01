@@ -17,12 +17,17 @@ const noticeSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    branch: {
+      type: String,
+      enum: ["dehradun", "haldwani"],
+      required: true,
+    },
   },
   {
-    timestamps:true
+    timestamps: true,
   },
 );
 
-const noticeModel  = mongoose.model("Notice", noticeSchema);
+const noticeModel = mongoose.model("Notice", noticeSchema);
 
 module.exports = noticeModel;

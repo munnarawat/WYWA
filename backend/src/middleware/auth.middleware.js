@@ -4,7 +4,7 @@ const User = require("../models/user.model");
 const authMiddleware = async (req, res, next) => {
   try {
     const token =
-      req.cookies?.accessToken|| req.header("Authorization")?.split(" ")[1];
+      req.cookies?.accessToken || req.header("Authorization")?.split(" ")[1];
 
     if (!token) {
       return res.status(401).json({ message: "Not authorized, token missing" });
@@ -16,20 +16,14 @@ const authMiddleware = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
-    const user = await User.findById(decoded.id).select("-password");
-    if (!user) {
-      return res.status(401).json({ message: "User not found" });
-    }
-
-    if (!user.isActive) {
-      return res.status(403).json({ message: "User is blocked" });
-    }
-
-    req.user = user;
+    req.user = decoded;
     next();
   } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "Token expired" });
+    }
     console.error("Auth Failed:", error.message);
-    res.status(401).json({ message: "Not authorized" });
+    res.status(401).json({ message: "Not authorized or invalid token" });
   }
 };
 const adminMiddleware = async (req, res, next) => {

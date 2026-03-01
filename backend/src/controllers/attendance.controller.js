@@ -15,13 +15,17 @@ const markAttendance = async (req, res) => {
     if (!student) {
       return res.status(404).json({ message: "Student not found " });
     }
+
+    if(student.branch !== req.user.branch){
+      return res.status(403).json({ message: "You can only mark attendance for students in your branch" });
+    }
     const record = await Attendance.findOneAndUpdate(
       { student: studentId, date: new Date(date) },
       {
         student: studentId,
         date: new Date(date),
         status: status || "present",
-        markedBy: req.user._id,
+        markedBy: req.user.id,
       },
       {
         upsert: true,
@@ -49,6 +53,18 @@ const getMonthlyAttendance = async (req, res) => {
         message: "studentId, year, month are required",
       });
     }
+    const student = await userModel.findById(studentId);
+    if(!student){
+      return res.status(404).json({message:" student not found"});
+    }
+
+    // branch check
+    if(  req.user.role !== "admin" && student.branch !== req.user.branch){
+      return res.status(403).json({
+        message: "You can only view attendance for students in your branch",
+      })
+    }
+
     const start = new Date(year, month, 1);
     const end = new Date(year, Number(month) + 1, 0, 23, 59, 59);
 
@@ -118,17 +134,23 @@ const getLeaderboard = async (req, res) => {
         $unwind: "$student",
       },
       {
+        $match:{
+          "student.branch":req.user.branch
+        }
+      },
+      {
         $project: {
           _id: 0,
           studentId: "$student._id",
           userName: "$student.userName",
           email: "$student.email",
+          branch: '$student.branch',
           presentCount: 1,
         },
       },
     ]);
     return res.status(200).json({
-      message: "Leaderboard fetched successfully 🏆",
+      message: `Leaderboard fetched successfully for ${req.user.branch} branch 🏆`,
       leaderboard,
     });
   } catch (error) {

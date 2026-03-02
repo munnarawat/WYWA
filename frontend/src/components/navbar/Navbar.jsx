@@ -15,9 +15,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const { isAuthenticate, user } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
-  console.log(user);
-  
+  const dispatch = useDispatch();  
   // public navLink
   const PublicLinks = [
     { title: "Home", path: "/" },

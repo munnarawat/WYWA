@@ -1,6 +1,7 @@
 import {
   AlertCircle,
   ArrowRight,
+  Banknote,
   Lock,
   Mail,
   Mountain,
@@ -25,8 +26,8 @@ const Register = () => {
   const [serverError, setServerError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const onSubmit = async (data) => {
-    serverError("");
-    isLoading(true);
+    setServerError("");
+    setIsLoading(true);
     const payload = {
       fullName: {
         firstName: data.firstName,
@@ -34,6 +35,7 @@ const Register = () => {
       },
       userName: data.userName,
       email: data.email,
+      branch: data.branch,
       password: data.password,
     };
     try {
@@ -46,7 +48,6 @@ const Register = () => {
         dispatch(setUser(response.data.user));
         navigate("/");
       }
-      // console.log("Response 👉", response.data);
     } catch (error) {
       setServerError(error.response?.data?.message || "Something went wrong");
     } finally {
@@ -206,6 +207,27 @@ const Register = () => {
               <p className="text-red-400 text-xs mt-1 ml-2 flex items-center gap-1">
                 <AlertCircle size={10} /> {errors.email.message}
               </p>
+            )}
+          </div>
+          {/* branch */}
+          <div className="space-y-2">
+            <select
+              {...register("branch", { required: "Branch is required" })}
+              className="w-full text-sm bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white/60 focus:outline-none focus:border-teal-500 transition-colors appearance-none">
+              <option value="" className="bg-black/70   ">
+                Select Branch
+              </option>
+              <option value="dehradun" className="bg-black">
+                Dehradun
+              </option>
+              <option value="haldwani" className="bg-black">
+                Haldwani
+              </option>
+            </select>
+            {errors.branch && (
+              <span className="text-red-400 text-xs flex items-center gap-1">
+                <AlertCircle size={10} /> {errors.branch.message}
+              </span>
             )}
           </div>
           {/* Password Field */}

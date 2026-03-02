@@ -6,7 +6,7 @@ const api = axios.create({
 });
 
 let isRefreshing = false;
-let failedQueue = []; 
+let failedQueue = [];
 
 const processQueue = (error, token = null) => {
   failedQueue.forEach((prom) => {
@@ -19,46 +19,57 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
-// api.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     const originalRequest = error.config;
-//     if (error.response?.status === 401 && !originalRequest._retry) {
-//       if (originalRequest.url === "/auth/refresh") {
-//           window.location.href = "/login";
-//           return Promise.reject(error);
-//       }
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (!error.response) return Promise.reject(error);
 
-//       originalRequest._retry = true;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      if (originalRequest.url?.includes("/auth/refresh")) {
+        return Promise.reject(error);
+      }
 
-//       if (!isRefreshing) {
-//         isRefreshing = true;
+      originalRequest._retry = true;
 
-//         try {
-//           // Token refresh karo
-//           await api.post("/auth/refresh");
-//           isRefreshing = false;
-//           processQueue(null); 
+      if (!isRefreshing) {
+        isRefreshing = true;
+
+        try {
+          await axios.post(
+            `${import.meta.env.VITE_MYWA_API_URL}/auth/refresh`,
+            {},
+            { withCredentials: true }
+          );
+
+          isRefreshing = false;
+          processQueue(null);
+
+          return api(originalRequest);
+        } catch (refreshError) {
+          isRefreshing = false;
+          processQueue(refreshError);
+          if (window.location.pathname !== "/login") {
+            window.location.href = "/login";
+          }
           
-//           return api(originalRequest);
-//         } catch (refreshError) {
-//           isRefreshing = false;
-//           processQueue(refreshError);
-//           window.location.href = "/login";
-//           return Promise.reject(refreshError);
-//         }
-//       }
-//       return new Promise((resolve, reject) => {
-//         failedQueue.push({ resolve, reject });
-//       }).then(() => {
-//         return api(originalRequest);
-//       }).catch((err) => {
-//         return Promise.reject(err);
-//       });
-//     }
+          return Promise.reject(refreshError);
+        }
+      }
 
-//     return Promise.reject(error);
-//   }
-// );
+      return new Promise((resolve, reject) => {
+        failedQueue.push({ resolve, reject });
+      })
+        .then(() => {
+          return api(originalRequest);
+        })
+        .catch((err) => {
+          return Promise.reject(err);
+        });
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export default api;

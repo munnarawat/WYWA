@@ -6,7 +6,7 @@ const api = axios.create({
 });
 
 let isRefreshing = false;
-let failedQueue = [];
+let failedQueue = []; 
 
 const processQueue = (error, token = null) => {
   failedQueue.forEach((prom) => {
@@ -19,46 +19,46 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
-api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
+// api.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
+//     if (error.response?.status === 401 && !originalRequest._retry) {
+//       if (originalRequest.url === "/auth/refresh") {
+//           window.location.href = "/login";
+//           return Promise.reject(error);
+//       }
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      // Infinite Loop Guard: Agar /auth/refresh khud 401 de raha hai (refresh token bhi expire ho gaya), toh seedha bahar feko
+//       originalRequest._retry = true;
 
-      if (originalRequest.url === "/auth/refresh") {
-        window.location.href = "/login";
-        return Promise.reject(error);
-      }
-      originalRequest._retry = true;
+//       if (!isRefreshing) {
+//         isRefreshing = true;
 
-      if (!isRefreshing) {
-        isRefreshing = true;
+//         try {
+//           // Token refresh karo
+//           await api.post("/auth/refresh");
+//           isRefreshing = false;
+//           processQueue(null); 
+          
+//           return api(originalRequest);
+//         } catch (refreshError) {
+//           isRefreshing = false;
+//           processQueue(refreshError);
+//           window.location.href = "/login";
+//           return Promise.reject(refreshError);
+//         }
+//       }
+//       return new Promise((resolve, reject) => {
+//         failedQueue.push({ resolve, reject });
+//       }).then(() => {
+//         return api(originalRequest);
+//       }).catch((err) => {
+//         return Promise.reject(err);
+//       });
+//     }
 
-        try {
-          await api.post("/auth/refresh");
-          isRefreshing = false;
-          processQueue(null);
-          return api(originalRequest);
-        } catch (refreshError) {
-          isRefreshing = false;
-          processQueue(refreshError);
-          window.location.href = "/login";
-          return Promise.reject(refreshError);
-        }
-      }
-      // Agar refresh pehle se chal raha hai, toh nayi requests ko Queue mein daal do
-      return new Promise((resolve, reject) => {
-        failedQueue.push({ resolve, reject });
-      }).then(() => {
-        return api(originalRequest);
-      }).catch((err) => {
-        return Promise.reject(err);
-      });
-    }
-    return Promise.reject(error);
-  },
-);
+//     return Promise.reject(error);
+//   }
+// );
 
 export default api;

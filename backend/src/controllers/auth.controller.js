@@ -48,7 +48,7 @@ const userRegisterController = async (req, res) => {
       throw new Error("ACCESS_TOKEN_SECRET not defined");
     }
     const accessToken = jwt.sign(
-      { id: user._id, role: user.role, branch: user.branch },
+      { id: user._id},
       process.env.ACCESS_TOKEN_SECRET,
       {
         expiresIn: "15m",
@@ -135,7 +135,7 @@ const loginController = async (req, res) => {
       throw new Error("ACCESS_TOKEN_SECRET not defined");
     }
     const accessToken = jwt.sign(
-      { id: user._id, role: user.role, branch: user.branch },
+      { id: user._id },
       process.env.ACCESS_TOKEN_SECRET,
       {
         expiresIn: "15m",
@@ -219,12 +219,6 @@ const refreshController = async (req, res) => {
     if (!token) {
       return res.status(401).json({ message: "no refresh token found" });
     }
-    res.clearCookie("refreshToken", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    });
-
     const user = await UserModel.findOne({ refreshToken: token });
 
     // 🚨 MISUSE DETECTION LOGIC 🚨
@@ -255,7 +249,7 @@ const refreshController = async (req, res) => {
     }
     const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
     const newAccessToken = jwt.sign(
-      { id: decoded.id, role: user.role, branch: user.branch },
+      { id: decoded.id},
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "15m" },
     );

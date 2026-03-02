@@ -32,7 +32,7 @@ const Login = () => {
         dispatch(setUser(response.data.user));
         navigate("/");
       }
-      // console.log(response.data.user);
+      console.log(response.data);
     } catch (error) {
       // console.log(error);
       const errorMessage =

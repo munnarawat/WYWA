@@ -15,8 +15,13 @@ const authMiddleware = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-
-    req.user = decoded;
+    const user  = await User.findById(decoded.id).select("-password -refreshToken");
+    if(!user  || !user.isActive){
+      return res.status(401).json({
+        message:"Unauthorized or user not active"
+      })
+    }
+    req.user = user;
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {

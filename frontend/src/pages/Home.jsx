@@ -1,4 +1,5 @@
 import React from "react";
+import PublicHome from "./PublicHome";
 
 const Home = () => {
   return (
@@ -8,6 +9,8 @@ const Home = () => {
         <div className="absolute top-0 -left-40 w-96 h-96 bg-emerald-600/20 rounded-full mix-blend-screen filter blur-[100px] opacity-50 animate-blob"></div>
         <div className="absolute top-40 -right-40 w-96 h-96 bg-teal-600/20 rounded-full mix-blend-screen filter blur-[100px] opacity-50 animate-blob animation-delay-2000"></div>
       </div>
+      {/* public home page */}
+      <PublicHome/>
     </div>
   );
 };

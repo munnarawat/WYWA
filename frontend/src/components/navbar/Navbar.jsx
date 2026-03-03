@@ -130,7 +130,7 @@ const Navbar = () => {
                 </Link>
                 <Link
                   to="/register"
-                  className="px-5 py-2 text-sm font-semibold hover:bg-teal-700 bg-white/90 text-black hover:text-white rounded-full transition-all shadow-lg shadow-white/10 hover:shadow-teal-700/40 ">
+                  className="px-5 py-2 text-sm font-semibold hover:bg-teal-700/60 bg-teal-700   rounded-full transition-all shadow-lg shadow-white/10 hover:shadow-teal-700/40 ">
                   Register
                 </Link>
               </>

@@ -8,7 +8,7 @@ const PublicHome = () => {
     <div className="w-full min-h-screen text-white relative px-2  md:px-8 py-6 ">
       {/* hero section */}
       <Hero />
-      <WhatWeDo/>
+      <WhatWeDo />
     </div>
   );
 };

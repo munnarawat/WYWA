@@ -61,7 +61,7 @@ const WhatWeDo = () => {
       y: 0,
       transition: {
         duration: 0.6,
-        ease: "easeOut",
+        ease: "easeInOut",
       },
     },
   };
@@ -83,7 +83,7 @@ const WhatWeDo = () => {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
-        className="grid grid-cols-1 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10">
+        className="grid grid-cols-1 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-10">
         {cards.map((item, index) => (
           <motion.div
             variants={cardVariant}

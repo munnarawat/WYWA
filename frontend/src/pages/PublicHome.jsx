@@ -2,6 +2,7 @@ import { Book } from "lucide-react";
 import React from "react";
 import Hero from "../components/Hero";
 import WhatWeDo from "../components/WhatWeDo";
+import OurImpact from "../components/OurImpact";
 
 const PublicHome = () => {
   return (
@@ -9,6 +10,7 @@ const PublicHome = () => {
       {/* hero section */}
       <Hero />
       <WhatWeDo />
+      <OurImpact/>
     </div>
   );
 };

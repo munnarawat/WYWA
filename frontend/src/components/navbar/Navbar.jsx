@@ -91,7 +91,7 @@ const Navbar = () => {
           <div className="flex items-center  ">
             <Link to="/" className="flex items-center gap-2 z-50">
               <div className=" transition-all">
-                <img className="w-40" src={logo} alt="" />
+                <img fetchPriority="high" className="w-40" src={logo} alt="logo" />
               </div>
             </Link>
           </div>

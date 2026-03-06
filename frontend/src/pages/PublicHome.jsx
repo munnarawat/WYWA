@@ -3,6 +3,7 @@ import React from "react";
 import Hero from "../components/Hero";
 import WhatWeDo from "../components/WhatWeDo";
 import OurImpact from "../components/OurImpact";
+import Achievements from "../components/Achievements";
 
 const PublicHome = () => {
   return (
@@ -11,6 +12,7 @@ const PublicHome = () => {
       <Hero />
       <WhatWeDo />
       <OurImpact/>
+      <Achievements/>
     </div>
   );
 };

@@ -20,7 +20,7 @@ const ImpactStats = () => {
     {
       number: 100,
       label: "Selected Students",
-      description: "In Top Companies",
+      description: "Across All Branches",
       color: "text-amber-400",
       glow: "bg-amber-500/30",
     },

@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 const WhatWeDo = () => {
   const cards = [
     {
-      title: " Library Management",
+      title: "Library Management",
       description:
         "Manage books, student memberships and track library activity easily.",
       icon: Library,
@@ -15,7 +15,7 @@ const WhatWeDo = () => {
       iconBg: "bg-linear-to-br from-teal-500/20 to-lime-500/10",
     },
     {
-      title: " Attendance & Leaderboard",
+      title: "Attendance & Leaderboard",
       description: "Track attendance & motivate students",
       icon: ClipboardCheck,
       cardBg1: "bg-lime-500/40",
@@ -25,7 +25,7 @@ const WhatWeDo = () => {
       iconBg: "bg-linear-to-br from-lime-500/20 to-green-500/10",
     },
     {
-      title: " Students Achievements",
+      title: "Students Achievements",
       description: "Highlights selected students",
       icon: Trophy,
       cardBg1: "bg-amber-500/40",
@@ -35,8 +35,8 @@ const WhatWeDo = () => {
       iconBg: "bg-linear-to-br from-amber-500/20 to-yellow-500/10",
     },
     {
-      title: " Foundation and Supporters",
-      description: "Our trusted partners in eduction",
+      title: "Foundation and Supporters",
+      description: "Our trusted partners in education",
       icon: Handshake,
       cardBg1: "bg-cyan-500/40",
       cardBg2: "bg-blue-500/30",
@@ -66,7 +66,7 @@ const WhatWeDo = () => {
     },
   };
   return (
-    <div className="w-full py-20 md:px-4">
+    <section className="w-full py-20 md:px-4">
       {/* Title */}
       <motion.h1
         initial={{ opacity: 0, y: 30 }}
@@ -78,18 +78,18 @@ const WhatWeDo = () => {
       </motion.h1>
 
       {/* Cards */}
-      <motion.div
+      <motion.ul
         variants={container}
         initial="hidden"
         whileInView="show"
         viewport={{ once: true }}
         className="grid grid-cols-1 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-10">
         {cards.map((item, index) => (
-          <motion.div
+          <motion.li
             variants={cardVariant}
             whileHover={{ y: -10 }}
             key={index}
-            className={`relative group flex flex-col gap-4 w-full min-h-[220px] border border-white/10 bg-white/5 rounded-xl p-6 overflow-hidden transition-all duration-300 hover:-translate-y-2 ${item.hoverBorder}`}>
+            className={`relative group flex flex-col gap-4 w-full min-h-[220px] border border-white/10 bg-white/5 rounded-xl p-6 overflow-hidden transition-all duration-300 ${item.hoverBorder}`}>
             {/* Glow */}
             <div
               className={`absolute group-hover:opacity-100 -top-20 -left-7.5 w-32 h-32 ${item.cardBg1} blur-3xl rounded-full opacity-60`}></div>
@@ -103,16 +103,16 @@ const WhatWeDo = () => {
             </div>
 
             {/* Title */}
-            <h2 className=" mono text-2xl font-semibold text-white">
+            <h2 className="mono text-2xl font-semibold text-white">
               {item.title}
             </h2>
 
             {/* Description */}
             <p className="text-sm text-zinc-400">{item.description}</p>
-          </motion.div>
+          </motion.li>
         ))}
-      </motion.div>
-    </div>
+      </motion.ul>
+    </section>
   );
 };
 

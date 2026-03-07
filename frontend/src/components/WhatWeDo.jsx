@@ -50,7 +50,7 @@ const WhatWeDo = () => {
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
+        staggerChildren: 0.15,
       },
     },
   };
@@ -61,7 +61,7 @@ const WhatWeDo = () => {
       y: 0,
       transition: {
         duration: 0.6,
-        ease: "easeInOut",
+        ease: "easeOut",
       },
     },
   };
@@ -82,14 +82,14 @@ const WhatWeDo = () => {
         variants={container}
         initial="hidden"
         whileInView="show"
-        viewport={{ once: true }}
+        viewport={{ once: true ,amount: 0.2}}
         className="grid grid-cols-1 px-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-10">
         {cards.map((item, index) => (
           <motion.li
             variants={cardVariant}
             whileHover={{ y: -10 }}
             key={index}
-            className={`relative group flex flex-col gap-4 w-full min-h-[220px] border border-white/10 bg-white/5 rounded-xl p-6 overflow-hidden transition-all duration-300 ${item.hoverBorder}`}>
+            className={`relative group flex flex-col gap-4 w-full min-h-[220px] border border-white/10 bg-white/5 rounded-xl p-6 overflow-hidden transition-all ease-out duration-300 ${item.hoverBorder}`}>
             {/* Glow */}
             <div
               className={`absolute group-hover:opacity-100 -top-20 -left-7.5 w-32 h-32 ${item.cardBg1} blur-3xl rounded-full opacity-60`}></div>

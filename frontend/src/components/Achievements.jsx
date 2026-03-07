@@ -96,11 +96,11 @@ const Achievements = () => {
         viewport={{ once: true, amount: 0.2 }}
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6  max-w-7xl mx-auto">
         {students.map((student, index) => (
-          <ReactParallaxTilt tiltMaxAngleX={10} tiltMaxAngleY={10} key={index}>
+          <ReactParallaxTilt tiltMaxAngleX={10} tiltMaxAngleY={10}  scale={1.02} key={index}>
             <motion.div
               variants={cardVariants}
               whileHover={{ y: -8 }}
-              className="group relative border border-white/10 bg-white/5 rounded-2xl p-6 text-center overflow-hidden flex flex-col items-center justify-center transition-all duration-300 ease-out hover:bg-white/10 hover:shadow-xl hover:shadow-teal-500/10">
+              className="group relative border  border-white/10 bg-white/5 rounded-2xl p-6 text-center overflow-hidden flex flex-col items-center justify-center transition-all duration-300 ease-out hover:bg-white/10 hover:shadow-xl hover:shadow-teal-500/10">
               {/* Subtle Glow Behind Image */}
               <div
                 className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${student.bgGlow} -z-10`}

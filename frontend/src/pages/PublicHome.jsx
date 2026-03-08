@@ -4,6 +4,7 @@ import Hero from "../components/Hero";
 import WhatWeDo from "../components/WhatWeDo";
 import OurImpact from "../components/OurImpact";
 import Achievements from "../components/Achievements";
+import Gallery from "../components/Gallery";
 
 const PublicHome = () => {
   return (
@@ -13,6 +14,7 @@ const PublicHome = () => {
       <WhatWeDo />
       <OurImpact/>
       <Achievements/>
+      <Gallery/>
     </div>
   );
 };

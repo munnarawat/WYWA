@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux'
 import api from './utils/api'
 import { clearUser, setUser } from './store/slice/authSlice'
 import { Loader } from 'lucide-react'
+import Footer from './components/Footer'
 
 const App = () => {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ const App = () => {
       {/* Nav-bar */}
       <Navbar/>
       <MainRouter/>
+      <Footer/>
     </div>
   )
 }

@@ -198,6 +198,7 @@ const Gallery = () => {
                   src={item.image}
                   alt={item.title}
                   loading="lazy"
+                  fetchpriority={index === 0 ? "high" : "auto"}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
 
@@ -269,6 +270,7 @@ const Gallery = () => {
                   <img
                     src={filteredGallery[selectedIndex].image}
                     alt={filteredGallery[selectedIndex].title}
+                    loading="lazy"
                     className="max-h-[75vh] w-auto object-contain rounded-xl shadow-2xl shadow-black select-none"
                   />
                   <div className="mt-6 text-center">

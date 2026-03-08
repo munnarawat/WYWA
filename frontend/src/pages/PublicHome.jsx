@@ -1,10 +1,9 @@
-import { Book } from "lucide-react";
-import React from "react";
 import Hero from "../components/Hero";
 import WhatWeDo from "../components/WhatWeDo";
 import OurImpact from "../components/OurImpact";
 import Achievements from "../components/Achievements";
 import Gallery from "../components/Gallery";
+import ThinkTank from "../components/ThinkTank";
 
 const PublicHome = () => {
   return (
@@ -15,6 +14,7 @@ const PublicHome = () => {
       <OurImpact/>
       <Achievements/>
       <Gallery/>
+      <ThinkTank/>
     </div>
   );
 };

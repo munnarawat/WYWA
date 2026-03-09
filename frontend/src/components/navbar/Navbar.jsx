@@ -15,39 +15,15 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const { isAuthenticate, user } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();  
+  const dispatch = useDispatch();
   // public navLink
-  const PublicLinks = [
+  const NavLinks = [
     { title: "Home", path: "/" },
     { title: "About", path: "/about" },
+    { title: "Achievements", path: "/achievements" },
     { title: "Contact", path: "/contact" },
   ];
-  // student navLinks
-  const studentLink = [
-    { title: "Dashboard", path: "/student/dashboard" },
-    { title: "Attendance", path: "/student/attendance" },
-    { title: "Achievements", path: "/student/achievements" },
-  ];
 
-  const adminLink = [
-    { title: "Dashboard", path: "/admin/dashboard" },
-    { title: "Students", path: "/admin/students" },
-    { title: "Attendance", path: "/admin/attendance" },
-    { title: "Reports", path: "/admin/reports" },
-  ];
-
-  const getNavLink = () => {
-    if (!isAuthenticate) return PublicLinks;
-    switch (user?.role) {
-      case "admin":
-        return [...PublicLinks, ...adminLink];
-      case "student":
-        return [...PublicLinks, ...studentLink];
-      default:
-        return PublicLinks;
-    }
-  };
-  const NavLinks = getNavLink();
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -91,7 +67,12 @@ const Navbar = () => {
           <div className="flex items-center  ">
             <Link to="/" className="flex items-center gap-2 z-50">
               <div className=" transition-all">
-                <img fetchPriority="high" className="w-40" src={logo} alt="logo" />
+                <img
+                  fetchPriority="high"
+                  className="w-40"
+                  src={logo}
+                  alt="logo"
+                />
               </div>
             </Link>
           </div>

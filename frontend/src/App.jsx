@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import Navbar from './components/navbar/Navbar'
-import Home from './pages/Home'
 import MainRouter from './routes/MainRouter'
 import { useDispatch } from 'react-redux'
 import api from './utils/api'
 import { clearUser, setUser } from './store/slice/authSlice'
 import { Loader } from 'lucide-react'
-import Footer from './components/Footer'
 
 const App = () => {
   const dispatch = useDispatch();
@@ -32,12 +29,7 @@ const App = () => {
     )
   }
   return (
-    <div className='relative w-full min-h-screen bg-black'>
-      {/* Nav-bar */}
-      <Navbar/>
       <MainRouter/>
-      <Footer/>
-    </div>
   )
 }
 

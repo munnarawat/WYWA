@@ -1,5 +1,5 @@
-import { AlertCircle, ArrowRight, Lock, Mail, User } from "lucide-react";
-import { motion } from "motion/react";
+import { AlertCircle, ArrowRight, Lock, User, Eye, EyeOff } from "lucide-react";
+import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,7 +7,6 @@ import logo from "../../images/logo.png";
 import api from "../../utils/api";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../store/slice/authSlice";
-
 const Login = () => {
   const dispatch = useDispatch();
   const {
@@ -18,6 +17,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [serverError, setServerError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (data) => {
     setServerError("");
@@ -27,10 +27,18 @@ const Login = () => {
       password: data.password,
     };
     try {
-      const response = await api.post('/auth/login',payload);
+      const response = await api.post("/auth/login", payload);
       if (response.data.user) {
         dispatch(setUser(response.data.user));
-        navigate("/");
+
+        const userRole = response.data.user.role;
+        if (userRole === "admin") {
+          navigate("/admin/dashboard");
+        } else if (userRole === "student") {
+          navigate("/student/dashboard");
+        } else {
+          navigate("/");
+        }
       }
       console.log(response.data);
     } catch (error) {
@@ -39,8 +47,8 @@ const Login = () => {
         error.response?.data?.message ||
         "Network error. Please try again later.";
       setServerError(errorMessage);
-    }finally{
-      setIsLoading(false)
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -113,7 +121,7 @@ const Login = () => {
                 size={20}
               />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 {...register("password", {
                   required: "Password is required",
                   minLength: { value: 6, message: "Must be at least 6 chars" },
@@ -127,6 +135,13 @@ const Login = () => {
                     }
                 `}
               />
+              {/* Show/Hide Password Button */}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-3.5 text-zinc-500 hover:text-teal-400 transition-colors focus:outline-none">
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
             </div>
             {errors.password && (
               <p className="text-red-400 text-xs mt-1 ml-2 flex items-center gap-1">
@@ -136,7 +151,7 @@ const Login = () => {
           </div>
 
           <motion.button
-          disabled={isLoading}
+            disabled={isLoading}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="submit"

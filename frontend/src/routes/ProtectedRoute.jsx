@@ -1,10 +1,9 @@
 import { Loader } from "lucide-react";
-import React from "react";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticate, isLoading } = useSelector((state) => state.auth);
+const ProtectedRoute = ({ children,allowedRoles }) => {
+  const { isAuthenticate, isLoading,user } = useSelector((state) => state.auth);
 
   if(isLoading){
     return (
@@ -13,7 +12,21 @@ const ProtectedRoute = ({ children }) => {
         </div>
     )
   }
-  if(!isAuthenticate) return <Navigate to='/login' />
+  // authentication check 
+  if(!isAuthenticate) return <Navigate to='/login' replace />
+
+  // Role based authentication check 
+  if(allowedRoles && !allowedRoles.includes(user?.role)){
+    if(user?.role === 'admin'){
+      return <Navigate to="/admin/dashboard" replace />
+    }
+    else if(user?.role === "student"){
+      return <Navigate to="/student/dashboard" replace />
+    }
+    else{
+      return <Navigate to='/' replace />
+    }
+  }
 
   return children;
 };

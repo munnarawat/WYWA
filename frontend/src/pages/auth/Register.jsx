@@ -2,6 +2,8 @@ import {
   AlertCircle,
   ArrowRight,
   Banknote,
+  Eye,
+  EyeOff,
   Lock,
   Mail,
   Mountain,
@@ -25,6 +27,8 @@ const Register = () => {
   const navigate = useNavigate();
   const [serverError, setServerError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
   const onSubmit = async (data) => {
     setServerError("");
     setIsLoading(true);
@@ -46,7 +50,14 @@ const Register = () => {
       });
       if (response.data.user) {
         dispatch(setUser(response.data.user));
-        navigate("/");
+        const userRole = response.data.user.role;
+        if (userRole === "admin") {
+          navigate("/admin/dashboard");
+        } else if (userRole === "student") {
+          navigate("/student/dashboard");
+        } else {
+          navigate("/");
+        }
       }
     } catch (error) {
       setServerError(error.response?.data?.message || "Something went wrong");
@@ -238,7 +249,7 @@ const Register = () => {
                 size={20}
               />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 {...register("password", {
                   required: "Password is required",
                   minLength: { value: 6, message: "Must be at least 6 chars" },
@@ -252,6 +263,13 @@ const Register = () => {
                     }
                 `}
               />
+              {/* Show/Hide Password Button */}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-3.5 text-zinc-500 hover:text-teal-400 transition-colors focus:outline-none">
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
             </div>
             {errors.password && (
               <p className="text-red-400 text-xs mt-1 ml-2 flex items-center gap-1">

@@ -1,6 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
 import React, { useEffect, useState } from "react";
-import logo from "../../images/logo.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ChevronDown, LogOut, Menu, Mountain, User, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -70,7 +69,7 @@ const Navbar = () => {
                 <img
                   fetchPriority="high"
                   className="w-40"
-                  src={logo}
+                  src="https://ik.imagekit.io/fmkamttxp/MYWA/logo.png"
                   alt="logo"
                 />
               </div>

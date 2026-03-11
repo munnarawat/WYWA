@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   Search,
   ShieldAlert,
@@ -12,13 +12,16 @@ import {
 import api from "../../utils/api";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
+import PopUp from "../../pop-up/PopUp";
 const ManageStudent = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const { user: currentUser } = useSelector((state) => state.auth);
-
+  // pop-up
+  const [showAlert, setShowAlert] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
   // skeleton loader
   const TableSkeleton = () => {
     return (
@@ -121,29 +124,36 @@ const ManageStudent = () => {
       }
     } catch (error) {
       console.error("Block toggle error:", error);
-      alert(err.response?.data?.message || "Error blocking/unblocking user");
+      alert(error.response?.data?.message || "Error blocking/unblocking user");
       fetchUsers();
     }
   };
-
+   // make sure to show pop-up before making admin;
+  const handleConfirmAdmin = (userId) => {
+    setSelectedUserId(userId);
+    setShowAlert(true);
+  };
   // make a admin
-  const handleMakeAdmin = async (userId) => {
-    if (!window.confirm("Are you sure you want to make this user an admin?"))
-      return;
+  const handleMakeAdmin = async () => {
+    if(!selectedUserId) return;
     try {
-      const response = await api.patch(`/admin/user/${userId}/make-admin`);
+      const response = await api.patch(`/admin/user/${selectedUserId}/make-admin`);
 
       if (response.data.user) {
         setUsers(
-          users.map((u) => (u._id === userId ? { ...u, role: "admin" } : u)),
+          users.map((u) => (u._id === selectedUserId ? { ...u, role: "admin" } : u)),
         );
-        alert(response.data.message);
+        alert(response.data.message || "User prompted to admin!");
       }
     } catch (error) {
       console.error("Make admin error:", error);
-      alert(err.response?.data?.message || "Error prompting to admin");
+      alert(error.response?.data?.message || "Error prompting to admin");
+    }finally{
+      setShowAlert(false);
+      setSelectedUserId(null);
     }
   };
+ 
 
   // search filter the logic
   const filteredUsers = useMemo(() => {
@@ -155,7 +165,7 @@ const ManageStudent = () => {
   }, [users, searchQuery]);
   // Loading State
   if (isLoading) {
-    return <TableSkeleton/>;
+    return <TableSkeleton />;
   }
   // Error State
   if (error) {
@@ -172,7 +182,20 @@ const ManageStudent = () => {
     );
   }
   return (
-    <div className="w-full min-h-screen bg-zinc-950 text-white p-4 md:p-8 overflow-y-auto pb-24">
+    <div className="w-full relative min-h-screen bg-zinc-950 text-white p-4 md:p-8 overflow-y-auto pb-24">
+      {/* show Alert section  */}
+      <AnimatePresence>
+        {showAlert && (
+          <PopUp
+            onCancel={() => {
+              setShowAlert(false);
+              setSelectedUserId(null);
+            }}
+            onConfirm={()=>handleMakeAdmin()}
+            text={"Are you sure you want to promote this user to admin?"}
+          />
+        )}
+      </AnimatePresence>
       {/* Header & Search */}
       <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
@@ -297,7 +320,7 @@ const ManageStudent = () => {
                         {/* Make Admin Button (Only show if user is NOT admin) */}
                         {user.role !== "admin" && (
                           <button
-                            onClick={() => handleMakeAdmin(user._id)}
+                            onClick={() => handleConfirmAdmin(user._id)}
                             className="px-3 py-1.5 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 text-xs font-medium transition-colors flex items-center gap-1.5">
                             <ShieldAlert size={14} /> Make Admin
                           </button>

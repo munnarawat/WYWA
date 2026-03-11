@@ -15,7 +15,7 @@ app.use(cors({
     origin: "http://localhost:5173",
     credentials: true,
     headers: ["Content-Type", "Authorization"],
-    methods: ["GET", "POST", "PUT", "DELETE"]
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
 }));
 app.use(express.json());
 app.use(cookieParser());

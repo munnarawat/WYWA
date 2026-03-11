@@ -1,13 +1,50 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap");
 @import "tailwindcss";
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .heading {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
-.mono{
-  font-family: 'Montserrat', sans-serif;
+.mono {
+  font-family: "Montserrat", sans-serif;
+}
+
+/* 1. Scrollbar ka Track (Background) */
+::-webkit-scrollbar-track {
+  background-color: #09090b; /* Exact Tailwind zinc-950 color */
+  border-radius: 10px;
+}
+
+/* 2. Scrollbar ki Width aur Height */
+::-webkit-scrollbar {
+  width: 8px; 
+  height: 8px;
+  background-color: #09090b;
+}
+
+/* 3. Scrollbar ka Thumb  */
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #14b8a6; /* Fallback color */
+  
+  /* MYWA Premium Gradient: Teal-500 to Lime-500 */
+  background-image: -webkit-linear-gradient(
+    top,
+    #14b8a6 0%,  
+    #84cc16 100% 
+  );
+  
+  border: 2px solid #09090b; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  /* Hover par brighter gradient: Teal-400 to Lime-400 */
+  background-image: -webkit-linear-gradient(
+    top,
+    #2dd4bf 0%,
+    #a3e635 100%
+  );
 }

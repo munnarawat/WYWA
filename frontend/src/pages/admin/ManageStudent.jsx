@@ -13,6 +13,7 @@ import api from "../../utils/api";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import PopUp from "../../pop-up/PopUp";
+import toast from "react-hot-toast";
 const ManageStudent = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setLoading] = useState(false);
@@ -121,39 +122,48 @@ const ManageStudent = () => {
               : u,
           ),
         );
+        toast.success(
+          response.data.message ||
+            (currentStatus ? "User blocked!" : "User unblocked!"),
+        );
       }
     } catch (error) {
       console.error("Block toggle error:", error);
-      alert(error.response?.data?.message || "Error blocking/unblocking user");
+      toast.error(
+        error.response?.data?.message || "Error blocking/unblocking user",
+      );
       fetchUsers();
     }
   };
-   // make sure to show pop-up before making admin;
+  // make sure to show pop-up before making admin;
   const handleConfirmAdmin = (userId) => {
     setSelectedUserId(userId);
     setShowAlert(true);
   };
   // make a admin
   const handleMakeAdmin = async () => {
-    if(!selectedUserId) return;
+    if (!selectedUserId) return;
     try {
-      const response = await api.patch(`/admin/user/${selectedUserId}/make-admin`);
+      const response = await api.patch(
+        `/admin/user/${selectedUserId}/make-admin`,
+      );
 
       if (response.data.user) {
         setUsers(
-          users.map((u) => (u._id === selectedUserId ? { ...u, role: "admin" } : u)),
+          users.map((u) =>
+            u._id === selectedUserId ? { ...u, role: "admin" } : u,
+          ),
         );
-        alert(response.data.message || "User prompted to admin!");
+        toast.success(response.data.message || "User prompted to admin!");
       }
     } catch (error) {
       console.error("Make admin error:", error);
-      alert(error.response?.data?.message || "Error prompting to admin");
-    }finally{
+      toast.error(error.response?.data?.message || "Error prompting to admin");
+    } finally {
       setShowAlert(false);
       setSelectedUserId(null);
     }
   };
- 
 
   // search filter the logic
   const filteredUsers = useMemo(() => {
@@ -191,13 +201,13 @@ const ManageStudent = () => {
               setShowAlert(false);
               setSelectedUserId(null);
             }}
-            onConfirm={()=>handleMakeAdmin()}
+            onConfirm={() => handleMakeAdmin()}
             text={"Are you sure you want to promote this user to admin?"}
           />
         )}
       </AnimatePresence>
       {/* Header & Search */}
-      <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <div className="mb-8 bg-zinc-950/50 backdrop-blur-sm  flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <motion.h1
             initial={{ opacity: 0, x: -20 }}

@@ -19,7 +19,7 @@ import DashboardLayout from "../pages/DashboardLayout";
 import DashboardOverview from "../pages/admin/DashboardOverview";
 import StudentOverview from "../pages/student/StudentOverview";
 import ManageStudents from "../pages/admin/ManageStudent";
-import NoticeBoard from "../pages/admin/NoticeBoard";
+import ManageNoticeBoard from "../pages/admin/ManageNoticeBoard";
 const MainRouter = () => {
   // Admin ke sidebar menus
   const adminMenuItems = [
@@ -54,7 +54,7 @@ const MainRouter = () => {
           }>
           <Route path="/admin/dashboard" element={<DashboardOverview />} />
           <Route path="/admin/students" element={<ManageStudents />} />
-          <Route path="/admin/noticeboard" element={<NoticeBoard/>} />
+          <Route path="/admin/noticeboard" element={<ManageNoticeBoard/>} />
         </Route>
 
         <Route

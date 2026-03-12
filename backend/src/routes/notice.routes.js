@@ -5,7 +5,7 @@ const {authMiddleware, adminMiddleware} = require("../middleware/auth.middleware
 const router = express.Router();
 
 // public student 
-router.get("/", getAllNotice);
+router.get("/",authMiddleware,  getAllNotice);
 
 // create notice admin only
 router.post("/create", authMiddleware, adminMiddleware, createNotice);

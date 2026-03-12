@@ -13,6 +13,7 @@ const createNotice = async (req, res) => {
       title,
       description,
       createdBy: req.user._id,
+      branch: req.user.branch,
     });
     return res.status(201).json({
       message: "notice created successfully 🎉",
@@ -31,7 +32,10 @@ const getAllNotice = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const search = req.query.search || "";
 
-    const query = search ? { title: { $regex: search, $options: "i" } } : {};
+    const query = { branch: req.user.branch };
+    if (search) {
+      query.title = { $regex: search, $options: "i" };
+    }
 
     const total = await noticeModel.countDocuments(query);
 
@@ -47,7 +51,7 @@ const getAllNotice = async (req, res) => {
       currentPage: page,
       totalPages: Math.ceil(total / limit),
       totalNotices: total,
-      notices
+      notices,
     });
   } catch (error) {
     console.error("get notice error", error);

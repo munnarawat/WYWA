@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../../images/logo.png";
 import api from "../../utils/api";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../store/slice/authSlice";
+import toast from "react-hot-toast";
 const Login = () => {
   const dispatch = useDispatch();
   const {
@@ -39,8 +39,8 @@ const Login = () => {
         } else {
           navigate("/");
         }
+        toast.success(response.data.message || "Login successfully 🎉");
       }
-      console.log(response.data);
     } catch (error) {
       // console.log(error);
       const errorMessage =
@@ -67,7 +67,7 @@ const Login = () => {
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <div className=" w-40">
-              <img className="w-full h-full object-cover" src={logo} alt="" />
+              <img className="w-full h-full object-cover" src="https://ik.imagekit.io/fmkamttxp/MYWA/logo.png" alt="logo" loading="lazy" />
             </div>
           </div>
           <h2 className="text-3xl  bg-clip-text text-transparent bg-linear-to-r from-teal-500 to-lime-500 heading font-bold tracking-tight">

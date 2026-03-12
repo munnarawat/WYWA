@@ -13,10 +13,10 @@ import { motion } from "motion/react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../../images/logo.png";
 import api from "../../utils/api";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../store/slice/authSlice";
+import toast from "react-hot-toast";
 const Register = () => {
   const dispatch = useDispatch();
   const {
@@ -57,7 +57,8 @@ const Register = () => {
           navigate("/student/dashboard");
         } else {
           navigate("/");
-        }
+        };
+        toast.success(response.data.message || "Registration successful");
       }
     } catch (error) {
       setServerError(error.response?.data?.message || "Something went wrong");
@@ -81,7 +82,7 @@ const Register = () => {
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <div className=" w-40">
-              <img className="w-full h-full object-cover" src={logo} alt="" />
+              <img className="w-full h-full object-cover" src="https://ik.imagekit.io/fmkamttxp/MYWA/logo.png" alt="logo" loading="lazy" />
             </div>
           </div>
           <h2 className="text-3xl heading font-bold tracking-tight">

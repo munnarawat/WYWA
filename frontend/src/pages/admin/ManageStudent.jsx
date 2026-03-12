@@ -23,6 +23,8 @@ const ManageStudent = () => {
   // pop-up
   const [showAlert, setShowAlert] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedUserName, setSelectedUserName] = useState(null);
+
   // skeleton loader
   const TableSkeleton = () => {
     return (
@@ -136,8 +138,9 @@ const ManageStudent = () => {
     }
   };
   // make sure to show pop-up before making admin;
-  const handleConfirmAdmin = (userId) => {
+  const handleConfirmAdmin = (userId,userName) => {
     setSelectedUserId(userId);
+    setSelectedUserName(userName)
     setShowAlert(true);
   };
   // make a admin
@@ -200,9 +203,10 @@ const ManageStudent = () => {
             onCancel={() => {
               setShowAlert(false);
               setSelectedUserId(null);
+              setSelectedUserName(null);
             }}
             onConfirm={() => handleMakeAdmin()}
-            text={"Are you sure you want to promote this user to admin?"}
+            text={`Are you sure you want to promote ${selectedUserName} to admin?`}
           />
         )}
       </AnimatePresence>
@@ -330,7 +334,7 @@ const ManageStudent = () => {
                         {/* Make Admin Button (Only show if user is NOT admin) */}
                         {user.role !== "admin" && (
                           <button
-                            onClick={() => handleConfirmAdmin(user._id)}
+                            onClick={() => handleConfirmAdmin(user._id, user.userName)}
                             className="px-3 py-1.5 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 text-xs font-medium transition-colors flex items-center gap-1.5">
                             <ShieldAlert size={14} /> Make Admin
                           </button>

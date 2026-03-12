@@ -1,6 +1,5 @@
 import { ArrowRight, Book } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import munsyari from "../images/munsyari.jpeg";
 import { AnimatePresence, motion } from "motion/react";
 import { Link } from "react-router-dom";
 const MotionLink = motion.create(Link);

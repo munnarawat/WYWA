@@ -73,9 +73,7 @@ const ManageNoticeBoard = () => {
     }
   };
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      fetchNotice();
-    }, 500);
+    const delayDebounceFn = setTimeout(fetchNotice,500);
     return () => clearTimeout(delayDebounceFn);
   }, [currentPage, searchQuery]);
 
@@ -99,7 +97,7 @@ const ManageNoticeBoard = () => {
         await api.post("/notice/create", formData);
         toast.success("notice create successfully 🎉", { id: toastId });
       }
-      closeModel();
+      closeModal();
       fetchNotice(); //refresh the list
     } catch (error) {
       console.error("Submit error:", error);
@@ -146,7 +144,7 @@ const ManageNoticeBoard = () => {
     setIsModalOpen(true);
   };
 
-  const closeModel = () => {
+  const closeModal = () => {
     setIsModalOpen(false);
     setFormData({ title: "", description: "" });
     setEditingId(null);
@@ -174,7 +172,7 @@ const ManageNoticeBoard = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={closeModel}
+              onClick={closeModal}
               className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             />
             <motion.div
@@ -183,7 +181,7 @@ const ManageNoticeBoard = () => {
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               className="relative w-full max-w-lg bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl p-6 md:p-8 z-10">
               <button
-                onClick={closeModel}
+                onClick={closeModal}
                 className="absolute top-4 right-4 text-zinc-400 hover:text-white transition bg-white/5 p-2 rounded-full">
                 <X size={18} />
               </button>
@@ -225,13 +223,13 @@ const ManageNoticeBoard = () => {
                 <div className="pt-4 flex gap-3">
                   <button
                     type="button"
-                    onClick={closeModel}
+                    onClick={closeModal}
                     className="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white transition font-medium">
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-lime-500 text-zinc-950 font-bold shadow-lg hover:shadow-teal-500/25 transition">
+                    className="flex-1 py-3 rounded-xl bg-linear-to-r from-teal-500 to-lime-500 text-zinc-950 font-bold shadow-lg hover:shadow-teal-500/25 transition">
                     {editingId ? "Update" : "Publish"}
                   </button>
                 </div>

@@ -120,6 +120,11 @@ const DashboardLayout = ({ menuItems }) => {
               <Menu size={24} />
             </button>
             {/* Search Bar... */}
+            {/* Branch */}
+            <div className="flex flex-col  items-center ">
+              <p className="text-sm font-medium text-zinc-400">Branch </p>
+              <h1 className=" heading text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-teal-600 to-lime-600">{user?.branch || "Branch"}</h1>
+            </div>
           </div>
 
           <div className="flex items-center gap-4 md:gap-6">

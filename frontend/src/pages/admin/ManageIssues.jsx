@@ -148,18 +148,17 @@ const ManageIssues = () => {
   };
 
   // Search Logic (Student Name ya Book Title se)
-  const filteredIssues = useMemo(() => {
-    return issues.filter(
-      (issue) =>
-        issue.student?.userName
-          ?.toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        issue.student?.fullName.firstName
-          ?.toLowerCase()
-          .includes(searchQuery.toLowerCase()) ||
-        issue.book?.title?.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-  }, [issues, searchQuery]);
+const filteredIssues = useMemo(() => {
+  const query = searchQuery.toLowerCase()
+
+  return issues.filter(issue =>
+    issue.student?.userName?.toLowerCase().includes(query) ||
+    issue.student?.fullName?.firstName?.toLowerCase().includes(query) ||
+    issue.book?.title?.toLowerCase().includes(query)
+  )
+
+}, [issues, searchQuery])
+
   return (
     <div className="w-full min-h-screen bg-zinc-950 text-white p-4 md:p-8 overflow-y-auto pb-24 relative">
       {/* show alert */}
@@ -388,8 +387,10 @@ const ManageIssues = () => {
                           </div>
                           <div>
                             <p className="font-semibold text-white capitalize">
-                              {issue.student?.fullName.firstNam ||
-                                issue.student?.userName}
+                              {issue.student?.fullName?.firstName||
+                                issue.student?.userName} 
+                                 {issue.student?.fullName?.lastName||
+                                issue.student?.userName} 
                             </p>
                             <p className="text-xs text-zinc-500">
                               {issue.student?.email}

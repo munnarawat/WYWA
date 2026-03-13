@@ -18,6 +18,7 @@ const addBook = async (req, res) => {
       author,
       quantity,
       createdBy: req.user._id,
+      branch: req.user.branch,
     });
     return res
       .status(201)
@@ -31,7 +32,11 @@ const addBook = async (req, res) => {
 // get all books in the library
 const getAllBooks = async (req, res) => {
   try {
-    const books = await Book.find().populate("createdBy", "userName email");
+    const branchFilter = req.user?.branch ? { branch: req.user.branch } : {};
+    const books = await Book.find(branchFilter).populate(
+      "createdBy",
+      "userName email",
+    );
 
     return res.status(200).json({
       message: "Books retrieved successfully",
@@ -53,7 +58,11 @@ const updateBook = async (req, res) => {
     if (!book) {
       return res.status(404).json({ message: "Book not found" });
     }
-
+    if (book.branch !== req.user.branch) {
+      return res
+        .status(403)
+        .json({ message: " You can only update books from your branch" });
+    }
     if (title) book.title = title;
     if (author) book.author = author;
     if (quantity !== undefined) {
@@ -83,6 +92,11 @@ const deleteBook = async (req, res) => {
     if (!book) {
       return res.status(404).json({ message: "Book not found" });
     }
+    if (book.branch !== req.user.branch) {
+      return res.status(403).json({
+        message: "You can only delete books from your branch",
+      });
+    }
     await book.deleteOne();
     return res.status(200).json({ message: "Book deleted successfully 🎉" });
   } catch (error) {
@@ -104,6 +118,11 @@ const issueBook = async (req, res) => {
     if (!book) {
       return res.status(404).json({ message: "Book not found" });
     }
+    if (book.branch !== req.user.branch) {
+      return res.status(403).json({
+        message: "You cannot issue a book from another branch",
+      });
+    }
     if (book.available <= 0) {
       return res.status(400).json({ message: "Book is not available" });
     }
@@ -111,6 +130,7 @@ const issueBook = async (req, res) => {
       book: bookId,
       student: studentId,
       issuedBy: req.user._id,
+      branch: req.user.branch,
     });
     book.available -= 1;
     await book.save();
@@ -124,49 +144,60 @@ const issueBook = async (req, res) => {
 };
 // return book admin only
 const returnBook = async (req, res) => {
-    try {
-        const { issueId } = req.params;
-        console.log("ISSUE ID FROM PARAM:", issueId);
-        const issue = await Issue.findById(issueId).populate('book');
-        console.log("FOUND ISSUE:", issue);
-        if (!issue) {
-            return res.status(404).json({ message: "Issue not found" });
-        }
-        if(issue.status === 'returned'){
-            return res.status(400).json({ message: "Book already returned" });
-        }
-        issue.status = 'returned';
-        issue.returnedAt = new Date();
-        await issue.save();
-
-        const book = await Book.findById(issue.book._id);
-        book.available +=1;
-        await book.save();
-
-        return res.status(200).json({ message: "Book returned successfully 🎉", issue });
-
-    } catch (error) {
-        console.error("return book error", error);
-        return res.status(500).json({ message: "Internal server error" });
+  try {
+    const { issueId } = req.params;
+    console.log("ISSUE ID FROM PARAM:", issueId);
+    const issue = await Issue.findById(issueId).populate("book");
+    console.log("FOUND ISSUE:", issue);
+    if (!issue) {
+      return res.status(404).json({ message: "Issue not found" });
     }
+    if (issue.branch !== req.user.branch) {
+      return res.status(403).json({ message: "Unauthorized branch access" });
+    }
+    if (issue.status === "returned") {
+      return res.status(400).json({ message: "Book already returned" });
+    }
+    issue.status = "returned";
+    issue.returnedAt = new Date();
+    await issue.save();
+
+    const book = await Book.findById(issue.book._id);
+    if (book) {
+      book.available += 1;
+      await book.save();
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Book returned successfully 🎉", issue });
+  } catch (error) {
+    console.error("return book error", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 // get all issued  by student or all
 const getIssued = async (req, res) => {
-    try {
-       const {studentId} = req.query;
-       const query = studentId ? {student: studentId} :{};
-       const records = await Issue.find(query)
-       .populate('book', "title author")
-       .populate('student', "userName email")
-       .sort({ issuedAt: -1 });
-
-       return res.status(200).json({ message: "Issued records retrieved successfully 🎉", records });
-    } catch (error) {
-        console.error("get issued error", error);
-        return res.status(500).json({ message: "Internal server error" });
+  try {
+    const { studentId } = req.query;
+    const query = req.user?.branch ? { branch: req.user.branch } : {};
+    if (studentId) {
+      query.student = studentId;
     }
-}
+    const records = await Issue.find(query)
+      .populate("book", "title author")
+      .populate("student", "userName email fullName")
+      .sort({ issuedAt: -1 });
+
+    return res
+      .status(200)
+      .json({ message: "Issued records retrieved successfully 🎉", records });
+  } catch (error) {
+    console.error("get issued error", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 module.exports = {
   addBook,
   getAllBooks,
@@ -174,5 +205,5 @@ module.exports = {
   deleteBook,
   issueBook,
   returnBook,
-  getIssued
+  getIssued,
 };

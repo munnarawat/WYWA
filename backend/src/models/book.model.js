@@ -1,35 +1,47 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const bookSchema = new mongoose.Schema({
-    title:{
-        type: String,
-        required: true,
-        trim:true,
+const bookSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+      trim: true,
     },
-    author:{
-        type: String,
-        required: true,
-        trim:true,
+    author: {
+      type: String,
+      required: true,
+      trim: true,
     },
-    quantity:{
-        type: Number,
-        required: true,
-        min: 0, 
+    quantity: {
+      type: Number,
+      required: true,
+      min: 0,
     },
-    available:{
-        type: Boolean,
-        default: true,
-        min:0,
+    available: {
+      type: Boolean,
+      default: true,
+      min: 0,
     },
-    createdBy:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-},{
-    timestamps:true,
-});
+    branch: {
+      type: String,
+      enum: ["dehradun", "haldwani"],
+      required: true,
+    },
+    coverImage: {
+      type: String,
+      default: "https://via.placeholder.com/150x200?text=No+Cover",
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
 
-const Book = mongoose.model('Book',bookSchema);
+const Book = mongoose.model("Book", bookSchema);
 
 module.exports = Book;

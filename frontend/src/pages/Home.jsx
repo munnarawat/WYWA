@@ -1,12 +1,8 @@
 import { useSelector } from "react-redux";
 import PublicHome from "./PublicHome";
-import Navbar from "../components/navbar/Navbar";
-import { Outlet } from "react-router-dom";
 
 const Home = () => {
 const {isAuthenticate,user} = useSelector((state)=>state.auth);
-console.log(user);
-
   return (
     <div className="relative min-h-screen flex items-center text-white pt-20 overflow-hidden">
       {/* Background Gradients (The Dark Premium Vibe) */}

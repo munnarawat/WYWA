@@ -5,6 +5,7 @@ import { ChevronDown, LogOut, Menu, Mountain, User, X } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import api from "../../utils/api";
 import { clearUser } from "../../store/slice/authSlice";
+import toast from "react-hot-toast";
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -41,6 +42,7 @@ const Navbar = () => {
   const handleLogOut = async () => {
     try {
       await api.post("/auth/logout");
+      toast.success("logout successful");
     } catch (error) {
       console.error("logout failed", error);
     } finally {

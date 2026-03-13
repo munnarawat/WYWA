@@ -21,12 +21,14 @@ import StudentOverview from "../pages/student/StudentOverview";
 import ManageStudents from "../pages/admin/ManageStudent";
 import ManageNoticeBoard from "../pages/admin/ManageNoticeBoard";
 import LibraryInventory from "../pages/admin/LibraryInventory";
+import ManageIssues from "../pages/admin/ManageIssues";
 const MainRouter = () => {
   // Admin ke sidebar menus
   const adminMenuItems = [
     { name: "Overview", icon: LayoutDashboard, path: "/admin/dashboard" },
     { name: "Manage Students", icon: Users, path: "/admin/students" },
     { name: "Library Inventory", icon: BookOpen, path: "/admin/library" },
+    { name: "Books issue", icon: BookOpen, path: "/admin/issue" },
     { name: "Mange NoticeBoard", icon: Bell, path: "/admin/noticeboard" },
     { name: "Gallery", icon: ImageIcon, path: "/admin/gallery" },
     { name: "Settings", icon: Settings, path: "/admin/settings" },
@@ -57,6 +59,7 @@ const MainRouter = () => {
           <Route path="/admin/students" element={<ManageStudents />} />
           <Route path="/admin/noticeboard" element={<ManageNoticeBoard/>} />
           <Route path="/admin/library" element={<LibraryInventory/>} />
+          <Route path="/admin/issue" element={<ManageIssues/>} />
         </Route>
 
         <Route

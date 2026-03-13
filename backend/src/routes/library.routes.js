@@ -14,7 +14,7 @@ const {authMiddleware, adminMiddleware} = require("../middleware/auth.middleware
 const router = express.Router();
 
 // public student 
-router.get("/books", getAllBooks);
+router.get("/books", authMiddleware,  getAllBooks);
 router.get("/issued", authMiddleware,  getIssued);
 
 // admin only

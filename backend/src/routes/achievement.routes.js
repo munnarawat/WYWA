@@ -5,7 +5,7 @@ const {authMiddleware, adminMiddleware} = require("../middleware/auth.middleware
 const router = express.Router();
 
 // get api (public / student )
-router.get("/", getAllAchievement);
+router.get("/all", getAllAchievement);
 
 // create achievement (admin only);
 router.post("/create", authMiddleware, adminMiddleware, createAchievement);

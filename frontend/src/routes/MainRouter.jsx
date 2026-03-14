@@ -13,8 +13,8 @@ import {
   ImageIcon,
   LayoutDashboard,
   Library,
-  Pen,
   Settings,
+  Trophy,
   Users,
 } from "lucide-react";
 import DashboardLayout from "../pages/DashboardLayout";
@@ -25,6 +25,7 @@ import ManageNoticeBoard from "../pages/admin/ManageNoticeBoard";
 import LibraryInventory from "../pages/admin/LibraryInventory";
 import ManageIssues from "../pages/admin/ManageIssues";
 import ManageAttendance from "../pages/admin/Attendance/ManageAttendance";
+import ManageAchievements from "../pages/admin/ManageAchievements";
 const MainRouter = () => {
   // Admin ke sidebar menus
   const adminMenuItems = [
@@ -34,7 +35,7 @@ const MainRouter = () => {
     { name: "Books issue", icon: BookOpen, path: "/admin/issue" },
     { name: "Mange NoticeBoard", icon: Bell, path: "/admin/noticeboard" },
     { name: "Mange Attendance", icon: ChartNoAxesCombined, path: "/admin/attendance" },
-    { name: "Gallery", icon: ImageIcon, path: "/admin/gallery" },
+    { name: "Achievements", icon: Trophy, path: "/admin/Achievements" },
     { name: "Settings", icon: Settings, path: "/admin/settings" },
   ];
   // student sidebar menus
@@ -65,6 +66,7 @@ const MainRouter = () => {
           <Route path="/admin/library" element={<LibraryInventory/>} />
           <Route path="/admin/issue" element={<ManageIssues/>} />
           <Route path="/admin/attendance" element={<ManageAttendance/>}/>
+          <Route path="/admin/Achievements" element={<ManageAchievements/>}/>
         </Route>
 
         <Route

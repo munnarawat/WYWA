@@ -12,7 +12,7 @@ router.post("/mark", authMiddleware, adminMiddleware, markAttendance);
 router.get("/monthly",authMiddleware, getMonthlyAttendance);
 
 // public / student
-router.get("/leaderboard", getLeaderboard)
+router.get("/leaderboard", authMiddleware, getLeaderboard)
 
 
 module.exports = router

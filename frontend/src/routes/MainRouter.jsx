@@ -9,9 +9,11 @@ import ScrollTop from "../animation/ScrollTop";
 import {
   Bell,
   BookOpen,
+  ChartNoAxesCombined,
   ImageIcon,
   LayoutDashboard,
   Library,
+  Pen,
   Settings,
   Users,
 } from "lucide-react";
@@ -22,6 +24,7 @@ import ManageStudents from "../pages/admin/ManageStudent";
 import ManageNoticeBoard from "../pages/admin/ManageNoticeBoard";
 import LibraryInventory from "../pages/admin/LibraryInventory";
 import ManageIssues from "../pages/admin/ManageIssues";
+import ManageAttendance from "../pages/admin/Attendance/ManageAttendance";
 const MainRouter = () => {
   // Admin ke sidebar menus
   const adminMenuItems = [
@@ -30,6 +33,7 @@ const MainRouter = () => {
     { name: "Library Inventory", icon: BookOpen, path: "/admin/library" },
     { name: "Books issue", icon: BookOpen, path: "/admin/issue" },
     { name: "Mange NoticeBoard", icon: Bell, path: "/admin/noticeboard" },
+    { name: "Mange Attendance", icon: ChartNoAxesCombined, path: "/admin/attendance" },
     { name: "Gallery", icon: ImageIcon, path: "/admin/gallery" },
     { name: "Settings", icon: Settings, path: "/admin/settings" },
   ];
@@ -60,6 +64,7 @@ const MainRouter = () => {
           <Route path="/admin/noticeboard" element={<ManageNoticeBoard/>} />
           <Route path="/admin/library" element={<LibraryInventory/>} />
           <Route path="/admin/issue" element={<ManageIssues/>} />
+          <Route path="/admin/attendance" element={<ManageAttendance/>}/>
         </Route>
 
         <Route

@@ -25,11 +25,11 @@ const markAttendance = async (req, res) => {
         student: studentId,
         date: new Date(date),
         status: status || "present",
-        markedBy: req.user.id,
+        markedBy: req.user._id,
       },
       {
         upsert: true,
-        new: true,
+        returnDocument:'after'
       },
     );
 

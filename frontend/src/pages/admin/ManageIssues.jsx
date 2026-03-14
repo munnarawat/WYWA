@@ -224,7 +224,7 @@ const filteredIssues = useMemo(() => {
                         value={student._id}
                         className="bg-zinc-900">
                         {student.fullName
-                          ? `${student.fullName.firstName} (${student.email})`
+                          ? `${student.fullName.firstName} ${student.fullName.lastName} (${student.email})`
                           : `${student.userName} (${student.email})`}
                       </option>
                     ))}

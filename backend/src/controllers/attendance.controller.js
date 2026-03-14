@@ -16,8 +16,12 @@ const markAttendance = async (req, res) => {
       return res.status(404).json({ message: "Student not found " });
     }
 
-    if(student.branch !== req.user.branch){
-      return res.status(403).json({ message: "You can only mark attendance for students in your branch" });
+    if (student.branch !== req.user.branch) {
+      return res
+        .status(403)
+        .json({
+          message: "You can only mark attendance for students in your branch",
+        });
     }
     const record = await Attendance.findOneAndUpdate(
       { student: studentId, date: new Date(date) },
@@ -29,7 +33,7 @@ const markAttendance = async (req, res) => {
       },
       {
         upsert: true,
-        returnDocument:'after'
+        returnDocument: "after",
       },
     );
 
@@ -54,15 +58,15 @@ const getMonthlyAttendance = async (req, res) => {
       });
     }
     const student = await userModel.findById(studentId);
-    if(!student){
-      return res.status(404).json({message:" student not found"});
+    if (!student) {
+      return res.status(404).json({ message: " student not found" });
     }
 
     // branch check
-    if(  req.user.role !== "admin" && student.branch !== req.user.branch){
+    if (req.user.role !== "admin" && student.branch !== req.user.branch) {
       return res.status(403).json({
         message: "You can only view attendance for students in your branch",
-      })
+      });
     }
 
     const start = new Date(year, month, 1);
@@ -119,10 +123,6 @@ const getLeaderboard = async (req, res) => {
         },
       },
       {
-        $sort: { presentCount: -1 },
-      },
-      { $limit: Number(limit) },
-      {
         $lookup: {
           from: "users",
           localField: "_id",
@@ -134,17 +134,24 @@ const getLeaderboard = async (req, res) => {
         $unwind: "$student",
       },
       {
-        $match:{
-          "student.branch":req.user.branch
-        }
+        $match: {
+          "student.branch": req.user.branch,
+        },
       },
+      {
+        $sort: {
+          presentCount: -1,
+          "student.userName": 1,
+        },
+      },
+      { $limit: Number(limit) },
       {
         $project: {
           _id: 0,
           studentId: "$student._id",
           userName: "$student.userName",
           email: "$student.email",
-          branch: '$student.branch',
+          branch: "$student.branch",
           presentCount: 1,
         },
       },
@@ -161,5 +168,5 @@ const getLeaderboard = async (req, res) => {
 module.exports = {
   markAttendance,
   getMonthlyAttendance,
-  getLeaderboard
+  getLeaderboard,
 };

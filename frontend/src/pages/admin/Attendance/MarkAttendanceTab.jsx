@@ -52,7 +52,7 @@ const MarkAttendanceTab = ({ students }) => {
             </label>
           </div>
         </div>
-        <button type="submit" disabled={isSubmitting} className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-lime-500 text-zinc-950 font-bold shadow-lg hover:shadow-teal-500/25 transition disabled:opacity-50">
+        <button type="submit" disabled={isSubmitting} className="w-full mt-4 py-3 rounded-xl bg-linear-to-r from-teal-500 to-lime-500 text-zinc-950 font-bold shadow-lg hover:shadow-teal-500/25 transition disabled:opacity-50">
           {isSubmitting ? "Saving..." : "Save Record"}
         </button>
       </form>

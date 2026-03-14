@@ -3,7 +3,7 @@ const achievementModel = require("../models/achievement.model");
 // createAchievement (admin only);
 const createAchievement = async (req, res) => {
   try {
-    const { studentName, examName, year, description } = req.body;
+    const { studentName, examName, year, description,imageUrl } = req.body;
 
     if (!studentName || !examName || !year) {
       return res
@@ -16,7 +16,9 @@ const createAchievement = async (req, res) => {
       examName,
       year,
       description,
+      imageUrl:imageUrl || '',
       createdBy: req.user._id,
+      branch:req.user.branch,
     });
     return res.status(201).json({
       message: "create Achievement successfully 🎉",
@@ -31,10 +33,12 @@ const createAchievement = async (req, res) => {
 // get all Achievement (public / student)
 const getAllAchievement = async (req, res) => {
   try {
+    const { branch } = req.query;
+    const query = branch ? { branch: branch } : {};
     const achievement = await achievementModel
-      .find()
+      .find(query)
       .populate("createdBy", "userName email")
-      .sort({ createdAt: -1 });
+      .sort({year:-1 ,  createdAt: -1 });
 
     return res.status(200).json({
       message: "getAll achievement fetched successfully 🎉",
@@ -54,6 +58,9 @@ const deleteAchievement = async (req, res) => {
     const achievement = await achievementModel.findById(id);
     if (!achievement) {
       return res.status(404).json({ message: "achievement not found" });
+    }
+    if (achievement.branch !== req.user.branch) {
+      return res.status(403).json({ message: "Unauthorized branch access" });
     }
     await achievement.deleteOne();
     return res.status(200).json({
@@ -76,6 +83,9 @@ const updateAchievement = async (req, res) => {
       return res.status(404).json({
         message: "achievement not found",
       });
+    }
+    if (achievement.branch !== req.user.branch) {
+      return res.status(403).json({ message: "Unauthorized branch access" });
     }
     if (studentName) achievement.studentName = studentName;
     if (examName) achievement.examName = examName;

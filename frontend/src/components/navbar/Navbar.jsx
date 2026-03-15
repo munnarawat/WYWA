@@ -23,7 +23,9 @@ const Navbar = () => {
     { title: "Achievements", path: "/achievements" },
     { title: "Contact", path: "/contact" },
   ];
-
+  // const dashboardLink = [
+  //   {title:"Dashboard", path:"/"}
+  // ]
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);

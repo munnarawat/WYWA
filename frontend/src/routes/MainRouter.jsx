@@ -16,6 +16,7 @@ import {
   Settings,
   Trophy,
   Users,
+  UserStar,
 } from "lucide-react";
 import DashboardLayout from "../pages/DashboardLayout";
 import DashboardOverview from "../pages/admin/DashboardOverview";
@@ -26,6 +27,7 @@ import LibraryInventory from "../pages/admin/LibraryInventory";
 import ManageIssues from "../pages/admin/ManageIssues";
 import ManageAttendance from "../pages/admin/Attendance/ManageAttendance";
 import ManageAchievements from "../pages/admin/ManageAchievements";
+import ManageThinkTank from "../pages/admin/ThinkTank/ManageThinkTank";
 const MainRouter = () => {
   // Admin ke sidebar menus
   const adminMenuItems = [
@@ -36,6 +38,7 @@ const MainRouter = () => {
     { name: "Mange NoticeBoard", icon: Bell, path: "/admin/noticeboard" },
     { name: "Mange Attendance", icon: ChartNoAxesCombined, path: "/admin/attendance" },
     { name: "Achievements", icon: Trophy, path: "/admin/Achievements" },
+    { name: "MangeThinkTank", icon: UserStar, path: "/admin/thinkTank" },
     { name: "Settings", icon: Settings, path: "/admin/settings" },
   ];
   // student sidebar menus
@@ -67,6 +70,7 @@ const MainRouter = () => {
           <Route path="/admin/issue" element={<ManageIssues/>} />
           <Route path="/admin/attendance" element={<ManageAttendance/>}/>
           <Route path="/admin/Achievements" element={<ManageAchievements/>}/>
+          <Route path="/admin/thinkTank" element={<ManageThinkTank/>}/>
         </Route>
 
         <Route

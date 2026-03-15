@@ -3,7 +3,7 @@ const thinkTankModel = require("../models/thinkTank.model");
 // createThinkTank (admin only)
 const createThinkTank = async (req, res) => {
   try {
-    const { name, roleOrContribution, description, contact } = req.body;
+    const { name, roleOrContribution, description, contact,imageUrl } = req.body;
     if (!name || !roleOrContribution) {
       return res
         .status(400)
@@ -14,6 +14,7 @@ const createThinkTank = async (req, res) => {
       roleOrContribution,
       description,
       contact,
+      imageUrl:imageUrl || "",
       createdBy: req.user._id,
     });
 
@@ -52,7 +53,7 @@ const updateThinkTank = async (req, res) => {
       return res.status(400).json({ message: "Request body is missing" });
     }
     const { id } = req.params;
-    const { name, roleOrContribution, description, contact } = req.body;
+    const { name, roleOrContribution, description, contact , imageUrl } = req.body;
 
     const member = await thinkTankModel.findById(id);
 
@@ -63,6 +64,7 @@ const updateThinkTank = async (req, res) => {
     if (roleOrContribution) member.roleOrContribution = roleOrContribution;
     if (description !== undefined) member.description = description;
     if (contact !== undefined) member.contact = contact;
+    if(imageUrl !== undefined)member.imageUrl = imageUrl
 
     await member.save();
 

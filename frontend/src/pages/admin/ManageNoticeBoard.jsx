@@ -7,14 +7,14 @@ import {
   Trash2,
   Calendar,
   User,
-  Loader2,
-  AlertCircle,
   X,
   Megaphone,
 } from "lucide-react";
 import api from "../../utils/api";
 import toast from "react-hot-toast";
 import PopUp from "../../pop-up/PopUp";
+// 🌟 NAYA IMPORT
+import { useForm } from "react-hook-form";
 
 // 🌟 SKELETON LOADER FOR CARDS
 const NoticeSkeleton = () => {
@@ -38,6 +38,7 @@ const NoticeSkeleton = () => {
     </div>
   );
 };
+
 const ManageNoticeBoard = () => {
   const [notices, setNotices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -48,20 +49,29 @@ const ManageNoticeBoard = () => {
   const [totalPages, setTotalPages] = useState(1);
   const limit = 6;
 
-  // Modal States (For Create and Update)
+  // Modal States
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ title: "", description: "" });
   const [editingId, setEditingId] = useState(null);
 
-  // alert status
+  // Alert status
   const [showAlert, setShowAlert] = useState(false);
   const [selectedNoticeId, setSelectedNoticeId] = useState(null);
+
+  // 🌟 REACT HOOK FORM SETUP
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
   // 1. Fetch Notices API
   const fetchNotice = async () => {
     try {
       setIsLoading(true);
       const response = await api.get(
-        `/notice?page=${currentPage}&limit=${limit}&search=${searchQuery}`,
+        `/notice?page=${currentPage}&limit=${limit}&search=${searchQuery}`
       );
       setNotices(response.data.notices);
       setTotalPages(response.data.totalPages);
@@ -72,30 +82,27 @@ const ManageNoticeBoard = () => {
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
-    const delayDebounceFn = setTimeout(fetchNotice,500);
+    const delayDebounceFn = setTimeout(fetchNotice, 500);
     return () => clearTimeout(delayDebounceFn);
   }, [currentPage, searchQuery]);
 
-  // 2. Add / Update Notice API
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.title || !formData.description) {
-      return toast.error("title and description are required");
-    }
+  // 2. Add / Update Notice API (RHF data directly dega)
+  const onSubmitForm = async (data) => {
     const toastId = toast.loading(
-      editingId ? "Updating notice..." : " Publishing notice... ",
+      editingId ? "Updating notice..." : "Publishing notice..."
     );
 
     try {
       if (editingId) {
         // update
-        await api.put(`/notice/${editingId}`, formData);
-        toast.success("notice update successfully 🎉", { id: toastId });
+        await api.put(`/notice/${editingId}`, data);
+        toast.success("Notice updated successfully 🎉", { id: toastId });
       } else {
         // create
-        await api.post("/notice/create", formData);
-        toast.success("notice create successfully 🎉", { id: toastId });
+        await api.post("/notice/create", data);
+        toast.success("Notice created successfully 🎉", { id: toastId });
       }
       closeModal();
       fetchNotice(); //refresh the list
@@ -111,11 +118,12 @@ const ManageNoticeBoard = () => {
     setSelectedNoticeId(id);
     setShowAlert(true);
   };
+
   // 3. Delete Notice API
   const handleDelete = async () => {
     if (!selectedNoticeId) return;
 
-    const toastId = toast.loading("Deleting notice");
+    const toastId = toast.loading("Deleting notice...");
     try {
       await api.delete(`/notice/${selectedNoticeId}`);
       toast.success("Notice deleted!", { id: toastId });
@@ -127,28 +135,32 @@ const ManageNoticeBoard = () => {
     } catch (error) {
       console.error("Delete error:", error);
       toast.error("Failed to delete notice", { id: toastId });
-    }finally{
+    } finally {
       setShowAlert(false);
       setSelectedNoticeId(null);
     }
   };
 
+  // Modal Handlers (RHF reset/setValue ka use)
   const openCreateModel = () => {
-    setFormData({ title: "", description: "" });
+    reset({ title: "", description: "" });
     setEditingId(null);
     setIsModalOpen(true);
   };
+
   const openEditModal = (notice) => {
-    setFormData({ title: notice.title, description: notice.description });
+    setValue("title", notice.title);
+    setValue("description", notice.description);
     setEditingId(notice._id);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setFormData({ title: "", description: "" });
+    reset();
     setEditingId(null);
   };
+
   return (
     <div className="w-full min-h-screen bg-zinc-950 text-white p-4 md:p-8 overflow-y-auto pb-24 relative">
       {/* show alert */}
@@ -159,11 +171,12 @@ const ManageNoticeBoard = () => {
               setShowAlert(false);
               setSelectedNoticeId(null);
             }}
-            onConfirm={()=> handleDelete()}
-            text={`Are you sure you want to delete this notice? this action cannot be undone!`}
+            onConfirm={() => handleDelete()}
+            text={`Are you sure you want to delete this notice? This action cannot be undone!`}
           />
         )}
       </AnimatePresence>
+
       {/* 🟢 MODAL OVERLAY (Create / Edit Form) */}
       <AnimatePresence>
         {isModalOpen && (
@@ -191,33 +204,44 @@ const ManageNoticeBoard = () => {
                 {editingId ? "Edit Notice" : "Create Notice"}
               </h2>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              {/* 🌟 FORM SE ONSUBMIT CHANGE HUA HAI */}
+              <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-zinc-400 mb-1">
                     Notice Title
                   </label>
                   <input
                     type="text"
-                    value={formData.title}
-                    onChange={(e) =>
-                      setFormData({ ...formData, title: e.target.value })
-                    }
                     placeholder="E.g., Tomorrow is a holiday"
-                    className="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-teal-500/50 transition-colors"
+                    {...register("title", { required: "Title is required" })}
+                    className={`w-full bg-black/20 border ${
+                      errors.title ? "border-rose-500" : "border-white/10"
+                    } rounded-xl py-3 px-4 text-white focus:outline-none focus:border-teal-500/50 transition-colors`}
                   />
+                  {errors.title && (
+                    <p className="text-rose-400 text-xs mt-1">
+                      {errors.title.message}
+                    </p>
+                  )}
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-zinc-400 mb-1">
                     Description
                   </label>
                   <textarea
                     rows="4"
-                    value={formData.description}
-                    onChange={(e) =>
-                      setFormData({ ...formData, description: e.target.value })
-                    }
                     placeholder="Provide details here..."
-                    className="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-teal-500/50 transition-colors resize-none"></textarea>
+                    {...register("description", { required: "Description is required" })}
+                    className={`w-full bg-black/20 border ${
+                      errors.description ? "border-rose-500" : "border-white/10"
+                    } rounded-xl py-3 px-4 text-white focus:outline-none focus:border-teal-500/50 transition-colors resize-none`}
+                  />
+                  {errors.description && (
+                    <p className="text-rose-400 text-xs mt-1">
+                      {errors.description.message}
+                    </p>
+                  )}
                 </div>
 
                 <div className="pt-4 flex gap-3">
@@ -229,8 +253,9 @@ const ManageNoticeBoard = () => {
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-3 rounded-xl bg-linear-to-r from-teal-500 to-lime-500 text-zinc-950 font-bold shadow-lg hover:shadow-teal-500/25 transition">
-                    {editingId ? "Update" : "Publish"}
+                    disabled={isSubmitting}
+                    className="flex-1 py-3 rounded-xl bg-linear-to-r from-teal-500 to-lime-500 text-zinc-950 font-bold shadow-lg hover:shadow-teal-500/25 transition disabled:opacity-50 disabled:cursor-not-allowed">
+                    {isSubmitting ? "Processing..." : (editingId ? "Update" : "Publish")}
                   </button>
                 </div>
               </form>
@@ -258,7 +283,6 @@ const ManageNoticeBoard = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4">
-          {/* Search Bar */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -279,7 +303,6 @@ const ManageNoticeBoard = () => {
             />
           </motion.div>
 
-          {/* Add Notice Button */}
           <motion.button
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}

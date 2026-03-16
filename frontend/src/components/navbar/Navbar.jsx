@@ -23,9 +23,6 @@ const Navbar = () => {
     { title: "Achievements", path: "/achievements" },
     { title: "Contact", path: "/contact" },
   ];
-  // const dashboardLink = [
-  //   {title:"Dashboard", path:"/"}
-  // ]
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -101,6 +98,28 @@ const Navbar = () => {
                   </motion.div>
                 </Link>
               ))}
+              {isAuthenticate && (
+                <Link
+                  to={
+                    user.role === "admin"
+                      ? "/admin/dashboard"
+                      : "/student/dashboard"
+                  }
+                  className={`relative group h-5 text-sm font-medium overflow-hidden text-gray-300/80 hover:text-white transition-colors ${location.pathname.includes("dashboard") ? "text-white" : "text-gray-300/80"}`}>
+                  <motion.div
+                    className="flex flex-col"
+                    initial={{ y: 0 }}
+                    whileHover={{ y: "-50%" }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}>
+                    <motion.h2 className=" flex items-center">
+                      Dashboard
+                    </motion.h2>
+                    <motion.h2 className=" text-emerald-500 flex items-center">
+                      Dashboard
+                    </motion.h2>
+                  </motion.div>
+                </Link>
+              )}
             </div>
           </div>
           {/* auth-  profile and login-register */}
@@ -218,6 +237,25 @@ const Navbar = () => {
                   </motion.div>
                 </Link>
               ))}
+              {isAuthenticate && (
+                <Link
+                  to={
+                    user.role === "admin"
+                      ? "/admin/dashboard"
+                      : "/student/dashboard"
+                  }
+                  className={`relative text-3xl h-8  group  font-medium overflow-hidden text-gray-300/80 hover:text-white transition-colors ${location.pathname.includes("dashboard") ? "text-white" : "text-gray-300/80"}`}>
+                  <motion.div
+                    initial={{ y: 0 }}
+                    whileHover={{ y: "-50%" }}
+                    className="flex flex-col ">
+                    <h2 className="flex items-center">Dashboard</h2>
+                    <h2 className="flex items-center text-emerald-500">
+                      Dashboard
+                    </h2>
+                  </motion.div>
+                </Link>
+              )}
             </div>
             {/* line */}
             <div className="h-px bg-white/10 my-4" />

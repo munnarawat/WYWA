@@ -48,7 +48,7 @@ const userRegisterController = async (req, res) => {
       throw new Error("ACCESS_TOKEN_SECRET not defined");
     }
     const accessToken = jwt.sign(
-      { id: user._id},
+      { id: user._id },
       process.env.ACCESS_TOKEN_SECRET,
       {
         expiresIn: "15m",
@@ -249,18 +249,18 @@ const refreshController = async (req, res) => {
     }
     const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
     const newAccessToken = jwt.sign(
-      { id: decoded.id},
+      { id: decoded.id },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "15m" },
     );
 
     const newRefreshToken = jwt.sign(
-      {id:user._id},
+      { id: user._id },
       process.env.REFRESH_TOKEN_SECRET,
-      {expiresIn:"7d"}
-    )
-     user.refreshToken = newRefreshToken;
-     await user.save();
+      { expiresIn: "7d" },
+    );
+    user.refreshToken = newRefreshToken;
+    await user.save();
 
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
@@ -270,11 +270,11 @@ const refreshController = async (req, res) => {
     });
 
     res.cookie("refreshToken", newRefreshToken, {
-      httpOnly:true,
+      httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, //7 day
-    })
+    });
     return res
       .status(200)
       .json({ message: "access token refreshed successfully" });
@@ -286,10 +286,45 @@ const refreshController = async (req, res) => {
   }
 };
 
+// update profile
+const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const { userName, email, fullName } = req.body;
+    const firstName = fullName?.firstName;
+    const lastName = fullName?.lastName;
+    const updateUser = await UserModel.findByIdAndUpdate(userId, {
+      userName,
+      email,
+      fullName:{
+        firstName, lastName
+      }
+    },{
+      new:true,
+      runValidators:true
+    }).select("-password");
+    if(!updateUser){
+      return res.status(404).json({
+        success:false,
+        message:"user not fount "
+      });
+    }
+    res.status(200).json({
+      message:"user profile Update successfully 🎉",
+      success:true,
+      user:updateUser,
+    })
+  } catch (error) {
+    console.error("Profile update error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
 module.exports = {
   userRegisterController,
   loginController,
   getCurrentUser,
   logoutController,
   refreshController,
+  updateProfile
 };

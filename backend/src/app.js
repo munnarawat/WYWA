@@ -8,6 +8,7 @@ const thinkTankRouters = require("./routes/thinkTank.routes");
 const libraryRouters = require("./routes/library.routes");
 const attendanceRouters = require("./routes/attendance.routes");
 const dashboardRouter = require("./routes/Dashboard.routes");
+const resetPasswordRouter = require("./routes/passwordReset.route");
 const cookieParser = require("cookie-parser");
 const app = express();
 
@@ -29,6 +30,7 @@ app.use("/api/achievements", achievementRouters);
 app.use("/api/thinkTank", thinkTankRouters);
 app.use("/api/library", libraryRouters);
 app.use("/api/attendance", attendanceRouters)
-app.use("/api/dashboard", dashboardRouter)
+app.use("/api/dashboard", dashboardRouter);
+app.use("/api/password", resetPasswordRouter)
 
 module.exports = app;

@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
       minLength: 6,
-      select:false
+      select: false,
     },
     role: {
       type: String,
@@ -43,14 +43,16 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    refreshToken:{
-      type:String,
+    refreshToken: {
+      type: String,
     },
-    branch:{
-      type:String,
-      enum:["dehradun", "haldwani"],
-      required:true,
-    }
+    branch: {
+      type: String,
+      enum: ["dehradun", "haldwani"],
+      required: true,
+    },
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
   },
   {
     timestamps: true,

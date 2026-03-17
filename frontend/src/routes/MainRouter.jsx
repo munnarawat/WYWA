@@ -29,6 +29,8 @@ import ManageAttendance from "../pages/admin/Attendance/ManageAttendance";
 import ManageAchievements from "../pages/admin/ManageAchievements";
 import ManageThinkTank from "../pages/admin/ThinkTank/ManageThinkTank";
 import Profile from "../components/profile-updates/Profile";
+import ForgotPassword from "../components/profile-updates/ForgotPassword";
+import ResetPassword from "../components/profile-updates/ResetPassword";
 const MainRouter = () => {
   // Admin ke sidebar menus
   const adminMenuItems = [
@@ -57,6 +59,8 @@ const MainRouter = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile/>} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
         </Route>
 
         <Route

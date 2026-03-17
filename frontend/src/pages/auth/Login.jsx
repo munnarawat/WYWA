@@ -67,7 +67,12 @@ const Login = () => {
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <div className=" w-40">
-              <img className="w-full h-full object-cover" src="https://ik.imagekit.io/fmkamttxp/MYWA/logo.png" alt="logo" loading="lazy" />
+              <img
+                className="w-full h-full object-cover"
+                src="https://ik.imagekit.io/fmkamttxp/MYWA/logo.png"
+                alt="logo"
+                loading="lazy"
+              />
             </div>
           </div>
           <h2 className="text-3xl  bg-clip-text text-transparent bg-linear-to-r from-teal-500 to-lime-500 heading font-bold tracking-tight">
@@ -167,6 +172,12 @@ const Login = () => {
             Sign Up
           </Link>
         </p>
+        {/* forget password */}
+        <div className="w flex items-center pt-4 justify-center">
+          <Link to="/forgot-password" className="text-teal-500/80  underline hover:text-teal-500  ">
+            Forgot Password
+          </Link>
+        </div>
       </motion.div>
     </div>
   );

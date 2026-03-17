@@ -28,6 +28,7 @@ import ManageIssues from "../pages/admin/ManageIssues";
 import ManageAttendance from "../pages/admin/Attendance/ManageAttendance";
 import ManageAchievements from "../pages/admin/ManageAchievements";
 import ManageThinkTank from "../pages/admin/ThinkTank/ManageThinkTank";
+import Profile from "../components/profile-updates/Profile";
 const MainRouter = () => {
   // Admin ke sidebar menus
   const adminMenuItems = [
@@ -55,6 +56,7 @@ const MainRouter = () => {
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<Profile/>} />
         </Route>
 
         <Route

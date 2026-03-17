@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Bell, Search, ChevronDown, LogOut } from "lucide-react";
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import {
+  Menu,
+  X,
+  Bell,
+  Search,
+  ChevronDown,
+  LogOut,
+  User,
+  Home,
+} from "lucide-react";
+import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { clearUser } from "../store/slice/authSlice";
 
 const DashboardLayout = ({ menuItems }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -123,15 +133,19 @@ const DashboardLayout = ({ menuItems }) => {
             {/* Branch */}
             <div className="flex flex-col  items-center ">
               <p className="text-sm font-medium text-zinc-400">Branch </p>
-              <h1 className=" heading text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-teal-600 to-lime-600">{user?.branch || "Branch"}</h1>
+              <h1 className=" heading text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-teal-600 to-lime-600">
+                {user?.branch || "Branch"}
+              </h1>
             </div>
           </div>
 
           <div className="flex items-center gap-4 md:gap-6">
-            <button className="relative text-zinc-400 hover:text-white p-2">
+            <button className=" text-zinc-400 hover:text-white p-2">
               <Bell size={20} />
             </button>
-            <div className="flex items-center gap-3 pl-4 md:pl-6 border-l border-white/10 cursor-pointer">
+            <div
+              onClick={() => setIsProfileOpen(!isProfileOpen)}
+              className="flex relative items-center gap-3 pl-4 md:pl-6 border-l border-white/10 cursor-pointer">
               <div className="text-right hidden md:block">
                 <p className="text-sm font-medium text-white capitalize">
                   {user?.userName || "User"}
@@ -147,6 +161,47 @@ const DashboardLayout = ({ menuItems }) => {
                   className="w-full h-full rounded-full border-2 border-zinc-950 object-cover"
                 />
               </div>
+              <ChevronDown
+                size={14}
+                className={`text-gray-400 transition-transform duration-300 ${isProfileOpen ? "rotate-180" : ""}`}
+              />
+              <AnimatePresence>
+                {isProfileOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute right-0 top-15 w-56 bg-[#0a0a0c] border border-white/10 rounded-xl shadow-2xl backdrop-blur-3xl overflow-hidden ring-1 ring-white/5">
+                    <div className="px-4 py-4 border-b border-white/5 bg-white/5">
+                      <p className="text-sm text-white font-medium truncate">
+                        {user?.userName}
+                      </p>
+                      <p className="text-xs text-gray-400 truncate mt-0.5">
+                        {user?.email}
+                      </p>
+                    </div>
+                    <div className="p-1">
+                      <Link
+                        to="/"
+                        className="flex w-full items-center gap-3 px-3 py-2.5 text-sm text-gray-300 hover:bg-white/5 hover:text-white rounded-lg transition">
+                        <Home size={16} className="text-emerald-400" />
+                        Home
+                      </Link>
+                      <Link
+                        to="/profile"
+                        className="flex w-full items-center gap-3 px-3 py-2.5 text-sm text-gray-300 hover:bg-white/5 hover:text-white rounded-lg transition">
+                        <User size={16} className="text-emerald-400" />
+                        My Profile
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition text-left">
+                        <LogOut size={16} /> Logout
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </header>

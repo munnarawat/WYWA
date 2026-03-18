@@ -23,6 +23,28 @@ const getAllUser = async (req, res) => {
 
 //block unblock user
 
+// 
+const getLibraryStudents = async (req, res) => {
+  try {
+    let query = { 
+      role: 'student', 
+      isLibraryMember: true 
+    };
+    if (req.user.role === "admin") {
+      query.branch = req.user.branch;
+    }
+
+    const students = await UserModel.find(query).select("-password");
+
+    return res.status(200).json({
+      success: true,
+      students,
+    });
+  } catch (error) {
+    console.error("Fetch library students error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
 const toggleBlockUser = async (req, res) => {
   try {
     const { id } = req.params;

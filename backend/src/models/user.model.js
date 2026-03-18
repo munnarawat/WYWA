@@ -51,6 +51,10 @@ const userSchema = new mongoose.Schema(
       enum: ["dehradun", "haldwani"],
       required: true,
     },
+    isLibraryMember: {
+      type: Boolean,
+      default: false, // Default false 
+    },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
   },

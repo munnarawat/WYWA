@@ -8,6 +8,8 @@ import {
   Loader2,
   UserCog,
   AlertCircle,
+  MoreVertical,
+  BookOpen,
 } from "lucide-react";
 import api from "../../utils/api";
 import { useEffect, useMemo, useState } from "react";
@@ -25,6 +27,8 @@ const ManageStudent = () => {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedUserName, setSelectedUserName] = useState(null);
   const [actionType, setActionType] = useState(null);
+  // dropDown
+  const [openDropdownId, setOpenDropdownId] = useState(null);
 
   // skeleton loader
   const TableSkeleton = () => {
@@ -108,6 +112,18 @@ const ManageStudent = () => {
     fetchUsers();
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.action-dropdown')) {
+        setOpenDropdownId(null); 
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   // toggle block/unblock api
   const handleToggleBlock = async (userId, currentStatus) => {
     try {
@@ -181,11 +197,15 @@ const ManageStudent = () => {
   const handleMakeThinkTank = async (id) => {
     if (!selectedUserId) return;
     try {
-      const response = await api.patch(`/admin/user/${selectedUserId}/make-thinkTank`);
+      const response = await api.patch(
+        `/admin/user/${selectedUserId}/make-thinkTank`,
+      );
 
       if (response.data.user) {
         setUsers(
-          users.map((u) => (u._id === selectedUserId ? { ...u, role: "thinkTank" } : u)),
+          users.map((u) =>
+            u._id === selectedUserId ? { ...u, role: "thinkTank" } : u,
+          ),
         );
         toast.success(response.data.message || "User prompted to Think-Tank!");
       }
@@ -239,10 +259,10 @@ const ManageStudent = () => {
               setActionType(null);
             }}
             onConfirm={() => {
-              if(actionType === "admin") handleMakeAdmin;
-              else if(actionType === "thinkTank") handleMakeThinkTank
+              if (actionType === "admin") handleMakeAdmin;
+              else if (actionType === "thinkTank") handleMakeThinkTank;
             }}
-            text={`Are you sure you want to promote ${selectedUserName} to ${actionType === "admin" ? "admin" :"Think-Tank"}`}
+            text={`Are you sure you want to promote ${selectedUserName} to ${actionType === "admin" ? "admin" : "Think-Tank"}`}
           />
         )}
       </AnimatePresence>
@@ -365,49 +385,88 @@ const ManageStudent = () => {
                     </td>
 
                     {/* 4. Actions (Block & Make Admin) */}
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        {/* Make Admin Button (Only show if user is NOT admin) */}
-                        {user.role !== "admin" && (
-                          <button
-                            onClick={() =>
-                              handleConfirmAdmin(user._id, user.userName)
-                            }
-                            className="px-3 py-1.5 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 text-xs font-medium transition-colors flex items-center gap-1.5">
-                            <ShieldAlert size={14} /> Make Admin
-                          </button>
+                    <td className="px-6 py-4 text-right relative action-dropdown">
+                      {/* The 3-Dots Button */}
+                      <button
+                        onClick={() =>
+                          setOpenDropdownId(
+                            openDropdownId === user._id ? null : user._id,
+                          )
+                        }
+                        className="p-2 hover:bg-white/10 rounded-lg transition-colors text-zinc-400 hover:text-white">
+                        <MoreVertical size={18} />
+                      </button>
+                      <AnimatePresence>
+                        {openDropdownId === user._id && (
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                            className="absolute right-8 top-10 w-48 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden flex flex-col text-left">
+                            {/* Toggle Library Button */}
+                            <button
+                              onClick={() => {
+                                setOpenDropdownId(null);
+                              }}
+                              className="w-full px-4 py-2.5 text-xs text-zinc-300 hover:bg-white/5 hover:text-white flex items-center gap-2 transition-colors border-b border-white/5">
+                              <BookOpen
+                                size={14}
+                                className={
+                                  user.isLibraryMember
+                                    ? "text-rose-400"
+                                    : "text-emerald-400"
+                                }
+                              />
+                              {user.isLibraryMember
+                                ? "Remove Library Access"
+                                : "Grant Library Access"}
+                            </button>
+
+                            {/* Make Admin Button */}
+                            {user.role !== "admin" && (
+                              <button
+                                onClick={() => {
+                                  handleConfirmAdmin(user._id, user.userName);
+                                  setOpenDropdownId(null);
+                                }}
+                                className="w-full px-4 py-2.5 text-xs text-zinc-300 hover:bg-teal-500/10 hover:text-teal-400 flex items-center gap-2 transition-colors">
+                                <ShieldAlert size={14} /> Make Admin
+                              </button>
+                            )}
+
+                            {/* Make ThinkTank Button */}
+                            {user.role !== "admin" &&
+                              user.role !== "thinkTank" && (
+                                <button
+                                  onClick={() => {
+                                    handleConfirmThinkTank(
+                                      user._id,
+                                      user.userName,
+                                    );
+                                    setOpenDropdownId(null);
+                                  }}
+                                  className="w-full px-4 py-2.5 text-xs text-zinc-300 hover:bg-lime-500/10 hover:text-lime-400 flex items-center gap-2 transition-colors">
+                                  <UserCog size={14} /> Make Think-Tank
+                                </button>
+                              )}
+
+                            {/* Block/Unblock Button */}
+                            {currentUser?._id !== user._id && (
+                              <button
+                                onClick={() => {
+                                  handleToggleBlock(user._id, user.isActive);
+                                  setOpenDropdownId(null);
+                                }}
+                                className={`w-full px-4 py-2.5 text-xs flex items-center gap-2 transition-colors border-t border-white/5
+                  ${user.isActive ? "text-rose-400 hover:bg-rose-500/10" : "text-lime-400 hover:bg-lime-500/10"}
+                                 `}>
+                                <Ban size={14} />{" "}
+                                {user.isActive ? "Block User" : "Unblock User"}
+                              </button>
+                            )}
+                          </motion.div>
                         )}
-                        {user.role !== "admin" && user.role !== "thinkTank" && (
-                          <button
-                            onClick={() =>
-                              handleConfirmThinkTank(user._id, user.userName)
-                            }
-                            className="px-3 py-1.5 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-lime-400 text-xs font-medium transition-colors flex items-center gap-1.5">
-                            <ShieldAlert size={14} /> Make ThinkTank
-                          </button>
-                        )}
-                        {/* Block/Unblock Button (Admin can't block themselves) */}
-                        {currentUser?._id !== user._id ? (
-                          <button
-                            onClick={() =>
-                              handleToggleBlock(user._id, user.isActive)
-                            }
-                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center gap-1.5
-                              ${
-                                user.isActive
-                                  ? "bg-rose-500/10 hover:bg-rose-500/20 text-rose-400"
-                                  : "bg-lime-500/10 hover:bg-lime-500/20 text-lime-400"
-                              }
-                            `}>
-                            <Ban size={14} />{" "}
-                            {user.isActive ? "Block" : "Unblock"}
-                          </button>
-                        ) : (
-                          <span className="text-xs text-zinc-500 italic px-2">
-                            You (Current)
-                          </span>
-                        )}
-                      </div>
+                      </AnimatePresence>
                     </td>
                   </tr>
                 ))

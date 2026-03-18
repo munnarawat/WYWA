@@ -3,8 +3,15 @@ const UserModel = require("../models/user.model");
 // getAll user
 const getAllUser = async (req, res) => {
   try {
-    const users = await UserModel.find({branch:req.user.branch}).select("-password");
+    let query = {};
+    if(req.user.role === "admin"){
+      query.branch =  req.user.branch;
+    }
+    const users = await UserModel.find(query).select(
+      "-password",
+    );
     return res.status(200).json({
+      success: true,
       message: "user Fetched successfully ✅",
       users,
     });
@@ -29,10 +36,10 @@ const toggleBlockUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "user not found" });
     }
-    if(user.branch !== req.user.branch){
+    if (user.branch !== req.user.branch) {
       return res.status(403).json({
         message: "you can only block users from your branch",
-      })
+      });
     }
     user.isActive = !user.isActive;
     await user.save();
@@ -45,7 +52,7 @@ const toggleBlockUser = async (req, res) => {
         fullName: user.fullName,
         role: user.role,
         isActive: user.isActive,
-        branch:user.branch
+        branch: user.branch,
       },
     });
   } catch (error) {
@@ -64,10 +71,10 @@ const makeAdmin = async (req, res) => {
       return res.status(400).json({ message: "user not found" });
     }
     // branch Security check
-    if(user.branch !== req.user.branch){
+    if (user.branch !== req.user.branch) {
       return res.status(403).json({
-        message:"you can only make admin users from your branch",
-      })
+        message: "you can only make admin users from your branch",
+      });
     }
     if (user.role === "admin") {
       return res.status(400).json({
@@ -84,7 +91,7 @@ const makeAdmin = async (req, res) => {
         userName: user.userName,
         email: user.email,
         role: user.role,
-        branch:user.branch
+        branch: user.branch,
       },
     });
   } catch (error) {
@@ -92,8 +99,43 @@ const makeAdmin = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+const makeThinkTank = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await UserModel.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "user not found",
+      });
+    }
+    if (user.role === "thinkTank") {
+      return res.status(400).json({
+        message: "user already thinkTank",
+      });
+    }
+    user.role = "thinkTank";
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "user prompt to Think-Tank successfully 🎉",
+      user: {
+        id: user._id,
+        userName: user.userName,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error("Make thinkTank error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 module.exports = {
   getAllUser,
   toggleBlockUser,
-  makeAdmin
+  makeAdmin,
+  makeThinkTank
 };

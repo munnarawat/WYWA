@@ -24,6 +24,7 @@ const ManageStudent = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedUserName, setSelectedUserName] = useState(null);
+  const [actionType, setActionType] = useState(null);
 
   // skeleton loader
   const TableSkeleton = () => {
@@ -138,9 +139,10 @@ const ManageStudent = () => {
     }
   };
   // make sure to show pop-up before making admin;
-  const handleConfirmAdmin = (userId,userName) => {
+  const handleConfirmAdmin = (userId, userName) => {
     setSelectedUserId(userId);
-    setSelectedUserName(userName)
+    setSelectedUserName(userName);
+    setActionType("admin");
     setShowAlert(true);
   };
   // make a admin
@@ -165,9 +167,39 @@ const ManageStudent = () => {
     } finally {
       setShowAlert(false);
       setSelectedUserId(null);
+      setActionType(null);
     }
   };
 
+  const handleConfirmThinkTank = (userId, userName) => {
+    setSelectedUserId(userId);
+    setSelectedUserName(userName);
+    setActionType("thinkTank");
+    setShowAlert(true);
+  };
+  // make a thinkTank
+  const handleMakeThinkTank = async (id) => {
+    if (!selectedUserId) return;
+    try {
+      const response = await api.patch(`/admin/user/${selectedUserId}/make-thinkTank`);
+
+      if (response.data.user) {
+        setUsers(
+          users.map((u) => (u._id === selectedUserId ? { ...u, role: "thinkTank" } : u)),
+        );
+        toast.success(response.data.message || "User prompted to Think-Tank!");
+      }
+    } catch (error) {
+      console.error("Make a think-tank error:", error);
+      toast.error(
+        error.response?.data?.message || "Error prompting to think-tank",
+      );
+    } finally {
+      setShowAlert(false);
+      setSelectedUserId(null);
+      setActionType(null);
+    }
+  };
   // search filter the logic
   const filteredUsers = useMemo(() => {
     return users.filter(
@@ -204,9 +236,13 @@ const ManageStudent = () => {
               setShowAlert(false);
               setSelectedUserId(null);
               setSelectedUserName(null);
+              setActionType(null);
             }}
-            onConfirm={() => handleMakeAdmin()}
-            text={`Are you sure you want to promote ${selectedUserName} to admin?`}
+            onConfirm={() => {
+              if(actionType === "admin") handleMakeAdmin;
+              else if(actionType === "thinkTank") handleMakeThinkTank
+            }}
+            text={`Are you sure you want to promote ${selectedUserName} to ${actionType === "admin" ? "admin" :"Think-Tank"}`}
           />
         )}
       </AnimatePresence>
@@ -334,12 +370,22 @@ const ManageStudent = () => {
                         {/* Make Admin Button (Only show if user is NOT admin) */}
                         {user.role !== "admin" && (
                           <button
-                            onClick={() => handleConfirmAdmin(user._id, user.userName)}
+                            onClick={() =>
+                              handleConfirmAdmin(user._id, user.userName)
+                            }
                             className="px-3 py-1.5 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 text-xs font-medium transition-colors flex items-center gap-1.5">
                             <ShieldAlert size={14} /> Make Admin
                           </button>
                         )}
-
+                        {user.role !== "admin" && user.role !== "thinkTank" && (
+                          <button
+                            onClick={() =>
+                              handleConfirmThinkTank(user._id, user.userName)
+                            }
+                            className="px-3 py-1.5 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-lime-400 text-xs font-medium transition-colors flex items-center gap-1.5">
+                            <ShieldAlert size={14} /> Make ThinkTank
+                          </button>
+                        )}
                         {/* Block/Unblock Button (Admin can't block themselves) */}
                         {currentUser?._id !== user._id ? (
                           <button

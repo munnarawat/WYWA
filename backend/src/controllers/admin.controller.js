@@ -110,6 +110,11 @@ const makeThinkTank = async (req, res) => {
         message: "user not found",
       });
     }
+    if(user.role === "admin"){
+      return res.status(400).json({
+        message:"Admin are not prompt to think-tank"
+      })
+    }
     if (user.role === "thinkTank") {
       return res.status(400).json({
         message: "user already thinkTank",

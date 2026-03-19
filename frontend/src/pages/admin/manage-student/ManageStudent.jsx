@@ -105,6 +105,7 @@ const ManageStudent = () => {
     fetchUsers();
   }, []);
 
+  // dropDown hide 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (!event.target.closest(".action-dropdown")) {

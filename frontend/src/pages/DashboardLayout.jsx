@@ -22,7 +22,6 @@ const DashboardLayout = ({ menuItems }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-
   useEffect(() => {
     const handleResize = () => {
       const desktop = window.innerWidth >= 1024;
@@ -33,6 +32,18 @@ const DashboardLayout = ({ menuItems }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // dropDown hide functionality
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".action-dropdown")) {
+        setIsProfileOpen(false)
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   const handleLogout = () => {
     dispatch(clearUser());
     navigate("/login");
@@ -145,7 +156,7 @@ const DashboardLayout = ({ menuItems }) => {
             </button>
             <div
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="flex relative items-center gap-3 pl-4 md:pl-6 border-l border-white/10 cursor-pointer">
+              className="flex action-dropdown relative items-center gap-3 pl-4 md:pl-6 border-l border-white/10 cursor-pointer">
               <div className="text-right hidden md:block">
                 <p className="text-sm font-medium text-white capitalize">
                   {user?.userName || "User"}
@@ -171,7 +182,7 @@ const DashboardLayout = ({ menuItems }) => {
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute right-0 top-15 w-56 bg-[#0a0a0c] border border-white/10 rounded-xl shadow-2xl backdrop-blur-3xl overflow-hidden ring-1 ring-white/5">
+                    className=" absolute right-0 top-15 w-56 bg-[#0a0a0c] border border-white/10 rounded-xl shadow-2xl backdrop-blur-3xl overflow-hidden ring-1 ring-white/5">
                     <div className="px-4 py-4 border-b border-white/5 bg-white/5">
                       <p className="text-sm text-white font-medium truncate">
                         {user?.userName}

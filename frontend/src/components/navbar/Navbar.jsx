@@ -37,6 +37,18 @@ const Navbar = () => {
     setIsMobileOpen(false);
   }, [location]);
 
+  // dropDown hide functionality
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".action-dropdown")) {
+        setIsProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   // logOut function
   const handleLogOut = async () => {
     try {
@@ -142,7 +154,7 @@ const Navbar = () => {
               <div className=" relative">
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center gap-2 p-1 pr-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition">
+                  className="flex action-dropdown items-center gap-2 p-1 pr-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition">
                   <div className="w-8 h-8 rounded-full bg-linear-to-tr from-teal-500 to-lime-600 flex items-center justify-center text-xs font-bold text-white shadow-inner">
                     {user?.userName?.[0]?.toUpperCase()}
                   </div>

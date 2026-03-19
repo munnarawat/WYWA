@@ -21,7 +21,6 @@ import {
 import DashboardLayout from "../pages/DashboardLayout";
 import DashboardOverview from "../pages/admin/DashboardOverview";
 import StudentOverview from "../pages/student/StudentOverview";
-import ManageStudents from "../pages/admin/ManageStudent";
 import ManageNoticeBoard from "../pages/admin/ManageNoticeBoard";
 import LibraryInventory from "../pages/admin/LibraryInventory";
 import ManageIssues from "../pages/admin/ManageIssues";
@@ -32,6 +31,7 @@ import Profile from "../components/profile-updates/Profile";
 import ForgotPassword from "../components/profile-updates/ForgotPassword";
 import ResetPassword from "../components/profile-updates/ResetPassword";
 import ThinkTank from "../components/ThinkTank";
+import ManageStudent from "../pages/admin/manage-student/ManageStudent";
 const MainRouter = () => {
   // Admin ke sidebar menus
   const adminMenuItems = [
@@ -89,7 +89,7 @@ const MainRouter = () => {
             </ProtectedRoute>
           }>
           <Route path="/admin/dashboard" element={<DashboardOverview />} />
-          <Route path="/admin/students" element={<ManageStudents />} />
+          <Route path="/admin/students" element={<ManageStudent />} />
           <Route path="/admin/noticeboard" element={<ManageNoticeBoard />} />
           <Route path="/admin/library" element={<LibraryInventory />} />
           <Route path="/admin/issue" element={<ManageIssues />} />

@@ -1,21 +1,14 @@
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Search,
-  ShieldAlert,
-  ShieldCheck,
-  Ban,
-  CheckCircle,
-  Loader2,
-  UserCog,
   AlertCircle,
-  MoreVertical,
-  BookOpen,
 } from "lucide-react";
-import api from "../../utils/api";
+import api from "../../../utils/api";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-import PopUp from "../../pop-up/PopUp";
+import PopUp from "../../../pop-up/PopUp";
 import toast from "react-hot-toast";
+import StudentTableRow from "./StudentTableRow";
 const ManageStudent = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setLoading] = useState(false);
@@ -114,8 +107,8 @@ const ManageStudent = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (!event.target.closest('.action-dropdown')) {
-        setOpenDropdownId(null); 
+      if (!event.target.closest(".action-dropdown")) {
+        setOpenDropdownId(null);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -186,7 +179,6 @@ const ManageStudent = () => {
       setActionType(null);
     }
   };
-
   const handleConfirmThinkTank = (userId, userName) => {
     setSelectedUserId(userId);
     setSelectedUserName(userName);
@@ -194,7 +186,7 @@ const ManageStudent = () => {
     setShowAlert(true);
   };
   // make a thinkTank
-  const handleMakeThinkTank = async (id) => {
+  const handleMakeThinkTank = async () => {
     if (!selectedUserId) return;
     try {
       const response = await api.patch(
@@ -218,6 +210,29 @@ const ManageStudent = () => {
       setShowAlert(false);
       setSelectedUserId(null);
       setActionType(null);
+    }
+  };
+
+  // library access
+  const handleToggleLibrary = async (userId) => {
+    try {
+      const response = await api.patch(`/admin/user/${userId}/toggle-library`);
+
+      if (response.data.success) {
+        setUsers(
+          users.map((u) =>
+            u._id === userId
+              ? { ...u, isLibraryMember: response.data.user.isLibraryMember }
+              : u,
+          ),
+        );
+        toast.success(response.data.message);
+      }
+    } catch (error) {
+      console.error("Toggle library error:", error);
+      toast.error(
+        error.response?.data?.message || "Error updating library access",
+      );
     }
   };
   // search filter the logic
@@ -259,8 +274,8 @@ const ManageStudent = () => {
               setActionType(null);
             }}
             onConfirm={() => {
-              if (actionType === "admin") handleMakeAdmin;
-              else if (actionType === "thinkTank") handleMakeThinkTank;
+              if (actionType === "admin") handleMakeAdmin();
+              else if (actionType === "thinkTank") handleMakeThinkTank();
             }}
             text={`Are you sure you want to promote ${selectedUserName} to ${actionType === "admin" ? "admin" : "Think-Tank"}`}
           />
@@ -329,146 +344,17 @@ const ManageStudent = () => {
                 </tr>
               ) : (
                 filteredUsers.map((user) => (
-                  <tr
+                  <StudentTableRow
                     key={user._id}
-                    className="hover:bg-white/5 transition-colors">
-                    {/* 1. User Info */}
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm uppercase
-                          ${user.role === "admin" ? "bg-teal-500/20 text-teal-400 border border-teal-500/30" : "bg-white/10 text-zinc-300 border border-white/20"}
-                        `}>
-                          {user.fullName?.firstName?.charAt(0) ||
-                            user.userName?.charAt(0) ||
-                            "U"}
-                        </div>
-                        <div>
-                          <p className="font-semibold text-white capitalize">
-                            {user.fullName?.firstName
-                              ? `${user.fullName.firstName} ${user.fullName.lastName}`
-                              : user.userName}
-                          </p>
-                          <p className="text-xs text-zinc-500">{user.email}</p>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* 2. Role */}
-                    <td className="px-6 py-4">
-                      <span
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border
-                        ${user.role === "admin" ? "bg-teal-500/10 text-teal-400 border-teal-500/20" : "bg-zinc-800 text-zinc-400 border-white/10"}
-                      `}>
-                        {user.role === "admin" ? (
-                          <ShieldCheck size={14} />
-                        ) : (
-                          <UserCog size={14} />
-                        )}
-                        {user.role}
-                      </span>
-                    </td>
-
-                    {/* 3. Status (Active/Blocked) */}
-                    <td className="px-6 py-4">
-                      <span
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border
-                        ${user.isActive ? "bg-lime-500/10 text-lime-400 border-lime-500/20" : "bg-rose-500/10 text-rose-400 border-rose-500/20"}
-                      `}>
-                        {user.isActive ? (
-                          <CheckCircle size={14} />
-                        ) : (
-                          <Ban size={14} />
-                        )}
-                        {user.isActive ? "Active" : "Blocked"}
-                      </span>
-                    </td>
-
-                    {/* 4. Actions (Block & Make Admin) */}
-                    <td className="px-6 py-4 text-right relative action-dropdown">
-                      {/* The 3-Dots Button */}
-                      <button
-                        onClick={() =>
-                          setOpenDropdownId(
-                            openDropdownId === user._id ? null : user._id,
-                          )
-                        }
-                        className="p-2 hover:bg-white/10 rounded-lg transition-colors text-zinc-400 hover:text-white">
-                        <MoreVertical size={18} />
-                      </button>
-                      <AnimatePresence>
-                        {openDropdownId === user._id && (
-                          <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: -10 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                            className="absolute right-8 top-10 w-48 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden flex flex-col text-left">
-                            {/* Toggle Library Button */}
-                            <button
-                              onClick={() => {
-                                setOpenDropdownId(null);
-                              }}
-                              className="w-full px-4 py-2.5 text-xs text-zinc-300 hover:bg-white/5 hover:text-white flex items-center gap-2 transition-colors border-b border-white/5">
-                              <BookOpen
-                                size={14}
-                                className={
-                                  user.isLibraryMember
-                                    ? "text-rose-400"
-                                    : "text-emerald-400"
-                                }
-                              />
-                              {user.isLibraryMember
-                                ? "Remove Library Access"
-                                : "Grant Library Access"}
-                            </button>
-
-                            {/* Make Admin Button */}
-                            {user.role !== "admin" && (
-                              <button
-                                onClick={() => {
-                                  handleConfirmAdmin(user._id, user.userName);
-                                  setOpenDropdownId(null);
-                                }}
-                                className="w-full px-4 py-2.5 text-xs text-zinc-300 hover:bg-teal-500/10 hover:text-teal-400 flex items-center gap-2 transition-colors">
-                                <ShieldAlert size={14} /> Make Admin
-                              </button>
-                            )}
-
-                            {/* Make ThinkTank Button */}
-                            {user.role !== "admin" &&
-                              user.role !== "thinkTank" && (
-                                <button
-                                  onClick={() => {
-                                    handleConfirmThinkTank(
-                                      user._id,
-                                      user.userName,
-                                    );
-                                    setOpenDropdownId(null);
-                                  }}
-                                  className="w-full px-4 py-2.5 text-xs text-zinc-300 hover:bg-lime-500/10 hover:text-lime-400 flex items-center gap-2 transition-colors">
-                                  <UserCog size={14} /> Make Think-Tank
-                                </button>
-                              )}
-
-                            {/* Block/Unblock Button */}
-                            {currentUser?._id !== user._id && (
-                              <button
-                                onClick={() => {
-                                  handleToggleBlock(user._id, user.isActive);
-                                  setOpenDropdownId(null);
-                                }}
-                                className={`w-full px-4 py-2.5 text-xs flex items-center gap-2 transition-colors border-t border-white/5
-                  ${user.isActive ? "text-rose-400 hover:bg-rose-500/10" : "text-lime-400 hover:bg-lime-500/10"}
-                                 `}>
-                                <Ban size={14} />{" "}
-                                {user.isActive ? "Block User" : "Unblock User"}
-                              </button>
-                            )}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </td>
-                  </tr>
+                    user={user}
+                    currentUser={currentUser}
+                    openDropdownId={openDropdownId}
+                    setOpenDropdownId={setOpenDropdownId}
+                    handleToggleLibrary={handleToggleLibrary}
+                    handleConfirmAdmin={handleConfirmAdmin}
+                    handleConfirmThinkTank={handleConfirmThinkTank}
+                    handleToggleBlock={handleToggleBlock}
+                  />
                 ))
               )}
             </tbody>

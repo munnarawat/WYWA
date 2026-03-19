@@ -4,12 +4,10 @@ const UserModel = require("../models/user.model");
 const getAllUser = async (req, res) => {
   try {
     let query = {};
-    if(req.user.role === "admin"){
-      query.branch =  req.user.branch;
+    if (req.user.role === "admin") {
+      query.branch = req.user.branch;
     }
-    const users = await UserModel.find(query).select(
-      "-password",
-    );
+    const users = await UserModel.find(query).select("-password");
     return res.status(200).json({
       success: true,
       message: "user Fetched successfully ✅",
@@ -23,12 +21,12 @@ const getAllUser = async (req, res) => {
 
 //block unblock user
 
-// 
+// all student those are join library
 const getLibraryStudents = async (req, res) => {
   try {
-    let query = { 
-      role: 'student', 
-      isLibraryMember: true 
+    let query = {
+      role: "student",
+      isLibraryMember: true,
     };
     if (req.user.role === "admin") {
       query.branch = req.user.branch;
@@ -43,6 +41,43 @@ const getLibraryStudents = async (req, res) => {
   } catch (error) {
     console.error("Fetch library students error:", error);
     res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// toggleLibrary access
+const toggleLibraryAccess = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await UserModel.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "student are not found ",
+      });
+    }
+    if (user.branch !== req.user.branch) {
+      return res.status(403).json({
+        success: false,
+        message: "you can only library access from your branch student",
+      });
+    }
+    user.isLibraryMember = !user.isLibraryMember;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: user.isLibraryMember
+        ? "Library access granted successfully! 📚"
+        : "Library access removed! 🚫",
+      user: {
+        _id: user._id,
+        isLibraryMember: user.isLibraryMember,
+      },
+    });
+  } catch (error) {
+    console.error("Toggle library access error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 const toggleBlockUser = async (req, res) => {
@@ -132,10 +167,10 @@ const makeThinkTank = async (req, res) => {
         message: "user not found",
       });
     }
-    if(user.role === "admin"){
+    if (user.role === "admin") {
       return res.status(400).json({
-        message:"Admin are not prompt to think-tank"
-      })
+        message: "Admin are not prompt to think-tank",
+      });
     }
     if (user.role === "thinkTank") {
       return res.status(400).json({
@@ -164,5 +199,7 @@ module.exports = {
   getAllUser,
   toggleBlockUser,
   makeAdmin,
-  makeThinkTank
+  makeThinkTank,
+  getLibraryStudents,
+  toggleLibraryAccess
 };

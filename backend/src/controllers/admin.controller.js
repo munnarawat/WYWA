@@ -25,8 +25,8 @@ const getAllUser = async (req, res) => {
 const getLibraryStudents = async (req, res) => {
   try {
     let query = {
-      role: "student",
       isLibraryMember: true,
+      isActive: true,
     };
     if (req.user.role === "admin") {
       query.branch = req.user.branch;

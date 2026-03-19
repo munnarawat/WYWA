@@ -16,10 +16,12 @@ const ManageAttendance = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await api.get("/admin/users");
-        setStudents(
-          res.data.users.filter((u) => u.role === "student" && u.isActive),
-        );
+        const res = await api.get("/admin/user/getAccess");
+        if (res.data.success) {
+          setStudents(
+            res.data.students
+          );
+        }
       } catch (error) {
         toast.error("Failed to load students");
         console.error(error);

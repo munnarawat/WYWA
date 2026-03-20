@@ -182,7 +182,9 @@ const getIssued = async (req, res) => {
   try {
     const { studentId } = req.query;
     const query = req.user?.branch ? { branch: req.user.branch } : {};
-    if (studentId) {
+    if (req.user.role === "student") {
+      query.student = req.user._id;
+    } else if (studentId) {
       query.student = studentId;
     }
     const records = await Issue.find(query)
@@ -192,7 +194,7 @@ const getIssued = async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "Issued records retrieved successfully 🎉", records });
+      .json({ success:true, message: "Issued records retrieved successfully 🎉", records });
   } catch (error) {
     console.error("get issued error", error);
     return res.status(500).json({ message: "Internal server error" });

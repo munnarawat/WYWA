@@ -24,20 +24,20 @@ const markAttendance = async (req, res) => {
         });
     }
     const record = await Attendance.findOneAndUpdate(
-      { student: studentId, date: new Date(date) },
+      { student: studentId, date: date },
       {
-        student: studentId,
-        date: new Date(date),
-        status: status || "present",
-        markedBy: req.user._id,
+        $set:{
+          status: status || "present",
+          markedBy:req.user._id
+        }
       },
       {
         upsert: true,
-        returnDocument: "after",
+         new:true,
       },
     );
-
     return res.status(200).json({
+      success:true,
       message: "Attendance marked successfully 🎉",
       record,
     });

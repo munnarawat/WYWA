@@ -189,7 +189,7 @@ const getIssued = async (req, res) => {
     }
     const records = await Issue.find(query)
       .populate("book", "title author")
-      .populate("student", "userName email fullName")
+      .populate("student", "userName email fullName") 
       .sort({ issuedAt: -1 });
 
     return res

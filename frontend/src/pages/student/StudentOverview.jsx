@@ -14,6 +14,27 @@ import {
 import api from "../../utils/api";
 import toast from "react-hot-toast";
 
+const StudentSkelton = () => {
+  return (
+    <div className="space-y-6 ">
+      <div className="grid grid-cols-1  md:grid-cols-3 gap-6 mb-8 ">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex-1 space-y-4 py-1">
+            <div className="h-36 w-72 bg-white/5 rounded-2xl"></div>
+          </div>
+        ))}
+      </div>
+      <div className="w-full  p-2 px-6 h-80 flex flex-col justify-around gap-6 bg-white/5 rounded-md ">
+        <div className="w-1/2 bg-white/5 h-10 rounded-md mt-2 "></div>
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className="w-full h-10 animate-pulse bg-white/4 rounded-lg"></div>
+        ))}
+      </div>
+    </div>
+  );
+};
 const StudentOverview = () => {
   const { user } = useSelector((state) => state.auth);
   const [stats, setStats] = useState({
@@ -23,7 +44,12 @@ const StudentOverview = () => {
     recentAttendance: [],
   });
   const [isLoading, setIsLoading] = useState(true);
-
+  const [issuedBooks, setIssuedBooks] = useState([]);
+  const formatDate = (date) =>
+    new Date(date).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+    });
   useEffect(() => {
     const fetchMyStats = async () => {
       if (!user?.isLibraryMember) {
@@ -33,15 +59,20 @@ const StudentOverview = () => {
 
       try {
         setIsLoading(true);
-        // Backend API Hit
-        const res = await api.get("/dashboard/student/attendance");
-
-        if (res.data.success) {
-          setStats(res.data.stats); 
+        // 1. Attendance Stats Fetch
+        const [attendanceRes, booksRes] = await Promise.all([
+          api.get("/dashboard/student/attendance"),
+          api.get("/library/issued"),
+        ]);
+        if (attendanceRes.data.success) {
+          setStats(attendanceRes.data.stats);
+        }
+        if (booksRes.data.success) {
+          setIssuedBooks(booksRes.data.records);
         }
       } catch (error) {
-        console.error("Error fetching stats", error);
-        toast.error("Failed to load dashboard stats");
+        console.error("Error fetching dashboard data", error);
+        toast.error("Failed to load dashboard data");
       } finally {
         setIsLoading(false);
       }
@@ -110,20 +141,8 @@ const StudentOverview = () => {
           Here is your daily progress and attendance overview.
         </motion.p>
       </div>
-
       {isLoading ? (
-        <div className="animate-pulse flex space-x-4">
-          {/* Skeleton loader for cards */}
-          <div className="flex-1 space-y-4 py-1">
-            <div className="h-32 bg-white/5 rounded-2xl"></div>
-          </div>
-          <div className="flex-1 space-y-4 py-1">
-            <div className="h-32 bg-white/5 rounded-2xl"></div>
-          </div>
-          <div className="flex-1 space-y-4 py-1">
-            <div className="h-32 bg-white/5 rounded-2xl"></div>
-          </div>
-        </div>
+        <StudentSkelton />
       ) : (
         <>
           {/* Stats Grid */}
@@ -151,6 +170,12 @@ const StudentOverview = () => {
               <p className="text-sm text-zinc-500 mt-2">
                 Keep it above 80% for best results!
               </p>
+              <div className="w-full bg-white/10 h-2 rounded-full mt-3">
+                <div
+                  className="bg-teal-400 h-2 rounded-full"
+                  style={{ width: `${stats.percentage}%` }}
+                />
+              </div>
             </motion.div>
 
             {/* Card 2: Total Present */}
@@ -189,7 +214,6 @@ const StudentOverview = () => {
               <p className="text-sm text-zinc-500 mt-2">Try to minimize this</p>
             </motion.div>
           </div>
-
           {/* Recent Activity Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -233,6 +257,71 @@ const StudentOverview = () => {
                     </span>
                   </div>
                 ))
+              )}
+            </div>
+          </motion.div>
+          {/* SECTION: My Issued Books */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="bg-white/5 border border-white/10 rounded-2xl p-6 mt-8">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <BookOpen size={20} className="text-indigo-400" />
+                My Library Books
+              </h3>
+            </div>
+            <div className="space-y-4">
+              {issuedBooks?.length === 0 ? (
+                <div className="text-center py-6 bg-black/40 rounded-xl border border-white/5">
+                  <BookOpen size={32} className="mx-auto text-zinc-600 mb-2" />
+                  <p className="text-zinc-500 text-sm">
+                    You haven't issued any books yet.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {issuedBooks?.map((record) => (
+                    <div
+                      key={record._id}
+                      className="p-4 bg-black/40 rounded-xl border border-white/5 flex flex-col gap-3">
+                      <div>
+                        <h4 className="font-bold text-white text-lg">
+                          {record.book?.title || "Unknown Book"}
+                        </h4>
+                        <p className="text-xs text-zinc-400">
+                          By {record.book?.author || "Unknown Book"}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center justify-between mt-2 pt-3 border-t border-white/5">
+                        <div className="flex flex-col">
+                          <span className="text-[10px] text-zinc-500 uppercase tracking-wider">
+                            Issued On
+                          </span>
+                          <span className="text-xs text-zinc-300">
+                            {new Date(
+                              record.issuedAt || record.createdAt,
+                            ).toLocaleDateString()}
+                          </span>
+                        </div>
+
+                        {/* Status Badge */}
+                        <span
+                          className={`px-3 py-1 text-xs font-bold uppercase rounded-md border
+                          ${
+                            record.status === "returned"
+                              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                              : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                          }
+                        `}>
+                          {record.status === "returned" ? "Returned" : "Issued"}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </motion.div>

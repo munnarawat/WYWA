@@ -29,8 +29,6 @@ body {
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: #14b8a6; /* Fallback color */
-  
-  /* MYWA Premium Gradient: Teal-500 to Lime-500 */
   background-image: -webkit-linear-gradient(
     top,
     #14b8a6 0%,  

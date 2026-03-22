@@ -7,10 +7,10 @@ import ProtectedRoute from "./ProtectedRoute";
 import PublicLayout from "../components/PublicLayout";
 import ScrollTop from "../animation/ScrollTop";
 import {
+  BadgeAlert,
   Bell,
   BookOpen,
   ChartNoAxesCombined,
-  ImageIcon,
   LayoutDashboard,
   Library,
   Settings,
@@ -32,6 +32,7 @@ import ForgotPassword from "../components/profile-updates/ForgotPassword";
 import ResetPassword from "../components/profile-updates/ResetPassword";
 import ThinkTank from "../components/ThinkTank";
 import ManageStudent from "../pages/admin/manage-student/ManageStudent";
+import ManageStudentIssues from "../pages/admin/ManageStudentIssues";
 const MainRouter = () => {
   // Admin ke sidebar menus
   const adminMenuItems = [
@@ -39,14 +40,15 @@ const MainRouter = () => {
     { name: "Manage Students", icon: Users, path: "/admin/students" },
     { name: "Library Inventory", icon: BookOpen, path: "/admin/library" },
     { name: "Books issue", icon: BookOpen, path: "/admin/issue" },
-    { name: "Mange NoticeBoard", icon: Bell, path: "/admin/noticeboard" },
+    { name: "ManageNoticeBoard", icon: Bell, path: "/admin/noticeboard" },
     {
-      name: "Mange Attendance",
+      name: "Manage Attendance",
       icon: ChartNoAxesCombined,
       path: "/admin/attendance",
     },
     { name: "Achievements", icon: Trophy, path: "/admin/achievements" },
-    { name: "MangeThinkTank", icon: UserStar, path: "/admin/thinkTank" },
+    { name: "ManageThinkTank", icon: UserStar, path: "/admin/thinkTank" },
+    { name: "ManageStudent_Issue", icon:BadgeAlert , path:"/admin/studentIssue" },
     { name: "Settings", icon: Settings, path: "/admin/settings" },
   ];
   // student sidebar menus
@@ -96,6 +98,7 @@ const MainRouter = () => {
           <Route path="/admin/attendance" element={<ManageAttendance />} />
           <Route path="/admin/achievements" element={<ManageAchievements />} />
           <Route path="/admin/thinkTank" element={<ManageThinkTank />} />
+          <Route path="/admin/studentIssue" element={<ManageStudentIssues />} />
         </Route>
 
         {/* student dashboard */}

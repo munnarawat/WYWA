@@ -40,7 +40,47 @@ const getMyTicket = async (req, res) => {
   }
 };
 
+// admin api
+const getAllTicket = async (req, res) => {
+  try {
+    const tickets = await ticketModel
+      .find({ branch: req.user.branch })
+      .populate("student", "userName email fullName")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({ success: true, tickets });
+  } catch (error) {
+    console.error("Get all tickets error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+// admin api : Update ticket status
+const updateTicketStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const ticket = await ticketModel
+      .findByIdAndUpdate(id, { status }, { new: true })
+      .populate("student", "userName fullName");
+
+    if (!ticket) {
+      return res.status(404).json({ message: "Ticket not found" });
+    }
+    return res.status(200).json({
+      success: true,
+      message: `Ticket marked as ${status} ✅`,
+      ticket,
+    });
+  } catch (error) {
+    console.error("Update ticket error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
-    createTicket,
-    getMyTicket
-}
+  createTicket,
+  getMyTicket,
+  getAllTicket,
+  updateTicketStatus
+};

@@ -18,9 +18,9 @@ const bookSchema = new mongoose.Schema(
       min: 0,
     },
     available: {
-      type: Boolean,
-      default: true,
-      min: 0,
+      type: Number,
+      required:true,
+      min:0,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,

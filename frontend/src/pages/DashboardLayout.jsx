@@ -97,7 +97,7 @@ const DashboardLayout = ({ menuItems }) => {
                   navigate(item.path); // React Router se navigate
                   if (!isDesktop) setIsSidebarOpen(false);
                 }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group
+                className={`w-full  flex items-center  gap-3 px-4 py-3 rounded-xl transition-all duration-300 group
                   ${
                     isActive
                       ? "bg-linear-to-r from-teal-500/10 to-transparent text-teal-400 border-l-2 border-teal-400"
@@ -107,12 +107,13 @@ const DashboardLayout = ({ menuItems }) => {
                 <item.icon
                   size={20}
                   className={
+                    
                     isActive
-                      ? "text-teal-400"
+                      ? "text-teal-400  "
                       : "text-zinc-500 group-hover:text-white"
                   }
                 />
-                <span className="font-medium">{item.name}</span>
+                <span className="font-medium truncate">{item.name}</span>
               </button>
             );
           })}

@@ -7,13 +7,14 @@ import ProtectedRoute from "./ProtectedRoute";
 import PublicLayout from "../components/PublicLayout";
 import ScrollTop from "../animation/ScrollTop";
 import {
-  BadgeAlert,
   Bell,
   BookOpen,
   ChartNoAxesCombined,
   LayoutDashboard,
   Library,
+  MessageSquareWarning,
   Settings,
+  ShieldAlert,
   Trophy,
   Users,
   UserStar,
@@ -48,8 +49,8 @@ const MainRouter = () => {
     },
     { name: "Achievements", icon: Trophy, path: "/admin/achievements" },
     { name: "ManageThinkTank", icon: UserStar, path: "/admin/thinkTank" },
-    { name: "ManageStudent_Issue", icon:BadgeAlert , path:"/admin/studentIssue" },
-    { name: "Settings", icon: Settings, path: "/admin/settings" },
+    { name: "Students Issue", icon:ShieldAlert , path:"/admin/studentIssue" },
+    // { name: "Settings", icon: Settings, path: "/admin/settings" },
   ];
   // student sidebar menus
   const studentMenuItems = [

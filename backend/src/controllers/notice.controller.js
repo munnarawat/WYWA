@@ -16,6 +16,7 @@ const createNotice = async (req, res) => {
       branch: req.user.branch,
     });
     return res.status(201).json({
+      success: true,
       message: "notice created successfully 🎉",
       notice,
     });
@@ -47,6 +48,7 @@ const getAllNotice = async (req, res) => {
       .limit(limit);
 
     return res.status(200).json({
+      success: true,
       message: "notices fetched successfully🎉",
       currentPage: page,
       totalPages: Math.ceil(total / limit),

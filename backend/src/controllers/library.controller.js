@@ -1,7 +1,7 @@
 const Book = require("../models/book.model");
 const Issue = require("../models/issue.model");
-
-// add a book to the library admin only
+const {autoAwardBadge}  = require("../controllers/studentAchievement.controller");
+ // add a book to the library admin only
 
 const addBook = async (req, res) => {
   try {
@@ -134,6 +134,24 @@ const issueBook = async (req, res) => {
     });
     book.available -= 1;
     await book.save();
+
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear() ,now.getMonth(),1 );
+
+    const booksIssuedThisMonth = await Issue.countDocuments({
+      student:studentId,
+      createdAt:{$gte:startOfMonth}
+    });
+
+    if(booksIssuedThisMonth => 5){
+      autoAwardBadge(
+        studentId,
+        req.user.branch,
+        "Bookworm 🐛", 
+        "Read 5 or more books in a single month!", 
+        "reading"
+      )
+    }
     return res
       .status(201)
       .json({ message: "Book issued successfully 🎉", issue });

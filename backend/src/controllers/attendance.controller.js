@@ -1,6 +1,6 @@
 const Attendance = require("../models/attendance.model");
 const userModel = require("../models/user.model");
-
+const {autoAwardBadge} = require("../controllers/studentAchievement.controller")
 // markAttendance  adminOnly
 const markAttendance = async (req, res) => {
   try {
@@ -36,6 +36,24 @@ const markAttendance = async (req, res) => {
          new:true,
       },
     );
+    if(status === "present" || !status){
+      const last7Records = await Attendance.find({student:studentId})
+      .sort({date: -1})
+      .limit(7)
+
+      const isStreak = last7Records.length === 7 && last7Records.every(r =>r.status === "present");
+
+      if(isStreak){
+        // Auto-award function call
+        autoAwardBadge(
+          studentId,
+          req.user.branch,
+          "7 Days Streak 🔥", 
+          "You attended the library for 7 consecutive days!", 
+          "attendance"
+        );
+      }
+    }
     return res.status(200).json({
       success:true,
       message: "Attendance marked successfully 🎉",

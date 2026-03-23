@@ -12,6 +12,30 @@ import {
 import api from "../../utils/api";
 import toast from "react-hot-toast";
 
+const IssueSkelton = () => {
+  return (
+    <div className="grid grid-cols-1 gap-4">
+      {[1, 2, 3].map((i) => (
+        <div
+          key={i}
+          className="bg-white/5 border border-white/10 animate-pulse rounded-2xl p-5 md:p-6 transition-all flex flex-col md:flex-row gap-6 md:items-center justify-between">
+          <div className="flex-1 space-y-3">
+            <div className="w-1/3 h-4 bg-white/5">     
+            </div>
+
+            <div className="w-3/4 h-6 mb-2 bg-white/5 "></div>
+            <div className="w-3/4 h-6 mb-2 bg-white/5 "></div>
+
+            <div className="flex items-center gap-2 pt-2 border-t border-white/5">
+              <div className="w-6 h-6 rounded-full bg-white/5 animate-pulse"></div>
+              <div className=" bg-white/5 w-1/2 mt-2 h-6 animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
 const ManageStudentIssues = () => {
   const [tickets, setTickets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -35,7 +59,6 @@ const ManageStudentIssues = () => {
   useEffect(() => {
     fetchTickets();
   }, []);
-console.log(tickets);
 
   const handleStatusChange = async (id, newStatus) => {
     try {
@@ -121,9 +144,7 @@ console.log(tickets);
 
       {/* TICKETS LIST */}
       {isLoading ? (
-        <div className="flex justify-center items-center h-64">
-          <Loader2 size={40} className="animate-spin text-teal-500" />
-        </div>
+       <IssueSkelton/>
       ) : filteredTickets.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-64 bg-white/5 border border-white/10 rounded-2xl">
           <CheckCircle size={48} className="text-zinc-500 mb-4" />

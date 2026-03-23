@@ -37,7 +37,7 @@ const App = () => {
           style: {
             background: "rgba(9, 9, 11, 0.9)", // bg-zinc-950 with opacity
             color: "#fff",
-            backdropFilter: "blur(10px)", // Glassmorphism
+            backdropFilter: "blur(10px)",
             border: "1px solid rgba(255,255,255,0.1)", // Subtle border
             borderRadius: "16px",
           },

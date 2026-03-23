@@ -41,6 +41,7 @@ const userRegisterController = async (req, res) => {
       },
       password: hashPassword,
       branch: req.body.branch,
+      isLibraryMember:user.isLibraryMember,
     });
 
     // token generate
@@ -175,6 +176,7 @@ const loginController = async (req, res) => {
         fullName: user.fullName,
         role: user.role,
         branch: user.branch,
+        isLibraryMember:user.isLibraryMember
       },
     });
   } catch (error) {

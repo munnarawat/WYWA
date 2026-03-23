@@ -13,6 +13,12 @@ import {
 import { Outlet, useNavigate, useLocation, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { clearUser } from "../store/slice/authSlice";
+import { io } from "socket.io-client";
+import toast from "react-hot-toast";
+
+const socket = io("http://localhost:3000", {
+  withCredentials: true,
+});
 
 const DashboardLayout = ({ menuItems }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -22,6 +28,48 @@ const DashboardLayout = ({ menuItems }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  // notification state
+  const [notifications, setNotifications] = useState([]);
+  const [isNotifyOpen, setIsNotifyOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // socket io
+  useEffect(() => {
+    if (!user && !user._id) return;
+    socket.emit("join_user_room", user._id);
+     
+    if(user.branch){
+      socket.emit("join_branch", user.branch);
+    }
+    const handleNotification = (data) => {
+      toast.success(data.message, {
+        icon: "🔥",
+        duration: 6000,
+        style: {
+          borderRadius: "10px",
+          background: "#18181b",
+          color: "#fff",
+          border: "1px solid #14b8a6",
+        },
+      });
+      const newNotify = {
+        id: new Date.now(),
+        title: data.title || "Notification",
+        message: data.message,
+        time: new Date(),
+      };
+      setNotifications((prev) => [newNotify, ...prev]);
+      setUnreadCount((prev) => prev + 1);
+    };
+
+    socket.on("receive_notification", handleNotification);
+
+    // Cleanup
+    return () => {
+      socket.off("receive_notification", handleNotification);
+    };
+  }, [user]);
+
   useEffect(() => {
     const handleResize = () => {
       const desktop = window.innerWidth >= 1024;
@@ -31,12 +79,15 @@ const DashboardLayout = ({ menuItems }) => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
   // dropDown hide functionality
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (!event.target.closest(".action-dropdown")) {
-        setIsProfileOpen(false)
+        setIsProfileOpen(false);
+      }
+
+      if (!event.target.closest(".notify-dropdown")) {
+        setIsNotifyOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -50,7 +101,7 @@ const DashboardLayout = ({ menuItems }) => {
   };
 
   return (
-    <div className="flex h-screen bg-zinc-950 text-white overflow-hidden font-sans">
+    <div className="flex  h-screen bg-zinc-950 text-white overflow-hidden font-sans">
       {/* Mobile Sidebar Overlay */}
       <AnimatePresence>
         {isSidebarOpen && !isDesktop && (
@@ -107,7 +158,6 @@ const DashboardLayout = ({ menuItems }) => {
                 <item.icon
                   size={20}
                   className={
-                    
                     isActive
                       ? "text-teal-400  "
                       : "text-zinc-500 group-hover:text-white"
@@ -152,9 +202,77 @@ const DashboardLayout = ({ menuItems }) => {
           </div>
 
           <div className="flex items-center gap-4 md:gap-6">
-            <button className=" text-zinc-400 hover:text-white p-2">
-              <Bell size={20} />
-            </button>
+            <div className=" relative notify-dropdown">
+              <button
+                onClick={() => {
+                  setIsNotifyOpen(!isNotifyOpen);
+                  if (!isNotifyOpen) setUnreadCount(0);
+                }}
+                className="relative text-zinc-400 hover:text-white p-2 transition-colors">
+                <Bell size={20} />
+                {/* Unread Badge */}
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white border-2 border-zinc-950 animate-bounce">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Notification Dropdown */}
+              <AnimatePresence>
+                {isNotifyOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute  md:right-0 top-15 w-80  sm:w-96 bg-[#0a0a0c] border border-white/10 rounded-xl shadow-2xl backdrop-blur-3xl overflow-hidden ring-1 ring-white/5 z-50">
+                    {/* Dropdown Header */}
+                    <div className="px-4 py-3 border-b border-white/5 bg-white/5 flex justify-between items-center">
+                      <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                        <Bell size={14} className="text-teal-400" />{" "}
+                        Notifications
+                      </h3>
+                      {notifications.length > 0 && (
+                        <button
+                          onClick={() => setNotifications([])}
+                          className="text-xs text-zinc-400 hover:text-rose-400 transition">
+                          Clear All
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Notification List */}
+                    <div className="max-h-80 overflow-y-auto p-2 space-y-1 custom-scrollbar">
+                      {notifications.length === 0 ? (
+                        <p className="text-sm text-zinc-500 p-6 text-center flex flex-col items-center gap-2">
+                          <Bell size={24} className="opacity-20" />
+                          All caught up! No new notifications.
+                        </p>
+                      ) : (
+                        notifications.map((notify) => (
+                          <div
+                            key={notify.id}
+                            className="p-3 bg-white/5 hover:bg-white/10 rounded-lg transition border border-transparent hover:border-white/5">
+                            <h4 className="text-sm font-bold text-zinc-200">
+                              {notify.title}
+                            </h4>
+                            <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
+                              {notify.message}
+                            </p>
+                            <p className="text-[10px] font-mono text-zinc-500 mt-2 uppercase tracking-wider">
+                              {notify.time.toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </p>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
             <div
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               className="flex action-dropdown relative items-center gap-3 pl-4 md:pl-6 border-l border-white/10 cursor-pointer">

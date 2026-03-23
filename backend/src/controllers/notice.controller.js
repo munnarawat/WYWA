@@ -15,6 +15,14 @@ const createNotice = async (req, res) => {
       createdBy: req.user._id,
       branch: req.user.branch,
     });
+    console.log("Admin branch is:", req.user.branch);
+    const io = req.app.get("io");
+    
+    io.to(req.user.branch).emit("receive_notification",{
+      title:"📢 New Announcement",
+      message: `${title}: ${description}`,
+    })
+    console.log("Notification emitted to branch room!");
     return res.status(201).json({
       success: true,
       message: "notice created successfully 🎉",

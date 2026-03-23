@@ -36,6 +36,27 @@ const markAttendance = async (req, res) => {
          new:true,
       },
     );
+    // 6-Day Streak Check
+     if(status === "present" || !status){
+      const last6Records = await Attendance.find({student:studentId})
+      .sort({date: -1})
+      .limit(6);
+
+       const is6DayStreak = last6Records.length === 6 && last6Records.every(r=>r.status === "present");
+
+       if(is6DayStreak){
+        const io = req.app.get("io");
+
+        // only this student who complete 6 day streak
+        io.to(studentId.toString()).emit("receive_notification",{
+          title: "Almost There! 🔥",
+          message: "You are on a 6-day streak! Come tomorrow to unlock the 7-Day Streak Badge! 🏆",
+          type: "motivation"
+        })
+       }
+     }
+    
+    // 7 day streak 
     if(status === "present" || !status){
       const last7Records = await Attendance.find({student:studentId})
       .sort({date: -1})

@@ -17,12 +17,12 @@ const createNotice = async (req, res) => {
     });
     console.log("Admin branch is:", req.user.branch);
     const io = req.app.get("io");
-    
-    io.to(req.user.branch).emit("receive_notification",{
+    const adminBranch = req.user.branch.trim().toLowerCase();
+
+    io.to(adminBranch).emit("receive_notification",{
       title:"📢 New Announcement",
       message: `${title}: ${description}`,
     })
-    console.log("Notification emitted to branch room!");
     return res.status(201).json({
       success: true,
       message: "notice created successfully 🎉",

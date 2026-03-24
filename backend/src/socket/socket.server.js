@@ -15,8 +15,8 @@ function initSocketServer(httpServer){
             // console.log(`User ${userId} joined their personal room`);
         });
         socket.on("join_branch", (branch)=>{
-            socket.emit(branch);
-            console.log(`User joined branch room: ${branch}`);
+            socket.join(branch);
+            // console.log(`User joined branch room: ${branch}`);
         })
 
         socket.on("disconnect" , ()=>{

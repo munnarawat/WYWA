@@ -1,4 +1,3 @@
-import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Register from "../pages/auth/Register";
 import Login from "../pages/auth/Login";
@@ -9,10 +8,9 @@ import ScrollTop from "../animation/ScrollTop";
 import {
   Bell,
   BookOpen,
+  ChartColumnIncreasing,
   ChartNoAxesCombined,
   LayoutDashboard,
-  Library,
-  MessageSquareWarning,
   Settings,
   ShieldAlert,
   Trophy,
@@ -34,6 +32,9 @@ import ResetPassword from "../components/profile-updates/ResetPassword";
 import ThinkTank from "../components/ThinkTank";
 import ManageStudent from "../pages/admin/manage-student/ManageStudent";
 import ManageStudentIssues from "../pages/admin/ManageStudentIssues";
+import AttendanceChart from "../pages/AttendanceChart";
+
+
 const MainRouter = () => {
   // Admin ke sidebar menus
   const adminMenuItems = [
@@ -55,7 +56,7 @@ const MainRouter = () => {
   // student sidebar menus
   const studentMenuItems = [
     { name: "My Dashboard", icon: LayoutDashboard, path: "/student/dashboard" },
-    { name: "My Books", icon: Library, path: "/student/books" },
+    { name: "My Attendance-Chart", icon: ChartColumnIncreasing, path: "/student/attendance" },
     { name: "Profile", icon: Users, path: "/student/profile" },
   ];
   const thinkTankMenuItems = [
@@ -110,7 +111,7 @@ const MainRouter = () => {
             </ProtectedRoute>
           }>
           <Route path="/student/dashboard" element={<StudentOverview />} />
-          {/* <Route path="/student/books" element={<StudentBooks />} /> */}
+          <Route path="/student/attendance" element={<AttendanceChart/>} />
         </Route>
 
         {/* think-thank dashboard */}

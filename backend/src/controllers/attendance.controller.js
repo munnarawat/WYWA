@@ -11,6 +11,22 @@ const markAttendance = async (req, res) => {
         .status(400)
         .json({ message: "studentId and date are required" });
     }
+
+    //  THE FIX: Future Date Validation 
+    const requestDate = new Date(date);
+    const today = new Date();
+
+    requestDate.setHours(0,0,0,0);
+    today.setHours(0,0,0,0);
+
+    if(requestDate>today){
+      return res.status(400).json({
+        success:false,
+        message:"Attendance cannot be recorded for any future date!"
+      });
+    }
+
+
     const student = await userModel.findById(studentId);
     if (!student) {
       return res.status(404).json({ message: "Student not found " });
@@ -33,7 +49,7 @@ const markAttendance = async (req, res) => {
       },
       {
         upsert: true,
-         new:true,
+        returnDocument:"after"
       },
     );
     // 6-Day Streak Check

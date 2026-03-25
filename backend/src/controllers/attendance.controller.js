@@ -1,6 +1,8 @@
 const Attendance = require("../models/attendance.model");
 const userModel = require("../models/user.model");
-const {autoAwardBadge} = require("../controllers/studentAchievement.controller")
+const {
+  autoAwardBadge,
+} = require("../controllers/studentAchievement.controller");
 // markAttendance  adminOnly
 const markAttendance = async (req, res) => {
   try {
@@ -12,20 +14,19 @@ const markAttendance = async (req, res) => {
         .json({ message: "studentId and date are required" });
     }
 
-    //  THE FIX: Future Date Validation 
+    //  THE FIX: Future Date Validation
     const requestDate = new Date(date);
     const today = new Date();
 
-    requestDate.setHours(0,0,0,0);
-    today.setHours(0,0,0,0);
+    requestDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
 
-    if(requestDate>today){
+    if (requestDate > today) {
       return res.status(400).json({
-        success:false,
-        message:"Attendance cannot be recorded for any future date!"
+        success: false,
+        message: "Attendance cannot be recorded for any future date!",
       });
     }
-
 
     const student = await userModel.findById(studentId);
     if (!student) {
@@ -33,66 +34,70 @@ const markAttendance = async (req, res) => {
     }
 
     if (student.branch !== req.user.branch) {
-      return res
-        .status(403)
-        .json({
-          message: "You can only mark attendance for students in your branch",
-        });
+      return res.status(403).json({
+        message: "You can only mark attendance for students in your branch",
+      });
     }
     const record = await Attendance.findOneAndUpdate(
-      { student: studentId, date: date },
+      { student: studentId, date: requestDate },
       {
-        $set:{
+        $set: {
           status: status || "present",
-          markedBy:req.user._id
-        }
+          markedBy: req.user._id,
+          branch: student.branch,
+        },
       },
       {
         upsert: true,
-        returnDocument:"after"
+        returnDocument: "after",
       },
     );
     // 6-Day Streak Check
-     if(status === "present" || !status){
-      const last6Records = await Attendance.find({student:studentId})
-      .sort({date: -1})
-      .limit(6);
+    if (status === "present" || !status) {
+      const last6Records = await Attendance.find({ student: studentId })
+        .sort({ date: -1 })
+        .limit(6);
 
-       const is6DayStreak = last6Records.length === 6 && last6Records.every(r=>r.status === "present");
+      const is6DayStreak =
+        last6Records.length === 6 &&
+        last6Records.every((r) => r.status === "present");
 
-       if(is6DayStreak){
+      if (is6DayStreak) {
         const io = req.app.get("io");
 
         // only this student who complete 6 day streak
-        io.to(studentId.toString()).emit("receive_notification",{
+        io.to(studentId.toString()).emit("receive_notification", {
           title: "Almost There! 🔥",
-          message: "You are on a 6-day streak! Come tomorrow to unlock the 7-Day Streak Badge! 🏆",
-          type: "motivation"
-        })
-       }
-     }
-    
-    // 7 day streak 
-    if(status === "present" || !status){
-      const last7Records = await Attendance.find({student:studentId})
-      .sort({date: -1})
-      .limit(7)
+          message:
+            "You are on a 6-day streak! Come tomorrow to unlock the 7-Day Streak Badge! 🏆",
+          type: "motivation",
+        });
+      }
+    }
 
-      const isStreak = last7Records.length === 7 && last7Records.every(r =>r.status === "present");
+    // 7 day streak
+    if (status === "present" || !status) {
+      const last7Records = await Attendance.find({ student: studentId })
+        .sort({ date: -1 })
+        .limit(7);
 
-      if(isStreak){
+      const isStreak =
+        last7Records.length === 7 &&
+        last7Records.every((r) => r.status === "present");
+
+      if (isStreak) {
         // Auto-award function call
         autoAwardBadge(
           studentId,
           req.user.branch,
-          "7 Days Streak 🔥", 
-          "You attended the library for 7 consecutive days!", 
-          "attendance"
+          "7 Days Streak 🔥",
+          "You attended the library for 7 consecutive days!",
+          "attendance",
         );
       }
     }
     return res.status(200).json({
-      success:true,
+      success: true,
       message: "Attendance marked successfully 🎉",
       record,
     });
@@ -164,6 +169,18 @@ const getLeaderboard = async (req, res) => {
     const start = new Date(year, month, 1);
     const end = new Date(year, Number(month) + 1, 0, 23, 59, 59);
 
+    // Step 1: Check if ANY attendance exists for this month
+    const totalMonthRecords = await Attendance.countDocuments({
+      date: { $gte: start, $lte: end },
+      status: "present",
+    });
+
+    if (totalMonthRecords === 0) {
+      return res
+        .status(200)
+        .json({ message: "No data found", leaderboard: [] });
+    }
+
     const leaderboard = await Attendance.aggregate([
       {
         $match: {
@@ -190,7 +207,7 @@ const getLeaderboard = async (req, res) => {
       },
       {
         $match: {
-          "student.branch": req.user.branch,
+          "student.branch": new RegExp(`^${req.user.branch}$`, "i"),
         },
       },
       {
@@ -220,8 +237,74 @@ const getLeaderboard = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+const getMyStreaks = async (req, res) => {
+  try {
+    const records = await Attendance.find({
+      student: req.user._id,
+      status: "present",
+    }).sort({ date: -1 });
+
+    if (records.length === 0) {
+      return res
+        .status(200)
+        .json({ success: true, currentStreak: 0, highestStreak: 0 });
+    }
+    const dates = records.map((r) => {
+      const d = new Date(r.date);
+      d.setHours(0, 0, 0, 0);
+      return d.getTime();
+    });
+    // Remove duplicates
+
+    const uniqueDates = [...new Set(dates)].sort((a, b) => b - a);
+
+    const ONE_DAY = 24 * 60 * 60 * 1000;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayTime = today.getTime();
+    const yesterdayTime = todayTime - ONE_DAY;
+
+    let currentStreak = 0;
+    let highestStreak = 0;
+    let tempStreak = 1;
+
+    // 🏆 Calculate HIGHEST Streak
+    for (let i = 0; i < uniqueDates.length - 1; i++) {
+      if (uniqueDates[i] - uniqueDates[i + 1] === ONE_DAY) {
+        tempStreak++;
+      } else {
+        if (tempStreak > highestStreak) highestStreak = tempStreak;
+        tempStreak = 1;
+      }
+    }
+    if (tempStreak > highestStreak) highestStreak = tempStreak;
+    if (uniqueDates.length === 0) highestStreak = 1;
+
+    // 🔥 Calculate CURRENT Streak
+    if (uniqueDates[0] === todayTime || uniqueDates === yesterdayTime) {
+      currentStreak = 1;
+      for (let i = 0; i < uniqueDates.length - 1; i++) {
+        if (uniqueDates[i] - uniqueDates[i + 1] === ONE_DAY) {
+          currentStreak++;
+        } else {
+          break;
+        }
+      }
+    }
+    return res.status(200).json({
+      success:true,
+      currentStreak,
+      highestStreak
+    })
+  } catch (error) {
+    console.error("Streak calculation error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 module.exports = {
   markAttendance,
   getMonthlyAttendance,
   getLeaderboard,
+  getMyStreaks
 };

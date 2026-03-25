@@ -8,7 +8,7 @@ const autoAwardBadge = async (
   badgeType,
 ) => {
   try {
-    const alreadyExists = await stdAchievement.find({ student: studentId });
+    const alreadyExists = await stdAchievement.findOne({ student: studentId , title:title });
 
     if (!alreadyExists) {
       await stdAchievement.create({

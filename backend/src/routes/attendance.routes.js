@@ -1,5 +1,5 @@
 const express = require("express");
-const {markAttendance, getMonthlyAttendance, getLeaderboard} = require("../controllers/attendance.controller");
+const {markAttendance, getMonthlyAttendance, getLeaderboard, getMyStreaks} = require("../controllers/attendance.controller");
 const {authMiddleware, adminMiddleware, } = require("../middleware/auth.middleware");
 
 const router = express.Router();
@@ -13,6 +13,9 @@ router.get("/monthly",authMiddleware, getMonthlyAttendance);
 
 // public / student
 router.get("/leaderboard", authMiddleware, getLeaderboard)
+
+// get my streak
+router.get("/streak/me", authMiddleware, getMyStreaks)
 
 
 module.exports = router

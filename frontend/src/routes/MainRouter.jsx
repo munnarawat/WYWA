@@ -33,6 +33,7 @@ import ThinkTank from "../components/ThinkTank";
 import ManageStudent from "../pages/admin/manage-student/ManageStudent";
 import ManageStudentIssues from "../pages/admin/ManageStudentIssues";
 import AttendanceChart from "../pages/AttendanceChart";
+import MyAchievements from "../pages/student/My-Achievements/MyAchievements";
 
 
 const MainRouter = () => {
@@ -57,6 +58,7 @@ const MainRouter = () => {
   const studentMenuItems = [
     { name: "My Dashboard", icon: LayoutDashboard, path: "/student/dashboard" },
     { name: "My Attendance-Chart", icon: ChartColumnIncreasing, path: "/student/attendance" },
+    { name: "My Achievement", icon: Trophy, path: "/student/achievement" },
     { name: "Profile", icon: Users, path: "/student/profile" },
   ];
   const thinkTankMenuItems = [
@@ -112,6 +114,7 @@ const MainRouter = () => {
           }>
           <Route path="/student/dashboard" element={<StudentOverview />} />
           <Route path="/student/attendance" element={<AttendanceChart/>} />
+          <Route path="/student/achievement" element={<MyAchievements/>} />
         </Route>
 
         {/* think-thank dashboard */}

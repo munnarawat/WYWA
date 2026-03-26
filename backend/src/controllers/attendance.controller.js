@@ -1,5 +1,6 @@
 const Attendance = require("../models/attendance.model");
 const userModel = require("../models/user.model");
+const stdAchievement = require("../models/studentAchievement.model");
 const {
   autoAwardBadge,
 } = require("../controllers/studentAchievement.controller");
@@ -17,7 +18,6 @@ const markAttendance = async (req, res) => {
     //  THE FIX: Future Date Validation
     const requestDate = new Date(date);
     const today = new Date();
-
     requestDate.setHours(0, 0, 0, 0);
     today.setHours(0, 0, 0, 0);
 
@@ -52,20 +52,49 @@ const markAttendance = async (req, res) => {
         returnDocument: "after",
       },
     );
-    // 6-Day Streak Check
+
     if (status === "present" || !status) {
-      const last6Records = await Attendance.find({ student: studentId })
+      const io = req.app.get("io");
+
+      // --- BADGE 1: FIRST STEP 🌟 ---
+      const totalPresentEver = await Attendance.countDocuments({
+        student: studentId,
+        status: "present",
+      });
+      const hasFirstStep = await stdAchievement.findOne({student:studentId, title:"First Step 🌟"});
+
+      if (totalPresentEver => 1 && !hasFirstStep) {
+        autoAwardBadge(
+          studentId,
+          req.user.branch,
+          "First Step 🌟",
+          "Marked your very first attendance.",
+          "attendance",
+        );
+        io.to(
+          studentId.toString().emit("receive_notification", {
+            title: "Welcome! 🌟",
+            message: "Great start! You unlocked the 'First Step' badge!",
+            type: "success",
+          }),
+        );
+      }
+
+      // --- 15 days check---
+      const lastRecord = await Attendance.find({ student: studentId })
         .sort({ date: -1 })
-        .limit(6);
+        .limit(15);
+      let currentStreak = 0;
+      for (let i = 0; i < lastRecord.length; i++) {
+        if (lastRecord[i].status === "present") {
+          currentStreak++;
+        } else {
+          break;
+        }
+      }
 
-      const is6DayStreak =
-        last6Records.length === 6 &&
-        last6Records.every((r) => r.status === "present");
-
-      if (is6DayStreak) {
-        const io = req.app.get("io");
-
-        // only this student who complete 6 day streak
+      // --- NOTIFICATION: 6-DAY STREAK ---
+      if (currentStreak === 6) {
         io.to(studentId.toString()).emit("receive_notification", {
           title: "Almost There! 🔥",
           message:
@@ -73,20 +102,8 @@ const markAttendance = async (req, res) => {
           type: "motivation",
         });
       }
-    }
-
-    // 7 day streak
-    if (status === "present" || !status) {
-      const last7Records = await Attendance.find({ student: studentId })
-        .sort({ date: -1 })
-        .limit(7);
-
-      const isStreak =
-        last7Records.length === 7 &&
-        last7Records.every((r) => r.status === "present");
-
-      if (isStreak) {
-        // Auto-award function call
+      // --- BADGE 2: 7 DAYS STREAK 🔥 ---
+      if (currentStreak === 7) {
         autoAwardBadge(
           studentId,
           req.user.branch,
@@ -94,8 +111,59 @@ const markAttendance = async (req, res) => {
           "You attended the library for 7 consecutive days!",
           "attendance",
         );
+        io.to(studentId.toString()).emit("receive_notification", {
+          title: "Badge Unlocked! 🏆✨",
+          message: "Congratulations! You earned the '7 Days Streak' badge!",
+          type: "success",
+        });
+      }
+
+      // --- BADGE 3: CONSISTENCY KING 👑 (15 Days) ---
+      if (currentStreak === 15) {
+        autoAwardBadge(
+          studentId,
+          req.user.branch,
+          "Consistency King 👑",
+          "Maintained a 15-day streak.",
+          "attendance",
+        );
+        io.to(studentId.toString()).emit("receive_notification", {
+          title: "Unstoppable! 👑",
+          message: "15 Days Streak! You unlocked the Consistency King badge!",
+          type: "success",
+        });
+      }
+
+      // --- BADGE 4: MONTHLY CHAMP 🏆 ---
+      const year = requestDate.getFullYear();
+      const month = requestDate.getMonth();
+      const dayInThisMonth = new Date(year, month + 1, 0).getDate();
+
+      const monthStart = new Date(year, month + 1);
+      const monthEnd = new Date(year, month + 1, 0, 23, 59, 59);
+
+      const presentsThisMonth = await Attendance.countDocuments({
+        student: studentId,
+        status: "present",
+        date: { $gte: monthStart, $lte: monthEnd },
+      });
+
+      if (presentsThisMonth === dayInThisMonth) {
+        autoAwardBadge(
+          studentId,
+          req.user.branch,
+          "Monthly Champ 🏆",
+          "100% attendance in a single month.",
+          "attendance",
+        );
+        io.to(studentId.toString()).emit("receive_notification", {
+          title: "Legend! 🏆",
+          message: "100% Attendance this month! You are the Monthly Champ!",
+          type: "success",
+        });
       }
     }
+
     return res.status(200).json({
       success: true,
       message: "Attendance marked successfully 🎉",
@@ -159,7 +227,6 @@ const getMonthlyAttendance = async (req, res) => {
 };
 
 // 3) Leaderboard (Top attendance in a month)
-
 const getLeaderboard = async (req, res) => {
   try {
     const { year, month, limit = 10 } = req.query;
@@ -293,10 +360,10 @@ const getMyStreaks = async (req, res) => {
       }
     }
     return res.status(200).json({
-      success:true,
+      success: true,
       currentStreak,
-      highestStreak
-    })
+      highestStreak,
+    });
   } catch (error) {
     console.error("Streak calculation error:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -306,5 +373,5 @@ module.exports = {
   markAttendance,
   getMonthlyAttendance,
   getLeaderboard,
-  getMyStreaks
+  getMyStreaks,
 };

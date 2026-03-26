@@ -110,7 +110,7 @@ const MyAchievements = () => {
             });
 
             setBadgesList(mergedBadges);
-          }
+          }          
         } catch (error) {
           console.error("Failed to fetch achievements", error);
         }

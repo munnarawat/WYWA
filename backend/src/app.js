@@ -9,7 +9,8 @@ const libraryRouters = require("./routes/library.routes");
 const attendanceRouters = require("./routes/attendance.routes");
 const dashboardRouter = require("./routes/Dashboard.routes");
 const resetPasswordRouter = require("./routes/passwordReset.route");
-const ticketRouter = require("./routes/ticket.routes")
+const ticketRouter = require("./routes/ticket.routes");
+const notificationRouter = require("./routes/notification.routes");
 const cookieParser = require("cookie-parser");
 const app = express();
 
@@ -34,5 +35,6 @@ app.use("/api/attendance", attendanceRouters)
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/password", resetPasswordRouter);
 app.use("/api/ticket", ticketRouter);
+app.use("/api/notification", notificationRouter)
 
 module.exports = app;

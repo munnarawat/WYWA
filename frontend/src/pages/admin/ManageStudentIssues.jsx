@@ -133,7 +133,7 @@ const ManageStudentIssues = () => {
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="bg-white/5 heading border border-white/10 rounded-xl px-4 py-2.5 outline-none focus:border-teal-500 text-sm [&>option]:bg-zinc-900">
+            className="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 outline-none focus:border-teal-500 text-sm [&>option]:bg-zinc-900">
             <option value="all">All Issues</option>
             <option value="pending">Pending</option>
             <option value="in-progress">In Progress</option>
@@ -157,7 +157,7 @@ const ManageStudentIssues = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               key={ticket._id}
-              className="bg-white/5 mono hover:bg-white-[0.07] border border-white/10 rounded-2xl p-5 md:p-6 transition-all flex flex-col md:flex-row gap-6 md:items-center justify-between">
+              className="bg-white/5  hover:bg-white-[0.07] border border-white/10 rounded-2xl p-5 md:p-6 transition-all flex flex-col md:flex-row gap-6 md:items-center justify-between">
               <div className="flex-1 space-y-3">
                 <div className="flex flex-wrap items-center gap-3">
                   <span

@@ -74,7 +74,7 @@ useEffect(() => {
   };
 
   return (
-    <div className="flex  h-screen bg-zinc-950 text-white overflow-hidden font-sans">
+    <div className="flex  h-screen bg-zinc-950 text-white overflow-hidden">
       {/* Mobile Sidebar Overlay */}
       <AnimatePresence>
         {isSidebarOpen && !isDesktop && (

@@ -8,8 +8,8 @@ const router  = express.Router();
 
 router.get("/me", authMiddleware, getMyNotifications);
 
-router.patch("/:id", authMiddleware, deleteNotification);
+router.delete("/:id", authMiddleware, deleteNotification);
 
-router.patch("/clear-all/me", authMiddleware, clearAllNotifications);
+router.delete("/clear-all/me", authMiddleware, clearAllNotifications);
 
 module.exports = router;

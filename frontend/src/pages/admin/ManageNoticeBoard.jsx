@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 import PopUp from "../../pop-up/PopUp";
 // 🌟 NAYA IMPORT
 import { useForm } from "react-hook-form";
+import NoticeCard from "../../components/NoticeCard";
 
 // 🌟 SKELETON LOADER FOR CARDS
 const NoticeSkeleton = () => {
@@ -71,7 +72,7 @@ const ManageNoticeBoard = () => {
     try {
       setIsLoading(true);
       const response = await api.get(
-        `/notice?page=${currentPage}&limit=${limit}&search=${searchQuery}`
+        `/notice?page=${currentPage}&limit=${limit}&search=${searchQuery}`,
       );
       setNotices(response.data.notices);
       setTotalPages(response.data.totalPages);
@@ -87,11 +88,9 @@ const ManageNoticeBoard = () => {
     const delayDebounceFn = setTimeout(fetchNotice, 500);
     return () => clearTimeout(delayDebounceFn);
   }, [currentPage, searchQuery]);
-
-  // 2. Add / Update Notice API (RHF data directly dega)
   const onSubmitForm = async (data) => {
     const toastId = toast.loading(
-      editingId ? "Updating notice..." : "Publishing notice..."
+      editingId ? "Updating notice..." : "Publishing notice...",
     );
 
     try {
@@ -192,7 +191,11 @@ const ManageNoticeBoard = () => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl p-6 md:p-8 z-10">
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(20,184,166,0.3), rgba(255,255,255,0.05), rgba(132,204,22,0.15))",
+              }}
+              className="relative w-full max-w-lg  border border-white/10 rounded-2xl shadow-2xl p-6 md:p-8 z-10">
               <button
                 onClick={closeModal}
                 className="absolute top-4 right-4 text-zinc-400 hover:text-white transition bg-white/5 p-2 rounded-full">
@@ -232,7 +235,9 @@ const ManageNoticeBoard = () => {
                   <textarea
                     rows="4"
                     placeholder="Provide details here..."
-                    {...register("description", { required: "Description is required" })}
+                    {...register("description", {
+                      required: "Description is required",
+                    })}
                     className={`w-full bg-black/20 border ${
                       errors.description ? "border-rose-500" : "border-white/10"
                     } rounded-xl py-3 px-4 text-white focus:outline-none focus:border-teal-500/50 transition-colors resize-none`}
@@ -255,7 +260,11 @@ const ManageNoticeBoard = () => {
                     type="submit"
                     disabled={isSubmitting}
                     className="flex-1 py-3 rounded-xl bg-linear-to-r from-teal-500 to-lime-500 text-zinc-950 font-bold shadow-lg hover:shadow-teal-500/25 transition disabled:opacity-50 disabled:cursor-not-allowed">
-                    {isSubmitting ? "Processing..." : (editingId ? "Update" : "Publish")}
+                    {isSubmitting
+                      ? "Processing..."
+                      : editingId
+                        ? "Update"
+                        : "Publish"}
                   </button>
                 </div>
               </form>
@@ -270,7 +279,11 @@ const ManageNoticeBoard = () => {
           <motion.h1
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="text-3xl font-bold bg-clip-text text-transparent bg-linear-to-r from-teal-400 to-lime-400">
+            className="text-4xl font-extrabold bg-clip-text text-transparent"
+            style={{
+              backgroundImage:
+                "linear-gradient(135deg, #f0fdf4 0%, #14b8a6 50%, #84cc16 100%)",
+            }}>
             Notice Board
           </motion.h1>
           <motion.p
@@ -281,7 +294,6 @@ const ManageNoticeBoard = () => {
             Publish announcements and keep students updated.
           </motion.p>
         </div>
-
         <div className="flex flex-col sm:flex-row gap-4">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -299,7 +311,7 @@ const ManageNoticeBoard = () => {
                 setSearchQuery(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:border-teal-500/50 transition-all text-white"
+              className="w-full bg-[#111C1F] border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:border-teal-500/50 transition-all text-white"
             />
           </motion.div>
 
@@ -335,83 +347,40 @@ const ManageNoticeBoard = () => {
               show: { opacity: 1, transition: { staggerChildren: 0.1 } },
             }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {notices.map((notice) => (
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  show: { opacity: 1, y: 0 },
-                }}
-                key={notice._id}
-                className="group relative bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-teal-500/30 transition-all hover:-translate-y-1 hover:shadow-2xl flex flex-col justify-between h-full min-h-[220px]">
-                {/* Notice Content */}
-                <div>
-                  <h3 className="text-xl font-bold text-white mb-2 line-clamp-2 leading-tight group-hover:text-teal-400 transition-colors">
-                    {notice.title}
-                  </h3>
-                  <p className="text-zinc-400 text-sm line-clamp-3 mb-4 leading-relaxed">
-                    {notice.description}
-                  </p>
-                </div>
-
-                {/* Footer Data & Actions */}
-                <div className="mt-auto pt-4 border-t border-white/10 flex items-end justify-between">
-                  <div className="space-y-1.5">
-                    <div className="flex items-center gap-1.5 text-xs text-zinc-500">
-                      <Calendar size={12} />
-                      {new Date(notice.createdAt).toLocaleDateString("en-IN", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </div>
-                    <div className="flex items-center gap-1.5 text-xs text-zinc-500">
-                      <User size={12} />
-                      <span className="capitalize">
-                        {notice.createdBy?.userName || "Admin"}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex items-center gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={() => openEditModal(notice)}
-                      className="p-2 rounded-lg bg-teal-500/10 text-teal-400 hover:bg-teal-500/20 transition"
-                      title="Edit">
-                      <Edit2 size={16} />
-                    </button>
-                    <button
-                      onClick={() => confirmDelete(notice._id)}
-                      className="p-2 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition"
-                      title="Delete">
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
+            {notices.map((notice, index) => (
+              <NoticeCard
+                key={notice._id || index}
+                notice={notice}
+                index={index}
+                isAdmin={true}
+                onDelete={confirmDelete}
+                onEdit={openEditModal}
+              />
             ))}
           </motion.div>
-
           {/* 🟢 PAGINATION CONTROLS */}
           {totalPages > 1 && (
-            <div className="mt-10 flex justify-center items-center gap-4">
+            <div className="mt-12 flex justify-center items-center gap-3">
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-300 disabled:opacity-50 disabled:cursor-not-allowed transition">
-                Previous
+                className="px-5 py-2.5 rounded-xl border border-white/8 bg-white/4 text-slate-400 text-[13px] font-medium hover:bg-teal-500/10 hover:border-teal-500/30 hover:text-teal-400 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white/4 disabled:hover:border-white/8 disabled:hover:text-slate-400 transition-all duration-300">
+                ← Previous
               </button>
-              <span className="text-sm font-medium text-zinc-400">
-                Page <span className="text-white">{currentPage}</span> of{" "}
-                {totalPages}
+
+              <span className="px-4 text-[13px] text-slate-500">
+                Page{" "}
+                <span className="text-white font-semibold">{currentPage}</span>{" "}
+                of {totalPages}
               </span>
+
               <button
                 onClick={() =>
                   setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                 }
                 disabled={currentPage === totalPages}
-                className="px-4 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-300 disabled:opacity-50 disabled:cursor-not-allowed transition">
-                Next
+                className="px-5 py-2.5 rounded-xl border border-white/8 bg-white/4 text-slate-400 text-[13px] font-medium hover:bg-teal-500/10 hover:border-teal-500/30 hover:text-teal-400 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-white/4 disabled:hover:border-white/8 disabled:hover:text-slate-400 transition-all duration-300">
+                Next →
               </button>
             </div>
           )}

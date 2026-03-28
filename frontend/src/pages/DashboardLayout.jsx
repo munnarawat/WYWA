@@ -91,7 +91,7 @@ useEffect(() => {
         initial={false}
         animate={{ x: isDesktop ? 0 : isSidebarOpen ? 0 : "-100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="fixed lg:static top-0 left-0 h-full w-64 bg-zinc-950/80 backdrop-blur-2xl border-r border-white/10 z-50 flex flex-col">
+        className="fixed lg:static top-0 left-0 h-full lg:w-64 bg-zinc-950/80 backdrop-blur-2xl border-r border-white/10 z-50 flex flex-col">
         <div className="h-20 flex items-center justify-between px-6 border-b border-white/10">
           <div className="text-2xl font-bold tracking-tight">
             <img

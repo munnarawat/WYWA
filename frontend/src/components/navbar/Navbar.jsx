@@ -213,7 +213,7 @@ const Navbar = () => {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: "100%", opacity: 0 }}
             transition={{ damping: 25, type: "spring", stiffness: 200 }}
-            className="fixed heading z-50 inset-0 w-full  min-h-screen bg-black/95 backdrop-blur-xl md:hidden pt-24 px-6 flex-col">
+            className="fixed  z-50 inset-0 w-full  min-h-screen bg-black/95 backdrop-blur-xl md:hidden pt-24 px-6 flex-col">
             {/* when user login- email and userName show */}
             {isAuthenticate && user && (
               <div className="flex items-center justify-center gap-4 bg-white/5 border border-white/10 p-4 rounded-xl mb-8">

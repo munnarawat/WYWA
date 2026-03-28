@@ -1,73 +1,246 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
-import {
-  BookOpen,
-  Rocket,
-  ArrowRight,
-  Calendar as CalIcon,
-  TrendingUp,
-  UserCheck,
-  UserX,
-  Clock,
-  Bell,
-  Trophy,
-  HelpCircle,
-} from "lucide-react";
+import { ArrowRight, BookOpen, Calendar as CalIcon, Clock, Rocket } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import api from "../../utils/api";
 import toast from "react-hot-toast";
 import StudentStats from "./StudentStats";
 import IssuedBooks from "./IssuedBooks";
 import DashboardSidebar from "./DashboardSidebar";
 
-const StudentSkelton = () => {
+// ─────────────────────────────────────────
+// SKELETON
+// ─────────────────────────────────────────
+const StudentSkeleton = () => (
+  <div className="space-y-6 animate-pulse">
+    {/* Stats skeleton */}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="h-40 rounded-[20px] bg-white/[0.04]" />
+      ))}
+    </div>
+
+    {/* Main grid skeleton */}
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5">
+      <div className="flex flex-col gap-5">
+        <div className="h-64 rounded-[20px] bg-white/[0.04]" />
+        <div className="h-72 rounded-[20px] bg-white/[0.04]" />
+      </div>
+      <div className="flex flex-col gap-4">
+        <div className="h-16 rounded-[18px] bg-white/[0.04]" />
+        <div className="h-52 rounded-[20px] bg-white/[0.04]" />
+        <div className="h-44 rounded-[20px] bg-white/[0.04]" />
+      </div>
+    </div>
+  </div>
+);
+
+// ─────────────────────────────────────────
+// NON-MEMBER MOTIVATION VIEW
+// ─────────────────────────────────────────
+const NonMemberView = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="flex-1 space-y-4 py-1">
-            <div className="h-36 w-full bg-white/5 rounded-2xl"></div>
-          </div>
-        ))}
-      </div>
-      <div className="w-full p-2 px-6 h-80 flex flex-col justify-around gap-6 bg-white/5 rounded-md">
-        <div className="w-1/2 bg-white/5 h-10 rounded-md mt-2"></div>
-        {[1, 2, 3, 4].map((i) => (
+    <div className="min-h-screen flex items-center justify-center p-6">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 260 }}
+        className="relative w-full max-w-[580px] rounded-[24px] p-[1px]"
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(20,184,166,0.35), rgba(255,255,255,0.05), rgba(132,204,22,0.2))",
+        }}
+      >
+        <div className="bg-[#0d1117] rounded-[23px] px-10 py-12 text-center relative overflow-hidden">
+          {/* Top ambient glow */}
           <div
-            key={i}
-            className="w-full h-10 animate-pulse bg-white/5 rounded-lg"></div>
-        ))}
-      </div>
+            className="absolute top-[-60px] left-1/2 -translate-x-1/2 w-72 h-48 pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(circle, rgba(20,184,166,0.12), transparent 70%)",
+            }}
+          />
+
+          {/* Icon */}
+          <motion.div
+            initial={{ rotate: 0 }}
+            animate={{ rotate: [0, 6, -4, 6, 0] }}
+            transition={{ delay: 0.5, duration: 1.2 }}
+            className="w-20 h-20 rounded-[22px] flex items-center justify-center mx-auto mb-6 text-4xl"
+            style={{ background: "linear-gradient(135deg, #14b8a6, #84cc16)" }}
+          >
+            📚
+          </motion.div>
+
+          <h2
+            className="text-3xl font-extrabold text-slate-100 mb-4 leading-tight"
+            style={{ fontFamily: "'Syne', sans-serif" }}
+          >
+            Take Your Preparation to the{" "}
+            <span
+              className="bg-clip-text text-transparent"
+              style={{
+                backgroundImage:
+                  "linear-gradient(135deg, #14b8a6, #84cc16)",
+              }}
+            >
+              Next Level
+            </span>
+          </h2>
+
+          <p className="text-slate-500 text-[15px] leading-relaxed mb-8 max-w-md mx-auto">
+            MYWA Library provides the perfect silent environment, high-speed
+            Wi-Fi, and a community of focused students. Stop studying in
+            distractions!
+          </p>
+
+          <motion.button
+            whileHover={{ y: -3, boxShadow: "0 0 40px rgba(255,255,255,0.3)" }}
+            whileTap={{ scale: 0.96 }}
+            onClick={() => navigate("/apply-membership")}
+            className="inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-white text-[#080c10] font-extrabold text-[14px] transition-all"
+            style={{
+              fontFamily: "'Syne', sans-serif",
+              boxShadow: "0 0 24px rgba(255,255,255,0.15)",
+            }}
+          >
+            <Rocket size={18} />
+            Apply for Library Membership
+            <ArrowRight size={18} />
+          </motion.button>
+        </div>
+      </motion.div>
     </div>
   );
 };
 
+// ─────────────────────────────────────────
+// RECENT ACTIVITY CARD
+// ─────────────────────────────────────────
+const RecentActivity = ({ records = [] }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.2, type: "spring", stiffness: 260 }}
+    className="relative rounded-[20px] p-[1px]"
+    style={{
+      background:
+        "linear-gradient(135deg, rgba(20,184,166,0.28), rgba(255,255,255,0.05), rgba(132,204,22,0.15))",
+    }}
+  >
+    <div className="bg-[#0d1117] rounded-[19px] p-6 relative overflow-hidden">
+      {/* Mesh */}
+      <div
+        className="absolute bottom-0 right-0 w-32 h-32 pointer-events-none rounded-br-[19px]"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px)",
+          backgroundSize: "14px 14px",
+        }}
+      />
+
+      {/* Header */}
+      <div className="flex items-center justify-between mb-5">
+        <h3
+          className="text-[16px] font-bold text-slate-100 flex items-center gap-2"
+          style={{ fontFamily: "'Syne', sans-serif" }}
+        >
+          🕐 Recent Activity
+        </h3>
+        <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-white/[0.05] text-slate-500">
+          Last {records.length} Days
+        </span>
+      </div>
+
+      {/* Divider */}
+      <div className="flex items-center gap-3 mb-4">
+        <span className="text-[10px] font-bold tracking-widest uppercase text-slate-600 whitespace-nowrap">
+          Attendance log
+        </span>
+        <div className="flex-1 h-px bg-white/[0.05]" />
+      </div>
+
+      {/* Records */}
+      {records.length === 0 ? (
+        <p className="text-slate-600 text-sm py-4 text-center">No recent activity yet.</p>
+      ) : (
+        <div className="space-y-2">
+          {records.map((record, i) => {
+            const isPresent = record.status === "present";
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.25 + i * 0.05 }}
+                whileHover={{ x: 4 }}
+                className="flex items-center justify-between px-4 py-3 rounded-[13px] border border-white/[0.05] bg-white/[0.02] hover:bg-white/[0.04] transition-all"
+              >
+                <div className="flex items-center gap-3 text-[13px] text-slate-400">
+                  {/* Glowing dot */}
+                  <span
+                    className="w-2 h-2 rounded-full flex-shrink-0"
+                    style={{
+                      background: isPresent ? "#34d399" : "#fb7185",
+                      boxShadow: isPresent
+                        ? "0 0 6px rgba(52,211,153,0.5)"
+                        : "0 0 6px rgba(251,113,133,0.5)",
+                    }}
+                  />
+                  <CalIcon size={14} className="text-slate-600" />
+                  {new Date(record.date).toLocaleDateString("en-IN", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </div>
+                <span
+                  className={`text-[10px] font-extrabold tracking-widest uppercase px-2.5 py-1 rounded-md border
+                    ${isPresent
+                      ? "bg-emerald-400/10 border-emerald-400/20 text-emerald-400"
+                      : "bg-rose-400/10 border-rose-400/20 text-rose-400"
+                    }`}
+                >
+                  {record.status}
+                </span>
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  </motion.div>
+);
+
+// ─────────────────────────────────────────
+// MAIN COMPONENT
+// ─────────────────────────────────────────
 const StudentOverview = () => {
   const { user } = useSelector((state) => state.auth);
   const [isLoading, setIsLoading] = useState(true);
 
-  // States
   const [stats, setStats] = useState({
     totalPresent: 0,
     totalAbsent: 0,
     percentage: 0,
     recentAttendance: [],
   });
-  const [issuedBooks, setIssuedBooks] = useState([]);
-
-  const [notices, setNotices] = useState([]);
+  const [issuedBooks, setIssuedBooks]   = useState([]);
+  const [notices, setNotices]           = useState([]);
   const [achievements, setAchievements] = useState([]);
 
   useEffect(() => {
-    const fetchMyStats = async () => {
-      if (!user?.isLibraryMember) {
-        setIsLoading(false);
-        return;
-      }
+    if (!user?.isLibraryMember) {
+      setIsLoading(false);
+      return;
+    }
 
+    const fetchAll = async () => {
       try {
         setIsLoading(true);
-        // API Calls
         const [attendanceRes, booksRes, noticeRes, achievementRes] =
           await Promise.all([
             api.get("/dashboard/student/attendance"),
@@ -76,128 +249,91 @@ const StudentOverview = () => {
             api.get("/achievements/student"),
           ]);
 
-        if (attendanceRes.data.success) {
-          setStats(attendanceRes.data.stats);
-        }
-        if (booksRes.data.success) {
-          setIssuedBooks(booksRes.data.records);
-        }
-        if (noticeRes.data.success) {
-          setNotices(noticeRes.data.notices);
-        }
-        if (achievementRes.data.success) {
-          setAchievements(achievementRes.data.achievements);
-        }
+        if (attendanceRes.data.success) setStats(attendanceRes.data.stats);
+        if (booksRes.data.success)      setIssuedBooks(booksRes.data.records);
+        if (noticeRes.data.success)     setNotices(noticeRes.data.notices);
+        if (achievementRes.data.success) setAchievements(achievementRes.data.achievements);
       } catch (error) {
-        console.error("Error fetching dashboard data", error);
-        toast.error("Failed to load dashboard data");
+        console.error("Dashboard fetch error:", error);
+        toast.error("Failed to load dashboard data.");
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchMyStats();
-  }, [user]);
+    fetchAll();
+  }, [user?._id]);
 
-  // 🔴 VIEW 1: Motivation UI (Non-Library Member)
-  if (!user?.isLibraryMember) {
-    return (
-      <div className="w-full min-h-screen bg-zinc-950 p-4 md:p-8 flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-2xl w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-8 md:p-12 text-center shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-32 bg-teal-500/20 blur-[100px] -z-10"></div>
-          <div className="w-20 h-20 bg-linear-to-tr from-teal-500 to-lime-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-teal-500/20 transform rotate-12">
-            <BookOpen size={40} className="text-zinc-950 -rotate-12" />
-          </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Take Your Preparation to the{" "}
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-teal-400 to-lime-400">
-              Next Level
-            </span>
-          </h2>
-          <p className="text-zinc-400 text-base md:text-lg mb-8 max-w-lg mx-auto leading-relaxed">
-            MYWA Library provides the perfect silent environment, high-speed
-            Wi-Fi, and a community of focused students. Stop studying in
-            distractions!
-          </p>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center gap-2 bg-white text-black font-bold px-8 py-4 rounded-full shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all">
-            <Rocket size={20} /> Apply for Library Membership{" "}
-            <ArrowRight size={20} />
-          </motion.button>
-        </motion.div>
-      </div>
-    );
-  }
+  // Non-member view
+  if (!user?.isLibraryMember) return <NonMemberView />;
+
+  const firstName = user?.fullName?.firstName || user?.userName || "Student";
 
   return (
-    <div className="w-full min-h-screen bg-zinc-950 text-white p-4 md:p-8 overflow-y-auto pb-24">
-      {/* 1. HERO SECTION */}
-      <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <motion.h1
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="text-3xl md:text-4xl font-bold text-white mb-2">
-            Welcome back,{" "}
-            <span className="bg-clip-text text-transparent bg-linear-to-r from-teal-400 to-lime-400 capitalize">
-              {user?.fullName?.firstName || user?.userName}
-            </span>
-            👋
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            className="text-zinc-400 mt-1">
-            {user?.branch} Branch | Here is your daily progress overview.
-          </motion.p>
+    <div className="w-full min-h-screen text-white p-4 md:p-8 pb-24 overflow-y-auto">
+
+      {/* ── HERO ── */}
+      <div className="mb-8">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-semibold tracking-widest uppercase mb-3">
+          <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
+          MYWA · Student Dashboard
         </div>
+
+        <motion.h1
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="text-3xl md:text-4xl font-extrabold mb-2 bg-clip-text text-transparent"
+          style={{
+            backgroundImage:
+              "linear-gradient(135deg, #f0fdf4 0%, #14b8a6 50%, #84cc16 100%)",
+            fontFamily: "'Syne', sans-serif",
+          }}
+        >
+          Welcome back, {firstName} 👋
+        </motion.h1>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="flex items-center gap-2.5 flex-wrap"
+        >
+          <span className="text-[14px] text-slate-500">
+            {user?.branch} Branch
+            <span className="mx-2 text-slate-700">·</span>
+            Here's your daily progress overview.
+          </span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold">
+            ✅ Library Member
+          </span>
+        </motion.div>
       </div>
 
+      {/* ── LOADING ── */}
       {isLoading ? (
-        <StudentSkelton />
+        <StudentSkeleton />
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* LEFT COLUMN */}
-          <div className="lg:col-span-8 space-y-8">
-            <StudentStats stats={stats} />
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="bg-white/5 border border-white/10 rounded-2xl p-6">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2 mb-6">
-                <Clock size={20} className="text-teal-400" /> Recent Activity
-              </h3>
-              <div className="space-y-4">
-                {stats.recentAttendance.map((record, i) => (
-                  <div
-                    key={i}
-                    className="flex justify-between p-4 bg-black/40 rounded-xl border border-white/5">
-                    <div className="flex gap-4">
-                      <CalIcon size={18} className="text-zinc-400" />{" "}
-                      {new Date(record.date).toLocaleDateString()}
-                    </div>
-                    <span
-                      className={`uppercase text-xs font-bold ${record.status === "present" ? "text-emerald-400" : "text-rose-400"}`}>
-                      {record.status}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
+        <div className="flex flex-col gap-5">
 
-            <IssuedBooks issuedBooks={issuedBooks} />
+          {/* Stats */}
+          <StudentStats stats={stats} />
+
+          {/* Main layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5">
+
+            {/* LEFT COLUMN */}
+            <div className="flex flex-col gap-5">
+              <RecentActivity records={stats.recentAttendance} />
+              <IssuedBooks issuedBooks={issuedBooks} />
+            </div>
+
+            {/* RIGHT COLUMN */}
+            <DashboardSidebar
+              notices={notices}
+              achievements={achievements}
+            />
           </div>
-          {/* RIGHT COLUMN (SIDEBAR) */}
-          <div className="lg:col-span-4">
-            <DashboardSidebar notices={notices} achievements={achievements} />
-          </div>
+
         </div>
       )}
     </div>

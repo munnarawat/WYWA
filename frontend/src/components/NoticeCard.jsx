@@ -66,7 +66,6 @@ const NoticeCard = ({ notice, index, isAdmin, onEdit, onDelete }) => {
           {/* Title */}
           <h3
             className="font-bold text-[17px] leading-snug text-slate-100 mb-2.5 group-hover:text-teal-400 transition-colors duration-300"
-            style={{ fontFamily: "'Syne', sans-serif" }}
           >
             {notice.title}
           </h3>

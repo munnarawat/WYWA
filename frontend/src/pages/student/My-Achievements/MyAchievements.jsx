@@ -132,7 +132,6 @@ const MyAchievements = () => {
           style={{
             backgroundImage:
               "linear-gradient(135deg, #f0fdf4 0%, #14b8a6 50%, #84cc16 100%)",
-            fontFamily: "'Syne', sans-serif",
           }}>
           My Achievements
         </motion.h1>
@@ -219,7 +218,6 @@ const MyAchievements = () => {
                       style={{
                         backgroundImage:
                           "linear-gradient(135deg, #fb7185, #f97316)",
-                        fontFamily: "'Syne', sans-serif",
                       }}>
                       {myStats.currentStreak} Days
                     </div>
@@ -261,8 +259,7 @@ const MyAchievements = () => {
             <div className="bg-[#0d1117] rounded-[19px] p-6">
               <div className="flex justify-between items-center mb-5">
                 <h3
-                  className="text-[16px] font-bold text-slate-100 flex items-center gap-2"
-                  style={{ fontFamily: "'Syne', sans-serif" }}>
+                  className="text-[16px] font-bold text-slate-100 flex items-center gap-2">
                   👑 Top Rankers
                 </h3>
                 <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-white/5 text-slate-500">
@@ -289,11 +286,10 @@ const MyAchievements = () => {
                       <div
                         key={ranker.studentId}
                         className={`flex items-center justify-between px-3.5 py-3 rounded-[14px] border transition-all
-                            ${isMe ? "bg-teal-500/[0.06] border-teal-500/20" : "bg-white/3 border-transparent"}`}>
+                            ${isMe ? "bg-teal-500/6 border-teal-500/20" : "bg-white/3 border-transparent"}`}>
                         <div className="flex items-center gap-3">
                           <div
-                            className={`w-7 h-7 rounded-[8px] flex items-center justify-center text-[13px] font-extrabold flex-shrink-0 ${RANK_STYLES[i] || "bg-white/5 text-slate-500"}`}
-                            style={{ fontFamily: "'Syne', sans-serif" }}>
+                            className={`w-7 h-7 rounded-lg flex items-center justify-center text-[13px] font-extrabold shrink-0 ${RANK_STYLES[i] || "bg-white/5 text-slate-500"}`}>
                             {i + 1}
                           </div>
                           <span
@@ -320,11 +316,10 @@ const MyAchievements = () => {
         </div>
 
         {/* RIGHT — BADGES CABINET */}
-        <div className="bg-[#0d1117] border border-white/[0.06] rounded-[20px] p-6 sm:p-7">
+        <div className="bg-[#0d1117] border border-white/6 rounded-[20px] p-6 sm:p-7">
           <div className="flex justify-between items-center mb-6">
             <h2
-              className="text-[20px] font-extrabold text-slate-100 flex items-center gap-2"
-              style={{ fontFamily: "'Syne', sans-serif" }}>
+              className="text-[20px] font-extrabold text-slate-100 flex items-center gap-2">
               ⚡ Badges Cabinet
             </h2>
             <span className="text-[12px] font-bold px-3.5 py-1.5 rounded-full bg-teal-400/8 border border-teal-400/20 text-teal-400">

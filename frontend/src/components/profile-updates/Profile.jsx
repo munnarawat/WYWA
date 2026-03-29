@@ -1,191 +1,144 @@
-import React, { useState, useEffect } from "react";
-import { motion } from "motion/react";
-import { User, Mail, Save, Loader, Type } from "lucide-react";
-import { useSelector, useDispatch } from "react-redux";
-import api from "../../utils/api";
-import toast from "react-hot-toast";
-import { setUser } from "../../store/slice/authSlice";
+import React, { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useForm } from "react-hook-form";
-const Profile = () => {
-  const { user } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+import { BookOpen, Phone, Save, User, Loader2 } from "lucide-react";
+import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import api from "../../utils/api";
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm();
+// Sub-components Import
+import ProfileHeader from "./ProfileHeader";
+import BasicInfoTab from "./tabs/BasicInfoTab";
+import AcademicInfoTab from "./tabs/AcademicInfoTab";
+import ContactInfoTab from "./tabs/ContactInfoTab";
+
+const ProfileSkeleton = () => (
+  <div className="animate-pulse space-y-5 max-w-[860px] mx-auto p-4 sm:p-8">
+    <div className="h-[140px] rounded-[20px] bg-white/4" />
+    <div className="h-14 w-72 rounded-2xl bg-white/4" />
+    <div className="h-[380px] rounded-[20px] bg-white/4" />
+  </div>
+);
+
+const Profile = () => {
+  const { user: authUser } = useSelector((state) => state.auth);
+  const [activeTab, setActiveTab] = useState("basic");
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting, isDirty } } = useForm({
+    defaultValues: {
+      userName: "", fullName: { firstName: "", lastName: "" }, branch: "",
+      personal: { gender: "", dob: "", bloodGroup: "" },
+      academic: { studentId: "", course: "", batch: "", semester: "" },
+      contact: { phone: "", currentAddress: "", permanentAddress: "" },
+    },
+  });
+
   useEffect(() => {
-    if (user) {
-      reset({
-        userName: user.userName || "",
-        email: user.email || "",
-        firstName: user.fullName?.firstName || "",
-        lastName: user.fullName?.lastName || "",
-      });
-    }
-  }, [user, reset]);
+    const fetchProfile = async () => {
+      try {
+        const res = await api.get("/auth/profile");
+        if (res.data.success) {
+          const userData = res.data.user;
+          if (userData.profile?.personal?.dob) {
+            userData.profile.personal.dob = new Date(userData.profile.personal.dob).toISOString().split("T")[0];
+          }
+          reset({
+            userName: userData.userName || "",
+            fullName: userData.fullName || { firstName: "", lastName: "" },
+            branch: userData.branch || "",
+            personal: userData.profile?.personal || {},
+            academic: userData.profile?.academic || {},
+            contact: userData.profile?.contact || {},
+          });
+        }
+      } catch (error) {
+        toast.error("Failed to fetch profile");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchProfile();
+  }, [reset]);
 
   const onSubmit = async (data) => {
+    const toastId = toast.loading("Updating profile...");
     try {
-        const formattedData = {
-        userName: data.userName,
-        email: data.email,
-        fullName: {
-          firstName: data.firstName,
-          lastName: data.lastName,
-        }
-      };
-      const res = await api.put("/auth/profile/update", formattedData);
-
+      const res = await api.put("/auth/profile/update", data);
       if (res.data.success) {
-        toast.success("profile update successfully 🎉");
-        dispatch(setUser(res.data.user));
+        toast.success("Profile updated! 🎉", { id: toastId });
+        reset(res.data.user || data);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Profile update failed");
+      toast.error(error.response?.data?.message || "Something went wrong", { id: toastId });
     }
   };
+
+  const handleAvatarUpload = (e) => toast.success("Avatar upload coming soon!");
+
+  const tabs = [
+    { id: "basic", label: "Basic Info", emoji: "👤" },
+    ...(authUser?.role === "student" ? [{ id: "academic", label: "Academic Info", emoji: "📚" }] : []),
+    { id: "contact", label: "Contact Info", emoji: "📞" },
+  ];
+
+  if (isLoading) return <ProfileSkeleton />;
+
+  const firstName = authUser?.fullName?.firstName || authUser?.userName || "User";
+
   return (
-    <div className="min-h-screen bg-[#0a0a0c] pt-28 px-4 pb-12 flex justify-center items-start">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-xl bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 shadow-2xl">
-        <div className="flex items-center gap-4 mb-8 pb-6 border-b border-white/10">
-          <div className="w-16 h-16 rounded-full bg-linear-to-tr from-teal-500 to-lime-600 flex items-center justify-center text-2xl font-bold text-white shadow-lg">
-            {user?.userName?.[0]?.toUpperCase() || "U"}
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-white">My Profile</h2>
-            <p className="text-gray-400 text-sm">
-              Update your personal details
-            </p>
-          </div>
+    <div className="w-full mx-auto p-4 sm:p-8 pb-24 flex flex-col gap-5">
+      {/* Eyebrow */}
+      <div>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-semibold tracking-widest uppercase">
+          <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" /> MYWA · Profile Settings
         </div>
-        {/* form data */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* First Name & Last Name (Grid layout for better UI) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 ml-1">
-                First Name
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Type size={18} className="text-gray-500" />
-                </div>
-                <input
-                  type="text"
-                  {...register("firstName", {
-                    required: "First name is required",
-                  })}
-                  className="w-full pl-10 pr-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
-                  placeholder="First Name"
-                />
-              </div>
-              {errors.fullName?.firstName && (
-                <p className="text-red-400 text-xs ml-1 mt-1">
-                  {errors.fullName.firstName.message}
-                </p>
-              )}
-            </div>
+      </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 ml-1">
-                Last Name
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Type size={18} className="text-gray-500" />
-                </div>
-                <input
-                  type="text"
-                  {...register("lastName")}
-                  className="w-full pl-10 pr-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
-                  placeholder="Last Name"
-                />
-              </div>
-              {errors.fullName?.lastName && (
-                <p className="text-red-400 text-xs ml-1 mt-1">
-                  {errors.fullName.lastName.message}
-                </p>
-              )}
-            </div>
+      <ProfileHeader authUser={authUser} firstName={firstName} handleAvatarUpload={handleAvatarUpload} />
+
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+        {/* Tab Buttons */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="flex gap-1.5 p-1.5 rounded-2xl w-full sm:w-fit overflow-x-auto border border-white/[0.07] bg-white/[0.03]">
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id} type="button" onClick={() => setActiveTab(tab.id)}
+                className={`relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold whitespace-nowrap transition-all duration-300 ${isActive ? "text-teal-400" : "text-slate-500 hover:text-slate-200"}`}
+              >
+                {isActive && <motion.div layoutId="activeTab" className="absolute inset-0 rounded-xl -z-10 bg-teal-500/10 border border-teal-500/20" transition={{ type: "spring", stiffness: 320, damping: 28 }} />}
+                <span>{tab.emoji}</span> {tab.label}
+              </button>
+            );
+          })}
+        </motion.div>
+
+        {/* Tab Content Area */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="relative rounded-[20px] p-px" style={{ background: "linear-gradient(135deg, rgba(20,184,166,0.2), rgba(255,255,255,0.04), rgba(132,204,22,0.1))" }}>
+          <div className="bg-[#0d1117] rounded-[19px] p-6 sm:p-8 relative overflow-hidden min-h-[360px]">
+            <div className="absolute bottom-0 right-0 w-36 h-36 pointer-events-none rounded-br-[19px]" style={{ backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px)", backgroundSize: "14px 14px" }} />
+            <AnimatePresence mode="wait">
+              {activeTab === "basic" && <BasicInfoTab key="basic" register={register} errors={errors} />}
+              {activeTab === "academic" && <AcademicInfoTab key="academic" register={register} errors={errors} />}
+              {activeTab === "contact" && <ContactInfoTab key="contact" register={register} errors={errors} />}
+            </AnimatePresence>
           </div>
+        </motion.div>
 
-          {/* Username Field */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300 ml-1">
-              Username
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <User size={18} className="text-gray-500" />
-              </div>
-              <input
-                type="text"
-                {...register("userName", { required: "Username is required" })}
-                className="w-full pl-10 pr-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
-                placeholder="Enter your username"
-              />
-            </div>
-            {errors.userName && (
-              <p className="text-red-400 text-xs ml-1 mt-1">
-                {errors.userName.message}
-              </p>
-            )}
-          </div>
-
-          {/* Email Field */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300 ml-1">
-              Email Address
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail size={18} className="text-gray-500" />
-              </div>
-              <input
-                type="email"
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Invalid email address",
-                  },
-                })}
-                className="w-full pl-10 pr-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
-                placeholder="Enter your email"
-              />
-            </div>
-            {errors.email && (
-              <p className="text-red-400 text-xs ml-1 mt-1">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          {/* Submit Button */}
+        {/* Save Button */}
+        <div className="flex justify-end pt-1">
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-teal-600 hover:bg-teal-500 text-white font-semibold rounded-xl transition-colors disabled:opacity-70 disabled:cursor-not-allowed mt-4">
-            {isSubmitting ? (
-              <Loader size={20} className="animate-spin" />
-            ) : (
-              <>
-                <Save size={20} />
-                Save Changes
-              </>
-            )}
+            type="submit" disabled={!isDirty || isSubmitting}
+            whileHover={isDirty && !isSubmitting ? { y: -3 } : {}}
+            whileTap={isDirty && !isSubmitting ? { scale: 0.97 } : {}}
+            className={`flex items-center gap-2 px-7 py-3.5 rounded-[14px] font-bold text-[14px] transition-all duration-300 ${isDirty && !isSubmitting ? "text-[#080c10] shadow-[0_0_24px_rgba(20,184,166,0.3)] hover:shadow-[0_0_36px_rgba(20,184,166,0.45)] cursor-pointer" : "bg-white/4 border border-white/8 text-slate-600 cursor-not-allowed"}`}
+            style={isDirty && !isSubmitting ? { background: "linear-gradient(135deg, #14b8a6, #84cc16)", fontFamily: "'Syne', sans-serif" } : undefined}
+          >
+            {isSubmitting ? <><Loader2 size={17} className="animate-spin" /> Saving...</> : <><Save size={17} /> Save Changes</>}
           </motion.button>
-        </form>
-      </motion.div>
+        </div>
+      </form>
     </div>
   );
 };

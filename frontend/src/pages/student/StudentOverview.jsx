@@ -77,7 +77,6 @@ const NonMemberView = () => {
 
           <h2
             className="text-3xl font-extrabold text-slate-100 mb-4 leading-tight"
-            style={{ fontFamily: "'Syne', sans-serif" }}
           >
             Take Your Preparation to the{" "}
             <span
@@ -103,7 +102,6 @@ const NonMemberView = () => {
             onClick={() => navigate("/apply-membership")}
             className="inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-white text-[#080c10] font-extrabold text-[14px] transition-all"
             style={{
-              fontFamily: "'Syne', sans-serif",
               boxShadow: "0 0 24px rgba(255,255,255,0.15)",
             }}
           >
@@ -146,7 +144,6 @@ const RecentActivity = ({ records = [] }) => (
       <div className="flex items-center justify-between mb-5">
         <h3
           className="text-[16px] font-bold text-slate-100 flex items-center gap-2"
-          style={{ fontFamily: "'Syne', sans-serif" }}
         >
           🕐 Recent Activity
         </h3>
@@ -286,7 +283,6 @@ const StudentOverview = () => {
           style={{
             backgroundImage:
               "linear-gradient(135deg, #f0fdf4 0%, #14b8a6 50%, #84cc16 100%)",
-            fontFamily: "'Syne', sans-serif",
           }}
         >
           Welcome back, {firstName} 👋

@@ -294,5 +294,4 @@ module.exports = {
   getCurrentUser,
   logoutController,
   refreshController,
-
 };

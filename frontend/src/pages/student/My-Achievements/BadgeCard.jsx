@@ -59,8 +59,7 @@ const BadgeCard = ({ badge, currentStreak }) => {
         <div className="flex-1 relative z-10">
           <div className="flex items-center justify-between mb-1">
             <h3
-              className="font-bold text-[14px] text-slate-100"
-              style={{ fontFamily: "'Syne', sans-serif" }}>
+              className="font-bold text-[14px] text-slate-100">
               {badge.title}
             </h3>
             {!badge.unlocked && (

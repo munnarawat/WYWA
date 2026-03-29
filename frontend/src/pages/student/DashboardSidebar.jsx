@@ -45,7 +45,6 @@ const DashboardSidebar = ({ notices = [], achievements = [] }) => {
             className="text-[14px] font-bold bg-clip-text text-transparent"
             style={{
               backgroundImage: "linear-gradient(135deg, #fb7185, #f97316)",
-              fontFamily: "'Syne', sans-serif",
             }}>
             Report an Issue
           </span>
@@ -65,9 +64,7 @@ const DashboardSidebar = ({ notices = [], achievements = [] }) => {
         <div className="bg-[#0d1117] rounded-[19px] p-5">
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
-            <h3
-              className="text-[15px] font-bold text-slate-100 flex items-center gap-2"
-              style={{ fontFamily: "'Syne', sans-serif" }}>
+            <h3 className="text-[15px] font-bold text-slate-100 flex items-center gap-2">
               🔔 Notice Board
             </h3>
             {notices.length > 0 && (
@@ -126,9 +123,7 @@ const DashboardSidebar = ({ notices = [], achievements = [] }) => {
         <div className="bg-[#0d1117] rounded-[19px] p-5">
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
-            <h3
-              className="text-[15px] font-bold text-slate-100 flex items-center gap-2"
-              style={{ fontFamily: "'Syne', sans-serif" }}>
+            <h3 className="text-[15px] font-bold text-slate-100 flex items-center gap-2">
               ⚡ Achievements
             </h3>
             <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-teal-400/[0.08] border border-teal-400/20 text-teal-400">

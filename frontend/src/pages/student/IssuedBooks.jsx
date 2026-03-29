@@ -59,7 +59,7 @@ const BookCard = ({ record, index }) => {
 
         <h4
           className="font-bold text-[14px] text-slate-100 mb-1 line-clamp-1"
-          style={{ fontFamily: "'Syne', sans-serif" }}
+          
         >
           {record.book?.title || "Unknown Book"}
         </h4>
@@ -108,7 +108,6 @@ const IssuedBooks = ({ issuedBooks = [] }) => {
         <div className="flex items-center justify-between mb-5">
           <h3
             className="text-[17px] font-bold text-slate-100 flex items-center gap-2"
-            style={{ fontFamily: "'Syne', sans-serif" }}
           >
             📚 My Library Books
           </h3>

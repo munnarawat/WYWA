@@ -54,7 +54,7 @@ const MainRouter = () => {
     { name: "Achievements", icon: Trophy, path: "/admin/achievements" },
     { name: "ManageThinkTank", icon: UserStar, path: "/admin/thinkTank" },
     { name: "Students Issue", icon:ShieldAlert , path:"/admin/studentIssue" },
-    // { name: "Settings", icon: Settings, path: "/admin/settings" },
+    { name: "Profile", icon: Settings, path: "/admin/profile" },
   ];
   // student sidebar menus
   const studentMenuItems = [
@@ -62,7 +62,7 @@ const MainRouter = () => {
     { name: "My Attendance-Chart", icon: ChartColumnIncreasing, path: "/student/attendance" },
     { name: "My Achievement", icon: Trophy, path: "/student/achievement" },
     { name: "Notice Board", icon:NotebookIcon, path: "/student/noticeboard" },
-    { name: "Profile", icon: Users, path: "/student/profile" },
+    { name: "Profile", icon: Settings, path: "/student/profile" },
   ];
   const thinkTankMenuItems = [
     {
@@ -70,6 +70,7 @@ const MainRouter = () => {
       icon: LayoutDashboard,
       path: "/thinkTank/dashboard",
     },
+    { name: "Profile", icon: Settings, path: "/thinkTank/profile" },
   ];
   return (
     <>
@@ -81,13 +82,6 @@ const MainRouter = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }></Route>
         </Route>
 
         {/* admin dashboard.... */}
@@ -106,6 +100,7 @@ const MainRouter = () => {
           <Route path="/admin/achievements" element={<ManageAchievements />} />
           <Route path="/admin/thinkTank" element={<ManageThinkTank />} />
           <Route path="/admin/studentIssue" element={<ManageStudentIssues />} />
+          <Route path="/admin/profile" element={<Profile/>} />
         </Route>
 
         {/* student dashboard */}
@@ -119,6 +114,7 @@ const MainRouter = () => {
           <Route path="/student/attendance" element={<AttendanceChart/>} />
           <Route path="/student/achievement" element={<MyAchievements/>} />
           <Route path="/student/noticeboard" element={<NoticeBoard/>} />
+          <Route path="/student/profile" element={<Profile/>} />
         </Route>
 
         {/* think-thank dashboard */}
@@ -129,6 +125,7 @@ const MainRouter = () => {
             </ProtectedRoute>
           }>
           <Route path="/thinkTank/dashboard" element={<ThinkTank />} />
+          <Route path="/thinkTank/profile" element={<Profile/>} />
         </Route>
       </Routes>
     </>

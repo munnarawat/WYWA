@@ -86,7 +86,6 @@ const StudentStats = ({ stats = {} }) => {
                 className="text-5xl font-extrabold bg-clip-text text-transparent"
                 style={{
                   backgroundImage: card.numGradient,
-                  fontFamily: "'Syne', sans-serif",
                 }}
               >
                 {safeValue}{card.suffix}

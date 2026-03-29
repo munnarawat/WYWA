@@ -80,7 +80,6 @@ const ReportIssueModal = ({ isOpen, onClose }) => {
                   </div>
                   <h3
                     className="text-[18px] font-bold text-slate-100"
-                    style={{ fontFamily: "'Syne', sans-serif" }}
                   >
                     Report an Issue
                   </h3>
@@ -150,10 +149,9 @@ const ReportIssueModal = ({ isOpen, onClose }) => {
                   disabled={isSubmitting}
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.97 }}
-                  className="w-full flex items-center justify-center gap-2 py-[14px] rounded-[13px] font-bold text-[14px] text-white disabled:opacity-60 disabled:cursor-not-allowed transition-opacity"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 rounded-[13px] font-bold text-[14px] text-white disabled:opacity-60 disabled:cursor-not-allowed transition-opacity"
                   style={{
                     background: "linear-gradient(135deg, #fb7185, #f97316)",
-                    fontFamily: "'Syne', sans-serif",
                   }}
                 >
                   {isSubmitting ? (

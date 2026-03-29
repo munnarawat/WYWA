@@ -6,7 +6,6 @@ const {
   getCurrentUser,
   logoutController,
   refreshController,
-  updateProfile,
 } = require("../controllers/auth.controller");
 const { authMiddleware } = require("../middleware/auth.middleware");
 const {

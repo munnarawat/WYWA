@@ -33,9 +33,9 @@ import ResetPassword from "../components/profile-updates/ResetPassword";
 import ThinkTank from "../components/ThinkTank";
 import ManageStudent from "../pages/admin/manage-student/ManageStudent";
 import ManageStudentIssues from "../pages/admin/ManageStudentIssues";
-import AttendanceChart from "../pages/AttendanceChart";
 import MyAchievements from "../pages/student/My-Achievements/MyAchievements";
 import NoticeBoard from "../pages/student/NoticeBoard";
+import AttendanceChart from "../pages/attendance/AttendanceChart";
 
 
 const MainRouter = () => {

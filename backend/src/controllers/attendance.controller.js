@@ -232,8 +232,9 @@ const getMonthlyAttendance = async (req, res) => {
       });
     }
 
-    const start = new Date(year, month, 1);
-    const end = new Date(year, Number(month) + 1, 0, 23, 59, 59);
+    const monthIndex = Number(month) - 1;
+    const start = new Date(year, monthIndex, 1);
+    const end = new Date(year, monthIndex + 1, 0, 23, 59, 59);
 
     const records = await Attendance.find({
       student: studentId,
@@ -241,17 +242,27 @@ const getMonthlyAttendance = async (req, res) => {
     }).sort({ date: 1 });
 
     const totalDays = records.length;
-    const presentDay = records.filter((r) => r.status === "present").length;
-    const absentDay = totalDays - presentDay;
+    const presentDays = records.filter((r) => r.status === "present").length;
+    const absentDays = totalDays - presentDays;
+
+    let currentStreak = 0;
+    for (let i = records.length - 1; i >= 0; i--) {
+      if (records[i].status === "present") {
+        currentStreak++;
+      } else {
+        break;
+      }
+    }
 
     return res.status(200).json({
       message: "Monthly attendance fetched",
       summary: {
         totalDays,
-        presentDay,
-        absentDay,
+        presentDays,
+        absentDays,
         percentage:
-          totalDays === 0 ? 0 : Math.round((presentDay / totalDays) * 100),
+          totalDays === 0 ? 0 : Math.round((presentDays / totalDays) * 100),
+        currentStreak,
       },
       records,
     });

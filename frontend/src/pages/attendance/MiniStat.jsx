@@ -16,9 +16,8 @@ const MiniStat = ({ value, label, gradient, color }) => (
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
-              fontFamily: "'Syne', sans-serif",
             }
-          : { color, fontFamily: "'Syne', sans-serif" }
+          : { color}
       }>
       {value}
     </span>

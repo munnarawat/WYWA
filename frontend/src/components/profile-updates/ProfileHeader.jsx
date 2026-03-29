@@ -31,7 +31,7 @@ const ProfileHeader = ({ authUser, firstName, handleAvatarUpload }) => {
 
         {/* Info */}
         <div className="relative z-10 text-center sm:text-left flex-1">
-          <h1 className="font-extrabold text-[28px] mb-1.5 bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(135deg, #f0fdf4 0%, #14b8a6 50%, #84cc16 100%)", fontFamily: "'Syne', sans-serif" }}>
+          <h1 className="font-extrabold text-[28px] mb-1.5 bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(135deg, #f0fdf4 0%, #14b8a6 50%, #84cc16 100%)",  }}>
             {firstName}
           </h1>
           <p className="text-[13px] text-slate-500 mb-3">{authUser?.branch && `${authUser.branch} Branch`}</p>

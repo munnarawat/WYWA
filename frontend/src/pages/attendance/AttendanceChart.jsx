@@ -89,7 +89,7 @@ const AttendanceChart = () => {
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-start justify-between gap-5 mb-6">
           <div>
             <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-lg mb-3">📅</div>
-            <h2 className="font-extrabold text-[20px] bg-clip-text text-transparent mb-1" style={{ backgroundImage: "linear-gradient(135deg, #f0fdf4 0%, #14b8a6 50%, #84cc16 100%)", fontFamily: "'Syne', sans-serif" }}>
+            <h2 className="font-extrabold text-[20px] bg-clip-text text-transparent mb-1" style={{ backgroundImage: "linear-gradient(135deg, #f0fdf4 0%, #14b8a6 50%, #84cc16 100%)",}}>
               Weekly Attendance
             </h2>
             <p className="text-[12px] text-slate-500">Last 7 days · {monthName}</p>

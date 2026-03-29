@@ -133,7 +133,7 @@ const Profile = () => {
             whileHover={isDirty && !isSubmitting ? { y: -3 } : {}}
             whileTap={isDirty && !isSubmitting ? { scale: 0.97 } : {}}
             className={`flex items-center gap-2 px-7 py-3.5 rounded-[14px] font-bold text-[14px] transition-all duration-300 ${isDirty && !isSubmitting ? "text-[#080c10] shadow-[0_0_24px_rgba(20,184,166,0.3)] hover:shadow-[0_0_36px_rgba(20,184,166,0.45)] cursor-pointer" : "bg-white/4 border border-white/8 text-slate-600 cursor-not-allowed"}`}
-            style={isDirty && !isSubmitting ? { background: "linear-gradient(135deg, #14b8a6, #84cc16)", fontFamily: "'Syne', sans-serif" } : undefined}
+            style={isDirty && !isSubmitting ? { background: "linear-gradient(135deg, #14b8a6, #84cc16)"} : undefined}
           >
             {isSubmitting ? <><Loader2 size={17} className="animate-spin" /> Saving...</> : <><Save size={17} /> Save Changes</>}
           </motion.button>

@@ -288,45 +288,11 @@ const refreshController = async (req, res) => {
   }
 };
 
-// update profile
-const updateProfile = async (req, res) => {
-  try {
-    const userId = req.user._id;
-
-    const { userName, email, fullName } = req.body;
-    const firstName = fullName?.firstName;
-    const lastName = fullName?.lastName;
-    const updateUser = await UserModel.findByIdAndUpdate(userId, {
-      userName,
-      email,
-      fullName:{
-        firstName, lastName
-      }
-    },{
-      new:true,
-      runValidators:true
-    }).select("-password");
-    if(!updateUser){
-      return res.status(404).json({
-        success:false,
-        message:"user not fount "
-      });
-    }
-    res.status(200).json({
-      message:"user profile Update successfully 🎉",
-      success:true,
-      user:updateUser,
-    })
-  } catch (error) {
-    console.error("Profile update error:", error);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
-};
 module.exports = {
   userRegisterController,
   loginController,
   getCurrentUser,
   logoutController,
   refreshController,
-  updateProfile
+
 };

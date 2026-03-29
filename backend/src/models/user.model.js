@@ -53,10 +53,34 @@ const userSchema = new mongoose.Schema(
     },
     isLibraryMember: {
       type: Boolean,
-      default: false, // Default false 
+      default: false, // Default false
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
+
+    // profile details section
+    profile: {
+      personal: {
+        dob: { type: Date },
+        gender: { type: String, enum: ["male", "female", "other"] },
+        bloodGroup: {
+          type: String,
+          enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+        },
+        avatar: { type: String, default: "https://i.pravatar.cc/150" },
+      },
+      academic: {
+        studentId: { type: String },
+        course: { type: String },
+        batch: { type: String },
+        semester: { type: String },
+      },
+      contact: {
+        phone: { type: String },
+        currentAddress: { type: String },
+        permanentAddress: { type: String },
+      },
+    },
   },
   {
     timestamps: true,

@@ -1,11 +1,13 @@
 const Book = require("../models/book.model");
 const Issue = require("../models/issue.model");
-const {autoAwardBadge}  = require("../controllers/studentAchievement.controller");
- // add a book to the library admin only
+const {
+  autoAwardBadge,
+} = require("../controllers/studentAchievement.controller");
+// add a book to the library admin only
 
 const addBook = async (req, res) => {
   try {
-    const { title, author, quantity } = req.body;
+    const { title, author, quantity, category } = req.body;
 
     if (!title || !author || !quantity) {
       return res.status(400).json({ message: "All fields are required" });
@@ -16,7 +18,9 @@ const addBook = async (req, res) => {
     const book = await Book.create({
       title,
       author,
+      category: category || "General",
       quantity,
+      available: quantity,
       createdBy: req.user._id,
       branch: req.user.branch,
     });
@@ -32,8 +36,21 @@ const addBook = async (req, res) => {
 // get all books in the library
 const getAllBooks = async (req, res) => {
   try {
-    const branchFilter = req.user?.branch ? { branch: req.user.branch } : {};
-    const books = await Book.find(branchFilter).populate(
+    const { search, category } = req.query;
+    const query = req.user?.branch ? { branch: req.user.branch } : {};
+
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { author: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    if (category && category !== "All") {
+      query.category = category;
+    }
+
+    const books = await Book.find(query).populate(
       "createdBy",
       "userName email",
     );
@@ -65,6 +82,7 @@ const updateBook = async (req, res) => {
     }
     if (title) book.title = title;
     if (author) book.author = author;
+    if (category) book.category = category;
     if (quantity !== undefined) {
       if (quantity < 0) {
         return res.status(400).json({ message: "Quantity cannot be negative" });
@@ -126,9 +144,13 @@ const issueBook = async (req, res) => {
     if (book.available <= 0) {
       return res.status(400).json({ message: "Book is not available" });
     }
+
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 14);  // 2 weeks from now
     const issue = await Issue.create({
       book: bookId,
       student: studentId,
+      dueDate:dueDate,
       issuedBy: req.user._id,
       branch: req.user.branch,
     });
@@ -136,21 +158,21 @@ const issueBook = async (req, res) => {
     await book.save();
 
     const now = new Date();
-    const startOfMonth = new Date(now.getFullYear() ,now.getMonth(),1 );
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
     const booksIssuedThisMonth = await Issue.countDocuments({
-      student:studentId,
-      createdAt:{$gte:startOfMonth}
+      student: studentId,
+      createdAt: { $gte: startOfMonth },
     });
 
-    if(booksIssuedThisMonth => 5){
+    if (booksIssuedThisMonth >= 5) {
       autoAwardBadge(
         studentId,
         req.user.branch,
-        "Bookworm 🐛", 
-        "Read 5 or more books in a single month!", 
-        "reading"
-      )
+        "Bookworm 🐛",
+        "Read 5 or more books in a single month!",
+        "reading",
+      );
     }
     return res
       .status(201)
@@ -206,13 +228,15 @@ const getIssued = async (req, res) => {
       query.student = studentId;
     }
     const records = await Issue.find(query)
-      .populate("book", "title author")
-      .populate("student", "userName email fullName") 
+      .populate("book", "title author category coverImage")
+      .populate("student", "userName email fullName")
       .sort({ issuedAt: -1 });
 
-    return res
-      .status(200)
-      .json({ success:true, message: "Issued records retrieved successfully 🎉", records });
+    return res.status(200).json({
+      success: true,
+      message: "Issued records retrieved successfully 🎉",
+      records,
+    });
   } catch (error) {
     console.error("get issued error", error);
     return res.status(500).json({ message: "Internal server error" });

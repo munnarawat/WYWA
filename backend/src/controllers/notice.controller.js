@@ -12,7 +12,7 @@ const createNotice = async (req, res) => {
     const notice = await noticeModel.create({
       title,
       description,
-      category,
+      category:category || "announcement",
       createdBy: req.user._id,
       branch: req.user.branch,
     });

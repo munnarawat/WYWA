@@ -12,16 +12,20 @@ const issueSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    issuedAr: {
+    issuedAt: {
       type: Date,
       default: Date.now,
     },
     returnedAt: {
       type: Date,
     },
+    dueDate:{
+      type:Date,
+      required:true,
+    },
     status: {
       type: String,
-      enum: ["issued", "returned"],
+      enum: ["issued", "returned", "overdue"],
       default: "issued",
     },
     issuedBy: {

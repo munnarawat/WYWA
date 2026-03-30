@@ -12,6 +12,11 @@ const bookSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    category:{
+      type:String,
+      trim:true,
+      required:true,
+    },
     quantity: {
       type: Number,
       required: true,

@@ -1,19 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Search,
-  Plus,
-  Edit2,
-  Trash2,
-  Calendar,
-  User,
-  X,
-  Megaphone,
-} from "lucide-react";
+import { Search, Plus, X, Megaphone } from "lucide-react";
 import api from "../../utils/api";
 import toast from "react-hot-toast";
 import PopUp from "../../pop-up/PopUp";
-// 🌟 NAYA IMPORT
 import { useForm } from "react-hook-form";
 import NoticeCard from "../../components/NoticeCard";
 
@@ -40,6 +30,13 @@ const NoticeSkeleton = () => {
   );
 };
 
+const categoryOptions = [
+  "urgent",
+  "event",
+  "important",
+  "meeting",
+  "announcement",
+];
 const ManageNoticeBoard = () => {
   const [notices, setNotices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -142,7 +139,7 @@ const ManageNoticeBoard = () => {
 
   // Modal Handlers (RHF reset/setValue ka use)
   const openCreateModel = () => {
-    reset({ title: "", description: "" });
+    reset({ title: "", description: "", category: "" });
     setEditingId(null);
     setIsModalOpen(true);
   };
@@ -150,6 +147,7 @@ const ManageNoticeBoard = () => {
   const openEditModal = (notice) => {
     setValue("title", notice.title);
     setValue("description", notice.description);
+    setValue("category", notice.category);
     setEditingId(notice._id);
     setIsModalOpen(true);
   };
@@ -209,6 +207,40 @@ const ManageNoticeBoard = () => {
 
               {/* 🌟 FORM SE ONSUBMIT CHANGE HUA HAI */}
               <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-4">
+                {/* category */}
+                <div>
+                  <label className="block text-sm font-medium text-zinc-400 mb-1">
+                    Notice Category
+                  </label>
+                  <select
+                    {...register("category", {
+                      required: "Category is required",
+                    })}
+                    className={`w-full bg-black/20 border ${
+                      errors.category ? "border-rose-500" : "border-white/10"
+                    } rounded-xl py-3 px-4 text-white focus:outline-none focus:border-teal-500/50 transition-colors cursor-pointer appearance-none`}>
+                    {/* Dark theme fix for default option */}
+                    <option value="" className="bg-[#0d1117] text-slate-100">
+                      Select a category
+                    </option>
+
+                    {/* Mapping with capitalized first letter for UI */}
+                    {categoryOptions.map((cat) => (
+                      <option
+                        className="bg-[#0d1117] text-slate-100"
+                        key={cat}
+                        value={cat}>
+                        {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.category && (
+                    <p className="text-rose-400 text-xs mt-1">
+                      {errors.category.message}
+                    </p>
+                  )}
+                </div>
+                {/* title */}
                 <div>
                   <label className="block text-sm font-medium text-zinc-400 mb-1">
                     Notice Title
@@ -227,7 +259,7 @@ const ManageNoticeBoard = () => {
                     </p>
                   )}
                 </div>
-
+                {/* description */}
                 <div>
                   <label className="block text-sm font-medium text-zinc-400 mb-1">
                     Description
@@ -248,7 +280,6 @@ const ManageNoticeBoard = () => {
                     </p>
                   )}
                 </div>
-
                 <div className="pt-4 flex gap-3">
                   <button
                     type="button"

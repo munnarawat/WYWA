@@ -3,7 +3,7 @@ const noticeModel = require("../models/notice.model");
 // notice create admin only
 const createNotice = async (req, res) => {
   try {
-    const { title, description } = req.body;
+    const { title, description, category } = req.body;
     if (!title || !description) {
       return res
         .status(400)
@@ -12,6 +12,7 @@ const createNotice = async (req, res) => {
     const notice = await noticeModel.create({
       title,
       description,
+      category,
       createdBy: req.user._id,
       branch: req.user.branch,
     });
@@ -92,9 +93,9 @@ const deleteNotice = async (req, res) => {
 const updateNotice = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description } = req.body;
+    const { title, description, category } = req.body;
 
-    if (!title || !description) {
+    if (!title || !description || !category) {
       return res.status(400).json({ message: "noting to updated" });
     }
     const notice = await noticeModel.findById(id);
@@ -104,6 +105,7 @@ const updateNotice = async (req, res) => {
     }
     if (title) notice.title = title;
     if (description) notice.description = description;
+    if(category) notice.category = category;
 
     await notice.save();
 

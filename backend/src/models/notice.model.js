@@ -12,6 +12,12 @@ const noticeSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    category:{
+      type:String,
+      enum:['urgent', 'event', "important","meeting", "announcement"],
+      default:"announcement",
+      required:true,
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

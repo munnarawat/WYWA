@@ -17,7 +17,7 @@ const NoticeCard = ({ notice, index, isAdmin, onEdit, onDelete }) => {
   const badgeClass = BADGE_STYLES[category] || BADGE_STYLES.announcement;
 
   return (
-    <motion.div
+    <motion.div 
       variants={{
         hidden: { opacity: 0, y: 28 },
         show: {

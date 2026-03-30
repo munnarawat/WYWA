@@ -182,7 +182,7 @@ const Navbar = () => {
                   </div>
                   <div className="p-1">
                     <Link
-                      to="/profile"
+                      to={user.role === "admin"? "/admin/profile":"/student/profile"}
                       className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-300 hover:bg-white/5 hover:text-white rounded-lg transition">
                       <User size={16} className="text-emerald-400" /> My Profile
                     </Link>

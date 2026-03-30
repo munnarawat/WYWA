@@ -25,13 +25,13 @@ const DashboardLayout = ({ menuItems }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
-  
+
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-useEffect(() => {
+  useEffect(() => {
     if (!user?._id) return;
 
     const setupRooms = () => {
@@ -40,7 +40,7 @@ useEffect(() => {
         socket.emit("join_branch", user.branch.trim().toLowerCase());
       }
     };
-    
+
     if (socket.connected) setupRooms();
     socket.on("connect", setupRooms);
 
@@ -223,7 +223,11 @@ useEffect(() => {
                         Home
                       </Link>
                       <Link
-                        to="/profile"
+                        to={
+                          user.role === "admin"
+                            ? "/admin/profile"
+                            : "/student/profile"
+                        }
                         className="flex w-full items-center gap-3 px-3 py-2.5 text-sm text-gray-300 hover:bg-white/5 hover:text-white rounded-lg transition">
                         <User size={16} className="text-emerald-400" />
                         My Profile

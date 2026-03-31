@@ -7,6 +7,7 @@ import PublicLayout from "../components/PublicLayout";
 import ScrollTop from "../animation/ScrollTop";
 import {
   Bell,
+  Book,
   BookOpen,
   ChartColumnIncreasing,
   ChartNoAxesCombined,
@@ -36,6 +37,7 @@ import ManageStudentIssues from "../pages/admin/ManageStudentIssues";
 import MyAchievements from "../pages/student/My-Achievements/MyAchievements";
 import NoticeBoard from "../pages/student/NoticeBoard";
 import AttendanceChart from "../pages/attendance/AttendanceChart";
+import StudentLibrary from "../pages/student/library/StudentLibrary";
 
 
 const MainRouter = () => {
@@ -62,6 +64,7 @@ const MainRouter = () => {
     { name: "My Attendance-Chart", icon: ChartColumnIncreasing, path: "/student/attendance" },
     { name: "My Achievement", icon: Trophy, path: "/student/achievement" },
     { name: "Notice Board", icon:NotebookIcon, path: "/student/noticeboard" },
+    { name: "Library", icon: BookOpen, path: "/student/library" },
     { name: "Profile", icon: Settings, path: "/student/profile" },
   ];
   const thinkTankMenuItems = [
@@ -114,6 +117,7 @@ const MainRouter = () => {
           <Route path="/student/attendance" element={<AttendanceChart/>} />
           <Route path="/student/achievement" element={<MyAchievements/>} />
           <Route path="/student/noticeboard" element={<NoticeBoard/>} />
+          <Route path="/student/library" element={<StudentLibrary/>} />
           <Route path="/student/profile" element={<Profile/>} />
         </Route>
 

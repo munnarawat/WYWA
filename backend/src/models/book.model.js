@@ -16,6 +16,7 @@ const bookSchema = new mongoose.Schema(
       type:String,
       trim:true,
       required:true,
+      default: "General"
     },
     quantity: {
       type: Number,

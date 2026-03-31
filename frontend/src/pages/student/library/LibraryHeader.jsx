@@ -17,7 +17,7 @@ const LibraryHeader = ({ activeTab, onTabChange, allBooks = [], issuedBooks = []
       </div>
 
       {/* Title row */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 pb-6 border-b border-white/[0.05]">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 pb-6 border-b border-white/5">
         <div>
           <motion.h1
             initial={{ opacity: 0, x: -20 }}
@@ -26,7 +26,6 @@ const LibraryHeader = ({ activeTab, onTabChange, allBooks = [], issuedBooks = []
             style={{
               fontSize: "clamp(26px, 3.5vw, 40px)",
               backgroundImage: "linear-gradient(135deg, #f0fdf4 0%, #14b8a6 50%, #84cc16 100%)",
-              fontFamily: "'Syne', sans-serif",
             }}
           >
             Library Hub
@@ -43,7 +42,7 @@ const LibraryHeader = ({ activeTab, onTabChange, allBooks = [], issuedBooks = []
 
         {/* Tabs */}
         <div
-          className="flex gap-1.5 p-1.5 rounded-2xl flex-shrink-0"
+          className="flex gap-1.5 p-1.5 rounded-2xl shrink-0"
           style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
         >
           {[
@@ -55,7 +54,7 @@ const LibraryHeader = ({ activeTab, onTabChange, allBooks = [], issuedBooks = []
               <button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
-                className="relative flex items-center gap-2 px-5 py-2.5 rounded-[12px] text-[13px] font-semibold transition-all whitespace-nowrap"
+                className="relative flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold transition-all whitespace-nowrap"
                 style={isActive
                   ? { background: tab.activeColor, border: `1px solid ${tab.borderColor}`, color: tab.textColor }
                   : { color: "#64748b" }

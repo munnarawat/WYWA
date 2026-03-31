@@ -36,7 +36,7 @@ const addBook = async (req, res) => {
 // get all books in the library
 const getAllBooks = async (req, res) => {
   try {
-    const { search, category } = req.query;
+    const { search, category, page = 1, limit = 12 } = req.query;
     const query = req.user?.branch ? { branch: req.user.branch } : {};
 
     if (search) {
@@ -50,14 +50,28 @@ const getAllBooks = async (req, res) => {
       query.category = category;
     }
 
-    const books = await Book.find(query).populate(
-      "createdBy",
-      "userName email",
-    );
+    //  🌟 Pagination Math
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
+
+    const totalBooks = await Book.countDocuments(query);
+
+    const books = await Book.find(query)
+      .populate("createdBy", "userName email")
+      .skip(skip)
+      .limit(limitNum)
+      .sort({ createdAt: -1 });
 
     return res.status(200).json({
       message: "Books retrieved successfully",
       books,
+      pagination: {
+        currentPage: pageNum,
+        totalBooks: Math.ceil(totalBooks / limitNum),
+        totalBooks,
+        hasNextPage: skip + books.length < totalBooks,
+      },
     });
   } catch (error) {
     console.error("get book error", error);
@@ -146,11 +160,11 @@ const issueBook = async (req, res) => {
     }
 
     const dueDate = new Date();
-    dueDate.setDate(dueDate.getDate() + 14);  // 2 weeks from now
+    dueDate.setDate(dueDate.getDate() + 14); // 2 weeks from now
     const issue = await Issue.create({
       book: bookId,
       student: studentId,
-      dueDate:dueDate,
+      dueDate: dueDate,
       issuedBy: req.user._id,
       branch: req.user.branch,
     });

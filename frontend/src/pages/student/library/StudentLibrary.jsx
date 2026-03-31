@@ -10,6 +10,7 @@ import LibraryControls from "./LibraryControls";
 import BookCard from "./BookCard";
 import IssuedBookCard from "./IssuedBookCard";
 import BookSkeleton from "./BookSkeleton";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 // ─────────────────────────────────────────
 // EMPTY STATE
@@ -21,7 +22,6 @@ const EmptyState = ({ message, subtext }) => (
     <p className="text-[13px] mt-1">{subtext}</p>
   </div>
 );
-
 // ─────────────────────────────────────────
 // MAIN COMPONENT
 // ─────────────────────────────────────────
@@ -33,19 +33,33 @@ const StudentLibrary = () => {
   const [issuedBooks, setIssuedBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   // ── Fetch all books ────────────────────
-  const fetchAllBooks = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const res = await api.get("/library/books");
-      setAllBooks(res.data.books || []);
-    } catch {
-      toast.error("Failed to load catalog.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const fetchAllBooks = useCallback(
+    async (pageNumber = 1, isNewSearch = false) => {
+      try {
+        if (isNewSearch) setIsLoading(true);
+        const res = await api.get(
+          `/library/books?page=${pageNumber}&limit=12&search=${searchQuery}`,
+        );
+        const newBooks = res.data.books || [];
+        if (isNewSearch) {
+          setAllBooks(newBooks);
+        } else {
+          setAllBooks((prev) => [...prev, ...newBooks]);
+        }
+        setHasMore(res.data.pagination.hasNextPage);
+        setPage(pageNumber);
+      } catch {
+        toast.error("Failed to load catalog.");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [],
+  );
 
   // ── Fetch issued books ─────────────────
   const fetchMyIssuedBooks = useCallback(async () => {
@@ -62,9 +76,11 @@ const StudentLibrary = () => {
 
   // ── Fetch on tab change ────────────────
   useEffect(() => {
-    if (activeTab === "browse") fetchAllBooks();
-    else fetchMyIssuedBooks();
-  }, [activeTab]);
+    if (activeTab === "browse") {
+      setPage(1);
+      fetchAllBooks(1, true);
+    } else fetchMyIssuedBooks();
+  }, [activeTab, searchQuery]);
 
   // ── Tab change handler ─────────────────
   const handleTabChange = (tab) => {
@@ -140,18 +156,33 @@ const StudentLibrary = () => {
                 subtext="We couldn't find what you're looking for."
               />
             ) : (
-              <motion.div
-                variants={{
-                  hidden: { opacity: 0 },
-                  show: { opacity: 1, transition: { staggerChildren: 0.05 } },
-                }}
-                initial="hidden"
-                animate="show"
-                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                {filteredBooks.map((book, i) => (
-                  <BookCard key={book._id} book={book} index={i} />
-                ))}
-              </motion.div>
+              <InfiniteScroll
+                dataLength={allBooks.length} 
+                next={() => fetchAllBooks(page + 1, false)} 
+                hasMore={hasMore} 
+                loader={
+                  <h4 className="text-center text-teal-500 my-4 animate-pulse">
+                    Loading more books... 📚
+                  </h4>
+                }
+                endMessage={
+                  <p className="text-center text-slate-500 my-6 text-sm">
+                    Yay! You have seen it all. 🎉
+                  </p>
+                }>
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0 },
+                    show: { opacity: 1, transition: { staggerChildren: 0.05 } },
+                  }}
+                  initial="hidden"
+                  animate="show"
+                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 overflow-hidden p-1">
+                  {allBooks.map((book, i) => (
+                    <BookCard key={`${book._id}-${i}`} book={book} index={i} />
+                  ))}
+                </motion.div>
+              </InfiniteScroll>
             )}
           </motion.div>
         )}

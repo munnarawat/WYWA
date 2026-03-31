@@ -30,7 +30,7 @@ const BookCard = ({ book, index }) => (
               className="font-extrabold text-[56px] leading-none bg-clip-text text-transparent"
               style={{
                 backgroundImage: "linear-gradient(135deg, rgba(20,184,166,0.5), rgba(132,204,22,0.3))",
-                fontFamily: "'Syne', sans-serif",
+               
               }}
             >
               {book.title?.charAt(0)}
@@ -40,7 +40,7 @@ const BookCard = ({ book, index }) => (
         )}
 
         {/* Bottom gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0d1117]/70 pointer-events-none" />
+        <div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-[#0d1117]/70 pointer-events-none" />
 
         {/* Availability badge */}
         <div className="absolute top-2.5 right-2.5">
@@ -71,7 +71,6 @@ const BookCard = ({ book, index }) => (
         </span>
         <h3
           className="text-[14px] font-bold text-slate-100 mb-1 line-clamp-1 group-hover:text-teal-400 transition-colors"
-          style={{ fontFamily: "'Syne', sans-serif" }}
           title={book.title}
         >
           {book.title}

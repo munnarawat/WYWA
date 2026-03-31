@@ -39,7 +39,7 @@ const IssuedBookCard = ({ issue, index }) => {
         show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 280, delay: index * 0.05 } },
       }}
       whileHover={{ y: -5 }}
-      className="relative rounded-[20px] p-[1px] cursor-pointer"
+      className="relative rounded-[20px] p-px cursor-pointer"
       style={{
         background: "linear-gradient(135deg, rgba(132,204,22,0.22), rgba(255,255,255,0.04), rgba(20,184,166,0.12))",
       }}
@@ -47,7 +47,7 @@ const IssuedBookCard = ({ issue, index }) => {
       <div className="bg-[#0d1117] rounded-[19px] overflow-hidden flex flex-col h-full">
 
         {/* Cover */}
-        <div className="w-full h-[150px] relative overflow-hidden bg-[#131920] flex items-center justify-center border-b border-white/[0.05]">
+        <div className="w-full h-[150px] relative overflow-hidden bg-[#131920] flex items-center justify-center border-b border-white/5">
           {book?.coverImage ? (
             <img
               src={book.coverImage}
@@ -60,14 +60,13 @@ const IssuedBookCard = ({ issue, index }) => {
               className="font-extrabold text-[52px] leading-none bg-clip-text text-transparent"
               style={{
                 backgroundImage: "linear-gradient(135deg, rgba(132,204,22,0.4), rgba(20,184,166,0.2))",
-                fontFamily: "'Syne', sans-serif",
               }}
             >
               {book?.title?.charAt(0)}
             </span>
           )}
 
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#0d1117]/70 pointer-events-none" />
+          <div className="absolute inset-0 bg-linear-to-b from-transparent to-[#0d1117]/70 pointer-events-none" />
 
           {/* Issued date overlay */}
           <div className="absolute top-2 left-2">
@@ -91,7 +90,6 @@ const IssuedBookCard = ({ issue, index }) => {
           </span>
           <h3
             className="text-[14px] font-bold text-slate-100 mb-1 line-clamp-1"
-            style={{ fontFamily: "'Syne', sans-serif" }}
             title={book?.title}
           >
             {book?.title}
@@ -101,7 +99,7 @@ const IssuedBookCard = ({ issue, index }) => {
           </p>
 
           {/* Due status */}
-          <div className={`mt-auto flex items-center gap-2 px-3 py-2.5 rounded-[12px] border text-[10px] font-extrabold tracking-wider uppercase ${className}`}>
+          <div className={`mt-auto flex items-center gap-2 px-3 py-2.5 rounded-xl border text-[10px] font-extrabold tracking-wider uppercase ${className}`}>
             <Icon size={13} />
             {text}
           </div>

@@ -12,14 +12,14 @@ const LibraryControls = ({ searchQuery, onSearchChange, resultCount }) => (
         onChange={(e) => onSearchChange(e.target.value)}
         placeholder="Search by title, author, or category…"
         aria-label="Search books"
-        className="w-full bg-white/[0.03] border border-white/[0.07] rounded-[14px] py-2.5 pl-10 pr-4 text-[13px] text-slate-100 placeholder:text-slate-700 outline-none transition-all font-['DM_Sans'] focus:border-teal-500/40 focus:bg-teal-500/[0.02]"
+        className="w-full bg-white/3 border border-white/[0.07] rounded-[14px] py-2.5 pl-10 pr-4 text-[13px] text-slate-100 placeholder:text-slate-700 outline-none transition-all font-['DM_Sans'] focus:border-teal-500/40 focus:bg-teal-500/2"
       />
     </div>
 
     {/* Results count */}
     {resultCount !== undefined && (
       <span
-        className="text-[11px] font-bold uppercase tracking-wider px-3 py-2 rounded-[8px] text-slate-500 whitespace-nowrap"
+        className="text-[11px] font-bold uppercase tracking-wider px-3 py-2 rounded-lg text-slate-500 whitespace-nowrap"
         style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
       >
         {resultCount} Results

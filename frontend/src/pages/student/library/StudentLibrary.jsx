@@ -112,7 +112,7 @@ const StudentLibrary = () => {
   }, [issuedBooks, searchQuery]);
 
   return (
-    <div className="w-full min-h-screen text-white p-4 md:p-8 pb-24 overflow-y-auto flex flex-col gap-6">
+    <div id="scrollableDiv" className="w-full min-h-screen text-white p-4 md:p-8 pb-24 overflow-y-auto flex flex-col gap-6">
       {/* Header + Tabs + Stats */}
       <LibraryHeader
         activeTab={activeTab}
@@ -160,6 +160,8 @@ const StudentLibrary = () => {
                 dataLength={allBooks.length} 
                 next={() => fetchAllBooks(page + 1, false)} 
                 hasMore={hasMore} 
+                style={{overflow:"hidden"}}
+                scrollableTarget="scrollableDiv"
                 loader={
                   <h4 className="text-center text-teal-500 my-4 animate-pulse">
                     Loading more books... 📚

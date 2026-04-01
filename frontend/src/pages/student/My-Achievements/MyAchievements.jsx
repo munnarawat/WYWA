@@ -123,7 +123,14 @@ const MyAchievements = () => {
 
   return (
     <div className="p-4 sm:p-8 w-full max-w-6xl mx-auto">
-      {/* HEADER */}
+      {/* Eyebrow */}
+      <div>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-semibold tracking-widest uppercase mb-3">
+          <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
+          MYWA · Student Achievement
+        </div>
+      </div>
+      {/* header */}
       <div className="mb-8">
         <motion.h1
           initial={{ opacity: 0, x: -20 }}
@@ -258,8 +265,7 @@ const MyAchievements = () => {
             }}>
             <div className="bg-[#0d1117] rounded-[19px] p-6">
               <div className="flex justify-between items-center mb-5">
-                <h3
-                  className="text-[16px] font-bold text-slate-100 flex items-center gap-2">
+                <h3 className="text-[16px] font-bold text-slate-100 flex items-center gap-2">
                   👑 Top Rankers
                 </h3>
                 <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-white/5 text-slate-500">
@@ -318,8 +324,7 @@ const MyAchievements = () => {
         {/* RIGHT — BADGES CABINET */}
         <div className="bg-[#0d1117] border border-white/6 rounded-[20px] p-6 sm:p-7">
           <div className="flex justify-between items-center mb-6">
-            <h2
-              className="text-[20px] font-extrabold text-slate-100 flex items-center gap-2">
+            <h2 className="text-[20px] font-extrabold text-slate-100 flex items-center gap-2">
               ⚡ Badges Cabinet
             </h2>
             <span className="text-[12px] font-bold px-3.5 py-1.5 rounded-full bg-teal-400/8 border border-teal-400/20 text-teal-400">

@@ -71,6 +71,13 @@ const NoticeBoard = () => {
 
   return (
     <div className="w-full min-h-screen  text-white p-4 md:p-8 overflow-y-auto pb-24 relative">
+      {/* Eyebrow */}
+      <div>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-semibold tracking-widest uppercase mb-3">
+          <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
+          MYWA ·Student noticeboard
+        </div>
+      </div>
       {/* 🟢 PAGE HEADER & CONTROLS */}
       <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>

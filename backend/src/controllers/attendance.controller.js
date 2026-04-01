@@ -90,8 +90,20 @@ const markAttendance = async (req, res) => {
         });
       }
 
+      const nowForStreak = new Date(requestDate);
+      const startOfThisMonth = new Date(
+        nowForStreak.getFullYear(),
+        nowForStreak.getMonth(),
+        1,
+      );
+
       // --- 15 days check---
-      const lastRecord = await Attendance.find({ student: studentId })
+      const lastRecord = await Attendance.find({
+        student: studentId,
+        date: {
+          $gte: startOfThisMonth,
+        },
+      })
         .sort({ date: -1 })
         .limit(15);
       let currentStreak = 0;

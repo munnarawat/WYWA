@@ -3,7 +3,7 @@ const {createTicket, getMyTicket, getAllTicket, updateTicketStatus} = require(".
 const {authMiddleware, adminMiddleware} = require("../middleware/auth.middleware");
 const router = express.Router();
 
-router.get("/", authMiddleware, getMyTicket);
+router.get("/my", authMiddleware, getMyTicket);
 
 // admin routes
 router.get("/all", authMiddleware, adminMiddleware,getAllTicket );

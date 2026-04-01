@@ -55,7 +55,7 @@ const ReportIssueModal = ({ isOpen, onClose }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
-            className="absolute inset-0 bg-black/70 backdrop-blur-[8px]"
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
           />
 
           {/* Modal box */}

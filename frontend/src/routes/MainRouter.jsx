@@ -38,6 +38,7 @@ import MyAchievements from "../pages/student/My-Achievements/MyAchievements";
 import NoticeBoard from "../pages/student/NoticeBoard";
 import AttendanceChart from "../pages/attendance/AttendanceChart";
 import StudentLibrary from "../pages/student/library/StudentLibrary";
+import HelpDesk from "../pages/student/helpdesk/HelpDesk";
 
 
 const MainRouter = () => {
@@ -65,6 +66,7 @@ const MainRouter = () => {
     { name: "My Achievement", icon: Trophy, path: "/student/achievement" },
     { name: "Notice Board", icon:NotebookIcon, path: "/student/noticeboard" },
     { name: "Library", icon: BookOpen, path: "/student/library" },
+    { name: "HelpDesk", icon: ShieldAlert, path: "/student/helpdesk" },
     { name: "Profile", icon: Settings, path: "/student/profile" },
   ];
   const thinkTankMenuItems = [
@@ -118,6 +120,7 @@ const MainRouter = () => {
           <Route path="/student/achievement" element={<MyAchievements/>} />
           <Route path="/student/noticeboard" element={<NoticeBoard/>} />
           <Route path="/student/library" element={<StudentLibrary/>} />
+          <Route path="/student/helpdesk" element={<HelpDesk/>} />
           <Route path="/student/profile" element={<Profile/>} />
         </Route>
 

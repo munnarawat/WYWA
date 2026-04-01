@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { BookOpen } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 // Status config
 const STATUS_CONFIG = {
@@ -25,6 +26,7 @@ const getStatus = (record) => {
 };
 
 const BookCard = ({ record, index }) => {
+  const Navigate = useNavigate();
   const status = getStatus(record);
   const { label, className } = STATUS_CONFIG[status];
   const dateLabel = status === "returned" ? "Returned On" : "Issued On";
@@ -38,10 +40,10 @@ const BookCard = ({ record, index }) => {
         show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 280, delay: index * 0.06 } },
       }}
       whileHover={{ y: -4 }}
-      className="relative rounded-2xl p-[1px] cursor-pointer"
+      className="relative rounded-2xl p-px cursor-pointer"
       style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.25), rgba(255,255,255,0.04))" }}
     >
-      <div className="bg-[#0d1117] rounded-[15px] p-[18px] relative overflow-hidden">
+      <div onClick={()=>Navigate("/student/library")} className="bg-[#0d1117] rounded-[15px] p-4.5 relative overflow-hidden">
 
         {/* Mesh */}
         <div
@@ -66,9 +68,8 @@ const BookCard = ({ record, index }) => {
         <p className="text-[11px] text-slate-500 mb-3">
           By {record.book?.author || "Unknown"}
         </p>
-
         {/* Footer */}
-        <div className="flex items-center justify-between pt-3 border-t border-white/[0.05]">
+        <div className="flex items-center justify-between pt-3 border-t border-white/5">
           <div>
             <p className="text-[9px] font-bold tracking-widest uppercase text-slate-600">{dateLabel}</p>
             <p className="text-[11px] text-slate-400 mt-0.5">{date}</p>
@@ -88,7 +89,7 @@ const IssuedBooks = ({ issuedBooks = [] }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
-      className="relative rounded-[20px] p-[1px]"
+      className="relative rounded-[20px] p-px"
       style={{
         background: "linear-gradient(135deg, rgba(20,184,166,0.28), rgba(255,255,255,0.05), rgba(132,204,22,0.15))",
       }}
@@ -112,7 +113,7 @@ const IssuedBooks = ({ issuedBooks = [] }) => {
             📚 My Library Books
           </h3>
           {issuedBooks.length > 0 && (
-            <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-white/[0.05] text-slate-500">
+            <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-white/5 text-slate-500">
               {issuedBooks.filter((b) => b.status !== "returned").length} Active
             </span>
           )}
@@ -121,12 +122,12 @@ const IssuedBooks = ({ issuedBooks = [] }) => {
         {/* Divider label */}
         <div className="flex items-center gap-3 mb-4">
           <span className="text-[10px] font-bold tracking-widest uppercase text-slate-600">Currently issued</span>
-          <div className="flex-1 h-px bg-white/[0.05]" />
+          <div className="flex-1 h-px bg-white/5" />
         </div>
 
         {/* Empty state */}
         {issuedBooks.length === 0 ? (
-          <div className="text-center py-10 border border-dashed border-white/[0.08] rounded-2xl">
+          <div className="text-center py-10 border border-dashed border-white/8 rounded-2xl">
             <BookOpen size={32} className="mx-auto text-slate-700 mb-3" />
             <p className="text-slate-500 text-sm">You haven't issued any books yet.</p>
           </div>
@@ -138,7 +139,7 @@ const IssuedBooks = ({ issuedBooks = [] }) => {
             className="grid grid-cols-1 sm:grid-cols-2 gap-3"
           >
             {issuedBooks.map((record, i) => (
-              <BookCard key={record._id} record={record} index={i} />
+              <BookCard  key={record._id} record={record} index={i} />
             ))}
           </motion.div>
         )}

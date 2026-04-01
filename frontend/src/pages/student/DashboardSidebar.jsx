@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import ReportIssueModal from "./ReportIssueModal";
 
 const BADGE_ICONS = {
   first_step: { icon: "⭐", style: "bg-amber-400/10 border-amber-400/20" },
@@ -10,46 +9,76 @@ const BADGE_ICONS = {
   monthly_champ: { icon: "🏆", style: "bg-teal-400/10 border-teal-400/20" },
 };
 
-const DashboardSidebar = ({ notices = [], achievements = [] }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const DashboardSidebar = ({
+  notices = [],
+  achievements = [],
+  tickets = [],
+}) => {
   const navigate = useNavigate();
 
   return (
     <div className="flex flex-col gap-4">
       {/* ── REPORT BUTTON ── */}
-      <motion.button
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.1, type: "spring", stiffness: 280 }}
-        whileHover={{ y: -3 }}
-        whileTap={{ scale: 0.97 }}
-        onClick={() => setIsModalOpen(true)}
-        className="relative w-full rounded-[18px] p-px cursor-pointer"
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          delay: 0.18,
+          type: "spring",
+          stiffness: 280,
+        }}
+        className=" relative rounded-[20px] p-px"
         style={{
           background:
-            "linear-gradient(135deg, rgba(251,113,133,0.4), rgba(249,115,22,0.2))",
+            "linear-gradient(135deg, rgba(20,184,166,0.28), rgba(255,255,255,0.05), rgba(132,204,22,0.15))",
         }}>
-        <div className="bg-[#0d1117] rounded-[17px] px-5 py-4.5 flex items-center justify-center gap-3 relative overflow-hidden">
-          {/* Glow */}
-          <div
-            className="absolute -top-10 -right-10 w-24 h-24 rounded-full pointer-events-none"
-            style={{
-              background:
-                "radial-gradient(circle, rgba(251,113,133,0.12), transparent 70%)",
-            }}
-          />
-          <div className="w-9 h-9 rounded-[11px] bg-rose-400/10 border border-rose-400/25 flex items-center justify-center text-base shrink-0">
-            🚨
+        <div className="bg-[#0d1117] rounded-[19px] p-5">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-[15px] font-bold text-slate-100 flex items-center gap-2">
+              🎫 Support Tickets
+            </h3>
+            {tickets.length > 0 && (
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-white/5 text-slate-500">
+                {tickets.length} open tickets
+              </span>
+            )}
           </div>
-          <span
-            className="text-[14px] font-bold bg-clip-text text-transparent"
-            style={{
-              backgroundImage: "linear-gradient(135deg, #fb7185, #f97316)",
-            }}>
-            Report an Issue
-          </span>
+          {/* tickets  */}
+          {tickets.length === 0 ? (
+            <p className="text-slate-600 text-sm py-3">no open tickets</p>
+          ) : (
+            <div className="space-y-2">
+              {tickets.map((ticket, i) => (
+                <motion.div
+                  key={ticket._id}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 + i * 0.06 }}
+                  whileHover={{ x: 4 }}
+                  onClick={() => navigate("/student/helpdesk")}
+                  className="flex items-start gap-3 p-3 rounded-[13px] border border-white/5 bg-white/2 hover:bg-teal-500/5 hover:border-teal-500/20 transition-all cursor-pointer">
+                  <span className="w-2 h-2 rounded-full bg-teal-400/40 border border-teal-400/60 shrink-0 mt-1.25" />
+                  <div>
+                    <p className="text-[12px] font-semibold text-slate-200 leading-snug mb-1">
+                      {ticket.title}
+                    </p>
+                    <p className="text-[10px] text-slate-600">
+                      {new Date(
+                        ticket.issuedAt || ticket.createdAt,
+                      ).toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
-      </motion.button>
+      </motion.div>
 
       {/* ── NOTICE BOARD ── */}
       <motion.div
@@ -149,7 +178,7 @@ const DashboardSidebar = ({ notices = [], achievements = [] }) => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.28 + i * 0.06 }}
                     whileHover={{ x: 4 }}
-                    onClick={()=>navigate("/student/achievement")}
+                    onClick={() => navigate("/student/achievement")}
                     className="flex items-center cursor-pointer gap-3 p-3 rounded-[13px] bg-teal-500/4 border border-teal-500/15 transition-all">
                     <div
                       className={`w-9 h-9 rounded-xl flex items-center justify-center text-base shrink-0 border ${badgeMeta.style}`}>
@@ -172,10 +201,6 @@ const DashboardSidebar = ({ notices = [], achievements = [] }) => {
       </motion.div>
 
       {/* ── MODAL ── */}
-      <ReportIssueModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
     </div>
   );
 };

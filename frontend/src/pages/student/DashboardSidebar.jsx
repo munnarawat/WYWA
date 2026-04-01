@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ReportIssueModal from "./ReportIssueModal";
 
 const BADGE_ICONS = {
@@ -56,7 +56,7 @@ const DashboardSidebar = ({ notices = [], achievements = [] }) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.18, type: "spring", stiffness: 280 }}
-        className="relative rounded-[20px] p-[1px]"
+        className="relative rounded-[20px] p-px"
         style={{
           background:
             "linear-gradient(135deg, rgba(20,184,166,0.28), rgba(255,255,255,0.05), rgba(132,204,22,0.15))",
@@ -126,7 +126,7 @@ const DashboardSidebar = ({ notices = [], achievements = [] }) => {
             <h3 className="text-[15px] font-bold text-slate-100 flex items-center gap-2">
               ⚡ Achievements
             </h3>
-            <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-teal-400/[0.08] border border-teal-400/20 text-teal-400">
+            <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-teal-400/8 border border-teal-400/20 text-teal-400">
               {achievements.length} / 4
             </span>
           </div>
@@ -149,9 +149,10 @@ const DashboardSidebar = ({ notices = [], achievements = [] }) => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.28 + i * 0.06 }}
                     whileHover={{ x: 4 }}
-                    className="flex items-center gap-3 p-3 rounded-[13px] bg-teal-500/[0.04] border border-teal-500/15 transition-all">
+                    onClick={()=>navigate("/student/achievement")}
+                    className="flex items-center cursor-pointer gap-3 p-3 rounded-[13px] bg-teal-500/4 border border-teal-500/15 transition-all">
                     <div
-                      className={`w-9 h-9 rounded-[12px] flex items-center justify-center text-base flex-shrink-0 border ${badgeMeta.style}`}>
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center text-base shrink-0 border ${badgeMeta.style}`}>
                       {badgeMeta.icon}
                     </div>
                     <div>

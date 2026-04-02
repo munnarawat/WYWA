@@ -1,14 +1,16 @@
 import { AlertCircle, ArrowRight, Lock, User, Eye, EyeOff } from "lucide-react";
 import { motion } from "framer-motion";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../utils/api";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../store/slice/authSlice";
 import toast from "react-hot-toast";
 const Login = () => {
   const dispatch = useDispatch();
+  const {user: currentUser} = useSelector((state)=>state.auth);
+  console.log(currentUser);
   const {
     register,
     handleSubmit,
@@ -19,6 +21,19 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // when user are already login navigate to this dashboard
+  useEffect(()=>{
+    if(currentUser){
+      if(currentUser.role === "admin"){
+        navigate("/admin/dashboard")
+      }else if(currentUser.role === "thinkTank"){
+        navigate("/thinkTank/dashboard")
+      }else{
+        navigate("/student/dashboard");
+      }
+    }
+  },[currentUser, navigate]);
+  
   const onSubmit = async (data) => {
     setServerError("");
     setIsLoading(true);

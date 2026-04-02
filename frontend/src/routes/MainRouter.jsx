@@ -81,6 +81,7 @@ const MainRouter = () => {
     <>
       <ScrollTop />
       <Routes>
+        {/* public routes */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />

@@ -113,9 +113,11 @@ const Navbar = () => {
               {isAuthenticate && (
                 <Link
                   to={
-                    user.role === "admin"
+                    user?.role === "admin"
                       ? "/admin/dashboard"
-                      : "/student/dashboard"
+                      : user?.role === "thinkTank"
+                        ? "/thinkTank/dashboard"
+                        : "/student/dashboard"
                   }
                   className={`relative group h-5 text-sm font-medium overflow-hidden text-gray-300/80 hover:text-white transition-colors ${location.pathname.includes("dashboard") ? "text-white" : "text-gray-300/80"}`}>
                   <motion.div
@@ -182,7 +184,13 @@ const Navbar = () => {
                   </div>
                   <div className="p-1">
                     <Link
-                      to={user.role === "admin"? "/admin/profile":"/student/profile"}
+                      to={
+                        user.role === "admin"
+                          ? "/admin/profile"
+                          : user.role == "thinkTank"
+                            ? "/thinkTank/profile"
+                            : "/student/profile"
+                      }
                       className="flex items-center gap-3 px-3 py-2.5 text-sm text-gray-300 hover:bg-white/5 hover:text-white rounded-lg transition">
                       <User size={16} className="text-emerald-400" /> My Profile
                     </Link>
@@ -289,7 +297,13 @@ const Navbar = () => {
             ) : (
               <div className="flex flex-col gap-3">
                 <Link
-                  to="/profile"
+                  to={
+                    user.role === "admin"
+                      ? "/admin/profile"
+                      : user.role == "thinkTank"
+                        ? "/thinkTank/profile"
+                        : "/student/profile"
+                  }
                   onClick={() => setIsMobileOpen(false)}
                   className="py-3 w-full rounded-xl bg-white/5 text-white hover:bg-white/10 border border-white/10 flex items-center justify-center gap-2 transition">
                   <User size={18} /> View Profile

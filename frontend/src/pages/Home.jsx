@@ -1,5 +1,4 @@
 import PublicHome from "./PublicHome";
-
 const Home = () => {
   return (
     <div className="relative min-h-screen flex items-center text-white pt-20 overflow-hidden">

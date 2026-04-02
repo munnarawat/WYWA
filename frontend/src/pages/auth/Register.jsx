@@ -10,11 +10,11 @@ import {
   User,
 } from "lucide-react";
 import { motion } from "motion/react";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../utils/api";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../store/slice/authSlice";
 import toast from "react-hot-toast";
 const Register = () => {
@@ -28,7 +28,20 @@ const Register = () => {
   const [serverError, setServerError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const { user: currentUser } = useSelector((state) => state.auth);
 
+  // when user are already login navigate to this dashboard
+  useEffect(() => {
+    if (currentUser) {
+      if (currentUser.role === "admin") {
+        navigate("/admin/dashboard");
+      } else if (currentUser.role === "thinkTank") {
+        navigate("/thinkTank/dashboard");
+      } else {
+        navigate("/student/dashboard");
+      }
+    }
+  }, [currentUser, navigate]);
   const onSubmit = async (data) => {
     setServerError("");
     setIsLoading(true);
@@ -57,7 +70,7 @@ const Register = () => {
           navigate("/student/dashboard");
         } else {
           navigate("/");
-        };
+        }
         toast.success(response.data.message || "Registration successful");
       }
     } catch (error) {
@@ -82,7 +95,12 @@ const Register = () => {
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <div className=" w-40">
-              <img className="w-full h-full object-cover" src="https://ik.imagekit.io/fmkamttxp/MYWA/logo.png" alt="logo" loading="lazy" />
+              <img
+                className="w-full h-full object-cover"
+                src="https://ik.imagekit.io/fmkamttxp/MYWA/logo.png"
+                alt="logo"
+                loading="lazy"
+              />
             </div>
           </div>
           <h2 className="text-3xl heading font-bold tracking-tight">

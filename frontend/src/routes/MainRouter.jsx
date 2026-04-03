@@ -20,7 +20,6 @@ import {
   UserStar,
 } from "lucide-react";
 import DashboardLayout from "../pages/DashboardLayout";
-import DashboardOverview from "../pages/admin/DashboardOverview";
 import StudentOverview from "../pages/student/StudentOverview";
 import ManageNoticeBoard from "../pages/admin/ManageNoticeBoard";
 import LibraryInventory from "../pages/admin/LibraryInventory";
@@ -39,6 +38,7 @@ import NoticeBoard from "../pages/student/NoticeBoard";
 import AttendanceChart from "../pages/attendance/AttendanceChart";
 import StudentLibrary from "../pages/student/library/StudentLibrary";
 import HelpDesk from "../pages/student/helpdesk/HelpDesk";
+import DashboardOverview from "../pages/admin/AdminDashboard/DashboardOverview";
 
 
 const MainRouter = () => {

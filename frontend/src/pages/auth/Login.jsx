@@ -10,7 +10,6 @@ import toast from "react-hot-toast";
 const Login = () => {
   const dispatch = useDispatch();
   const {user: currentUser} = useSelector((state)=>state.auth);
-  console.log(currentUser);
   const {
     register,
     handleSubmit,

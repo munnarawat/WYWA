@@ -6,19 +6,90 @@ const Notice = require("../models/notice.model");
 const Attendance = require("../models/attendance.model");
 const Ticket = require("../models/ticket.model");
 
-// Get Dashboard Overview Data (Admin Only)
+const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
+
+const normalizeDate = (value) => {
+  const date = new Date(value);
+  date.setHours(0, 0, 0, 0);
+  return date.getTime();
+};
+
+const calculateLongestStreak = (dates) => {
+  if (dates.length === 0) {
+    return 0;
+  }
+
+  const uniqueDates = [...new Set(dates.map(normalizeDate))].sort(
+    (a, b) => b - a,
+  );
+
+  let longestStreak = 1;
+  let currentStreak = 1;
+
+  for (let i = 0; i < uniqueDates.length - 1; i++) {
+    if (uniqueDates[i] - uniqueDates[i + 1] === ONE_DAY_IN_MS) {
+      currentStreak += 1;
+      longestStreak = Math.max(longestStreak, currentStreak);
+    } else {
+      currentStreak = 1;
+    }
+  }
+
+  return longestStreak;
+};
+
+const getTopStreakers = async (branch, startOfMonth) => {
+  const records = await Attendance.find({
+    branch,
+    status: "present",
+    date: { $gte: startOfMonth },
+  })
+    .populate("student", "userName email")
+    .select("student date")
+    .sort({ date: -1 })
+    .lean();
+
+  const streakMap = new Map();
+
+  records.forEach((record) => {
+    if (!record.student?._id) {
+      return;
+    }
+
+    const studentId = record.student._id.toString();
+    const existing = streakMap.get(studentId) ?? {
+      studentId,
+      userName: record.student.userName,
+      email: record.student.email,
+      dates: [],
+    };
+
+    existing.dates.push(record.date);
+    streakMap.set(studentId, existing);
+  });
+
+  return [...streakMap.values()]
+    .map(({ dates, ...student }) => ({
+      ...student,
+      streak: calculateLongestStreak(dates),
+    }))
+    .filter((student) => student.streak > 0)
+    .sort(
+      (a, b) => b.streak - a.streak || a.userName.localeCompare(b.userName),
+    )
+    .slice(0, 5);
+};
 
 const getDashboardOverview = async (req, res) => {
   try {
     const branch = req.user.branch;
 
-    // today Date for (today attendance)
     const startOfToday = new Date();
     startOfToday.setHours(0, 0, 0, 0);
+
     const endOfToday = new Date();
     endOfToday.setHours(23, 59, 59, 999);
 
-    // this month limit(top streaker )
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
@@ -33,86 +104,50 @@ const getDashboardOverview = async (req, res) => {
       todayAttendanceData,
       topStreakersData,
     ] = await Promise.all([
-      // 1. Stats Queries
-      User.countDocuments({ role: "student", branch: branch, isActive: true }),
-      Book.countDocuments({ branch: branch }),
-      Issue.countDocuments({ branch: branch, status: { $ne: "returned" } }),
-      Achievement.countDocuments({ branch: branch }),
-
-      // 2. Recent Activities Queries (Top 5 for tables/lists)
-      Issue.find({ branch: branch })
+      User.countDocuments({ role: "student", branch, isActive: true }),
+      Book.countDocuments({ branch }),
+      Issue.countDocuments({ branch, status: { $ne: "returned" } }),
+      Achievement.countDocuments({ branch }),
+      Issue.find({ branch })
         .populate("student", "userName email")
         .populate("book", "title")
         .sort({ createdAt: -1 })
         .limit(5),
-
-      Notice.find({ branch: branch })
+      Notice.find({ branch })
         .populate("createdBy", "userName")
         .sort({ createdAt: -1 })
         .limit(5),
-
-      // tickets
-      Ticket.find({ branch: branch, status: "pending" })
+      Ticket.find({ branch, status: "pending" })
         .populate("student", "userName email")
         .sort({ createdAt: -1 })
         .limit(5),
-
-      // Today's Attendance Aggregation (Present/Absent Cou
       Attendance.aggregate([
         {
           $match: {
-            branch: branch,
+            branch,
             date: { $gte: startOfToday, $lte: endOfToday },
           },
         },
         { $group: { _id: "$status", count: { $sum: 1 } } },
       ]),
+      getTopStreakers(branch, startOfMonth),
     ]);
 
-    // Top 5 Attendees (Streakers) on this month
-    Attendance.aggregate([
-      {
-        $match: {
-          branch: branch,
-          status: "present",
-          date: { $gte: startOfMonth },
-        },
-      },
-      { $group: { _id: "$student", presentCount: { $sum: 1 } } },
-      { $sort: { presentCount: -1 } },
-      { $limit: 5 },
-      {
-        $lookup: {
-          from: "users",
-          localField: "_id",
-          foreignField: "_id",
-          as: "studentData",
-        },
-      },
-      { $unwind: "$studentData" },
-      {
-        $project: {
-          _id: 0,
-          student: {
-            _id: "$studentData._id",
-            userName: "$studentData.userName",
-            email: "$studentData.email",
-          },
-          currentStreak:"$presentCount"
-        },
-      },
-    ]);
-
-    // 🌟 Formatting Today's Attendance
     let todayPresent = 0;
     let todayAbsent = 0;
+
     todayAttendanceData.forEach((item) => {
-      if (item._id === "present") todayPresent = item.count;
-      if (item._id === "absent") todayAbsent = item.count;
+      if (item._id === "present") {
+        todayPresent = item.count;
+      }
+
+      if (item._id === "absent") {
+        todayAbsent = item.count;
+      }
     });
 
     return res.status(200).json({
-      message: "Dashboard data fetch successfully 🎉",
+      message: "Dashboard data fetched successfully",
       stats: {
         totalStudents,
         totalBooks,
@@ -123,7 +158,7 @@ const getDashboardOverview = async (req, res) => {
         recentIssues,
         recentNotices,
       },
-      pendingTickets: pendingTickets,
+      pendingTickets,
       todayAttendance: {
         present: todayPresent,
         absent: todayAbsent,
@@ -132,27 +167,17 @@ const getDashboardOverview = async (req, res) => {
     });
   } catch (error) {
     console.error("Dashboard overview error:", error);
-    res
-      .status(500)
-      .json({ message: "Internal server error while fetching dashboard data" });
+    return res.status(500).json({
+      message: "Internal server error while fetching dashboard data",
+    });
   }
 };
-
-// Get stats for Student Dashboard
 
 const getStudentDashboardStats = async (req, res) => {
   try {
     const studentId = req.user._id;
-
-    const recentAttendance = await Attendance.find({ student: studentId })
-      .sort({ data: -1 })
-      .limit(5)
-      .select("date status -_id");
-    // current month status
     const now = new Date();
-    // this month
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-
     const endOfMonth = new Date(
       now.getFullYear(),
       now.getMonth() + 1,
@@ -160,22 +185,29 @@ const getStudentDashboardStats = async (req, res) => {
       23,
       59,
       59,
+      999,
     );
 
-    const currentMonthRecords = await Attendance.find({
-      student: studentId,
-      date: { $gte: startOfMonth, $lte: endOfMonth },
-    });
+    const [recentAttendance, currentMonthRecords] = await Promise.all([
+      Attendance.find({ student: studentId })
+        .sort({ date: -1 })
+        .limit(5)
+        .select("date status -_id")
+        .lean(),
+      Attendance.find({
+        student: studentId,
+        date: { $gte: startOfMonth, $lte: endOfMonth },
+      }).lean(),
+    ]);
 
     const totalDays = currentMonthRecords.length;
     const totalPresent = currentMonthRecords.filter(
-      (r) => r.status === "present",
+      (record) => record.status === "present",
     ).length;
     const totalAbsent = totalDays - totalPresent;
-
-    // Percentage calculation
     const percentage =
-      totalDays === 0 ? 0 : ((totalPresent / totalDays) * 100).toFixed(1);
+      totalDays === 0 ? 0 : Number(((totalPresent / totalDays) * 100).toFixed(1));
+
     return res.status(200).json({
       success: true,
       stats: {
@@ -187,9 +219,13 @@ const getStudentDashboardStats = async (req, res) => {
     });
   } catch (error) {
     console.error("Student dashboard stats error:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };
+
 module.exports = {
   getDashboardOverview,
   getStudentDashboardStats,

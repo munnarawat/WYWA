@@ -22,7 +22,7 @@ const RecentIssuesTable = ({ issues = [] }) => (
 
       {/* Header */}
       <div className="flex items-center justify-between mb-5">
-        <h3 className="text-[15px] font-bold text-slate-100 flex items-center gap-2" style={{ fontFamily: "'Syne', sans-serif" }}>
+        <h3 className="text-[15px] font-bold text-slate-100 flex items-center gap-2">
           📖 Recent Book Issues
         </h3>
         <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-white/5 border border-white/[0.07] text-slate-500">
@@ -73,7 +73,6 @@ const RecentIssuesTable = ({ issues = [] }) => (
                             background: "linear-gradient(135deg, rgba(20,184,166,0.3), rgba(132,204,22,0.2))",
                             borderColor: "rgba(20,184,166,0.2)",
                             color: "#2dd4bf",
-                            fontFamily: "'Syne', sans-serif",
                           }}
                         >
                           {name.charAt(0).toUpperCase()}

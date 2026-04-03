@@ -102,7 +102,6 @@ const AdminStatCards = ({ stats = {} }) => (
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
-              fontFamily: "'Syne', sans-serif",
             }}
           >
             {stats[key] ?? 0}

@@ -26,8 +26,7 @@ const PendingTicketsSidebar = ({ tickets = [] }) => {
 
         <div className="flex items-center justify-between mb-4">
           <h3
-            className="text-[15px] font-bold text-slate-100 flex items-center gap-2"
-            style={{ fontFamily: "'Syne', sans-serif" }}>
+            className="text-[15px] font-bold text-slate-100 flex items-center gap-2">
             🚨 Pending Tickets
           </h3>
           {tickets.length > 0 && (

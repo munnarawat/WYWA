@@ -50,7 +50,7 @@ const QuickActions = () => {
           whileHover={{ y: -3 }}
           whileTap={{ scale: 0.96 }}
           onClick={() => navigate(path)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-[13px] border text-[12px] font-bold transition-colors font-['DM_Sans']"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-[13px] border text-[12px] font-bold transition-colors "
           style={{ background: color, borderColor: border, color: text }}>
           <span>{emoji}</span>
           {label}

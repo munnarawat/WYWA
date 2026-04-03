@@ -51,6 +51,8 @@ const DashboardOverview = () => {
     year: "numeric",
   });
 
+  console.log(data);
+  
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
@@ -88,7 +90,6 @@ const DashboardOverview = () => {
               fontSize: "clamp(24px, 3.5vw, 38px)",
               backgroundImage:
                 "linear-gradient(135deg, #f0fdf4 0%, #14b8a6 50%, #84cc16 100%)",
-              fontFamily: "'Syne', sans-serif",
             }}>
             Welcome back, {firstName} 👋
           </motion.h1>

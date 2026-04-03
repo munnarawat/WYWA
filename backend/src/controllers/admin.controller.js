@@ -101,6 +101,7 @@ const toggleBlockUser = async (req, res) => {
     user.isActive = !user.isActive;
     await user.save();
     return res.status(200).json({
+      success:true,
       message: `user ${user.isActive ? "unblocked" : "blocked"} successfully `,
       user: {
         _id: user._id,
@@ -142,6 +143,7 @@ const makeAdmin = async (req, res) => {
     await user.save();
 
     return res.status(200).json({
+      success:true,
       message: "user prompt to admin successfully 🎉",
       user: {
         _id: user._id,

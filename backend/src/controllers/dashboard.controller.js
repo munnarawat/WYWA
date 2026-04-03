@@ -74,9 +74,7 @@ const getTopStreakers = async (branch, startOfMonth) => {
       streak: calculateLongestStreak(dates),
     }))
     .filter((student) => student.streak > 0)
-    .sort(
-      (a, b) => b.streak - a.streak || a.userName.localeCompare(b.userName),
-    )
+    .sort((a, b) => b.streak - a.streak || a.userName.localeCompare(b.userName))
     .slice(0, 5);
 };
 
@@ -206,7 +204,9 @@ const getStudentDashboardStats = async (req, res) => {
     ).length;
     const totalAbsent = totalDays - totalPresent;
     const percentage =
-      totalDays === 0 ? 0 : Number(((totalPresent / totalDays) * 100).toFixed(1));
+      totalDays === 0
+        ? 0
+        : Number(((totalPresent / totalDays) * 100).toFixed(1));
 
     return res.status(200).json({
       success: true,

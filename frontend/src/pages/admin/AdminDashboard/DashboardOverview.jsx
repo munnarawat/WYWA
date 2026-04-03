@@ -49,10 +49,7 @@ const DashboardOverview = () => {
     day: "numeric",
     month: "long",
     year: "numeric",
-  });
-
-  console.log(data);
-  
+  });  
   useEffect(() => {
     const fetchDashboard = async () => {
       try {

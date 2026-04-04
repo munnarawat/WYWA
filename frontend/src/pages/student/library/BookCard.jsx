@@ -8,7 +8,7 @@ const BookCard = ({ book, index }) => (
       show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 280, delay: index * 0.05 } },
     }}
     whileHover={{ y: -6 }}
-    className="relative rounded-[20px] p-[1px] cursor-pointer"
+    className="relative rounded-[20px] p-px cursor-pointer"
     style={{
       background: "linear-gradient(135deg, rgba(20,184,166,0.28), rgba(255,255,255,0.04), rgba(132,204,22,0.12))",
     }}
@@ -16,7 +16,7 @@ const BookCard = ({ book, index }) => (
     <div className="bg-[#0d1117] rounded-[19px] overflow-hidden flex flex-col h-full">
 
       {/* Cover */}
-      <div className="w-full h-[180px] relative overflow-hidden bg-[#131920] flex items-center justify-center border-b border-white/[0.05]">
+      <div className="w-full h-45 relative overflow-hidden bg-[#131920] flex items-center justify-center border-b border-white/5">
         {book.coverImage ? (
           <img
             src={book.coverImage}

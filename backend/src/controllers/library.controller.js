@@ -61,7 +61,7 @@ const getAllBooks = async (req, res) => {
       .populate("createdBy", "userName email")
       .skip(skip)
       .limit(limitNum)
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1, _id: -1 });
 
     return res.status(200).json({
       message: "Books retrieved successfully",

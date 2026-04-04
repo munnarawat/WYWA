@@ -246,7 +246,10 @@ const DashboardLayout = ({ menuItems }) => {
         </header>
 
         {/* main content */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth">
+        <main
+          id="dashboard-scroll-container"
+          className="flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth"
+        >
           <Outlet />
         </main>
       </div>

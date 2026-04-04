@@ -141,7 +141,6 @@ const HelpDesk = () => {
           </button>
         </motion.div>
       </div>
-
       {/* ── STATS ── */}
       <TicketStatsGrid tickets={tickets} />
 

@@ -161,7 +161,7 @@ const StudentLibrary = () => {
                 next={() => fetchAllBooks(page + 1, false)} 
                 hasMore={hasMore} 
                 style={{overflow:"hidden"}}
-                scrollableTarget="scrollableDiv"
+                scrollableTarget="dashboard-scroll-container"
                 loader={
                   <h4 className="text-center text-teal-500 my-4 animate-pulse">
                     Loading more books... 📚

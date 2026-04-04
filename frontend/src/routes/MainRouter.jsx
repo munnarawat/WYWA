@@ -22,7 +22,6 @@ import {
 import DashboardLayout from "../pages/DashboardLayout";
 import StudentOverview from "../pages/student/StudentOverview";
 import ManageNoticeBoard from "../pages/admin/ManageNoticeBoard";
-import ManageIssues from "../pages/admin/ManageIssues";
 import ManageAttendance from "../pages/admin/Attendance/ManageAttendance";
 import ManageAchievements from "../pages/admin/ManageAchievements";
 import ManageThinkTank from "../pages/admin/ThinkTank/ManageThinkTank";
@@ -39,6 +38,7 @@ import StudentLibrary from "../pages/student/library/StudentLibrary";
 import HelpDesk from "../pages/student/helpdesk/HelpDesk";
 import DashboardOverview from "../pages/admin/AdminDashboard/DashboardOverview";
 import LibraryInventory from "../pages/admin/Library-Inventory/LibraryInventory";
+import ManageIssues from "../pages/admin/ManageIssues/ManageIssues";
 
 
 const MainRouter = () => {

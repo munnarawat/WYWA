@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import api from "../../utils/api";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import TicketStatsGrid from "../student/helpdesk/TicketStatsGrid";
 
 const IssueSkelton = () => {
   return (
@@ -20,8 +22,7 @@ const IssueSkelton = () => {
           key={i}
           className="bg-white/5 border border-white/10 animate-pulse rounded-2xl p-5 md:p-6 transition-all flex flex-col md:flex-row gap-6 md:items-center justify-between">
           <div className="flex-1 space-y-3">
-            <div className="w-1/3 h-4 bg-white/5">     
-            </div>
+            <div className="w-1/3 h-4 bg-white/5"></div>
 
             <div className="w-3/4 h-6 mb-2 bg-white/5 "></div>
             <div className="w-3/4 h-6 mb-2 bg-white/5 "></div>
@@ -41,6 +42,7 @@ const ManageStudentIssues = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState("all"); // 'all', 'pending', 'resolved'
   const [searchQuery, setSearchQuery] = useState("");
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   const fetchTickets = async () => {
     try {
@@ -102,21 +104,37 @@ const ManageStudentIssues = () => {
   return (
     <div className="w-full min-h-screen bg-zinc-950 text-white p-4 md:p-8 overflow-y-auto pb-24">
       {/* HEADER */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8">
+      <div className="flex flex-col border-b border-white/5 pb-4 md:flex-row justify-between items-start md:items-end gap-6 mb-8">
         <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-semibold tracking-widest uppercase mb-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
+            MYWA · Admin Issue panel
+          </div>
           <motion.h1
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="text-3xl font-bold bg-clip-text text-transparent bg-linear-to-r from-teal-400 to-lime-400">
-            Help Desk Issues
+            className="font-extrabold bg-clip-text text-transparent mb-2 text-3xl md:text-4xl"
+            style={{
+              backgroundImage:
+                "linear-gradient(135deg, #f0fdf4 0%, #14b8a6 50%, #84cc16 100%)",
+            }}>
+            Student Issue
           </motion.h1>
-          <p className="text-zinc-400 mt-1">
-            Manage and resolve student complaints.
-          </p>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
+            className="text-[14px] text-slate-500">
+            Manage Student issue for{" "}
+            <span className="text-slate-300 font-medium">
+              {currentUser?.branch}
+            </span>{" "}
+            branch.
+          </motion.p>
         </div>
 
         {/* SEARCH & FILTER */}
-        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+        <div className="flex flex-col  sm:flex-row gap-3 w-full md:w-auto">
           <div className="relative">
             <Search
               size={18}
@@ -127,13 +145,13 @@ const ManageStudentIssues = () => {
               placeholder="Search issues..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full sm:w-64 bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 focus:border-teal-500 outline-none transition-colors"
+              className="w-full bg-white/3 border border-white/[0.07] rounded-[14px] py-2.5 pl-10 pr-4 text-[13px] text-slate-100 placeholder:text-slate-700 outline-none transition-all focus:border-teal-500/40 focus:bg-teal-500/2"
             />
           </div>
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 outline-none focus:border-teal-500 text-sm [&>option]:bg-zinc-900">
+            className="bg-white/3 text-slate-200 border border-white/10 rounded-xl px-4 py-2.5 outline-none focus:border-teal-500 text-sm [&>option]:bg-zinc-900">
             <option value="all">All Issues</option>
             <option value="pending">Pending</option>
             <option value="in-progress">In Progress</option>
@@ -142,82 +160,114 @@ const ManageStudentIssues = () => {
         </div>
       </div>
 
+      {/* stats */}
+      <TicketStatsGrid tickets={tickets} />
+
+      {/* Section label */}
+      <div className="flex items-center mt-6 gap-3">
+        <span className="text-[10px] font-bold tracking-widest uppercase text-slate-600 whitespace-nowrap">
+          All tickets
+        </span>
+        <div className="flex-1 h-px bg-white/5" />
+        {!isLoading && tickets.length > 0 && (
+          <span className="text-[10px] ] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-white/4 text-slate-600 border border-white/6">
+            {tickets.length} Total
+          </span>
+        )}
+      </div>
+
       {/* TICKETS LIST */}
       {isLoading ? (
-       <IssueSkelton/>
+        <IssueSkelton />
       ) : filteredTickets.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-64 bg-white/5 border border-white/10 rounded-2xl">
           <CheckCircle size={48} className="text-zinc-500 mb-4" />
           <p className="text-zinc-400 text-lg">Hooray! No issues found.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 mt-4 gap-4">
           {filteredTickets.map((ticket) => (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
               key={ticket._id}
-              className="bg-white/5  hover:bg-white-[0.07] border border-white/10 rounded-2xl p-5 md:p-6 transition-all flex flex-col md:flex-row gap-6 md:items-center justify-between">
-              <div className="flex-1 space-y-3">
-                <div className="flex flex-wrap items-center gap-3">
-                  <span
-                    className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded border ${getStatusColor(ticket.status)}`}>
-                    {ticket.status}
-                  </span>
-                  <span className="text-xs text-zinc-500 flex items-center gap-1">
-                    <Clock size={12} />{" "}
-                    {new Date(ticket.createdAt).toLocaleString()}
-                  </span>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-bold text-white">
-                    {ticket.title}
-                  </h3>
-                  <p className="text-sm text-zinc-400 mt-1 line-clamp-2 leading-relaxed">
-                    {ticket.description}
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2 pt-2 border-t border-white/5">
-                  <div className="w-6 h-6 rounded-full bg-teal-500/20 text-teal-400 flex items-center justify-center text-[10px] font-bold uppercase">
-                    {ticket.student?.userName?.charAt(0) || "U"}
-                  </div>
-                  <span className="text-xs font-medium text-zinc-300">
-                    Raised by:{" "}
-                    <span className="text-white capitalize">
-                      {ticket.student?.fullName?.firstName ||
-                        ticket.student?.userName}
+              variants={{
+                hidden: { opacity: 0, x: -20 },
+                show: {
+                  opacity: 1,
+                  x: 0,
+                  transition: {
+                    type: "spring",
+                    stiffness: 260,
+                  },
+                },
+              }}
+              whileHover={{ x: 5 }}
+              className="relative   rounded-[18px] p-px"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(20,184,166,0.2), rgba(255,255,255,0.04), rgba(132,204,22,0.1))",
+              }}>
+              <div className="bg-[#0d1117] rounded-[17px] px-5 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative overflow-hidden">
+                <div className="flex-1 space-y-3">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span
+                      className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded border ${getStatusColor(ticket.status)}`}>
+                      {ticket.status}
                     </span>
-                  </span>
-                </div>
-              </div>
+                    <span className="text-xs text-zinc-500 flex items-center gap-1">
+                      <Clock size={12} />{" "}
+                      {new Date(ticket.createdAt).toLocaleString()}
+                    </span>
+                  </div>
 
-              {/* Action Buttons */}
-              <div className="flex flex-row md:flex-col gap-2 shrink-0 border-t md:border-t-0 md:border-l border-white/5 pt-4 md:pt-0 md:pl-6">
-                {ticket.status !== "resolved" && (
-                  <button
-                    onClick={() => handleStatusChange(ticket._id, "resolved")}
-                    className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 px-4 py-2 rounded-xl text-sm font-medium transition-all">
-                    <CheckCircle size={16} /> Mark Resolved
-                  </button>
-                )}
-                {ticket.status === "pending" && (
-                  <button
-                    onClick={() =>
-                      handleStatusChange(ticket._id, "in-progress")
-                    }
-                    className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 px-4 py-2 rounded-xl text-sm font-medium transition-all">
-                    <AlertCircle size={16} /> Mark In-Progress
-                  </button>
-                )}
-                {ticket.status === "resolved" && (
-                  <button
-                    onClick={() => handleStatusChange(ticket._id, "closed")}
-                    className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-zinc-500/10 hover:bg-zinc-500/20 text-zinc-400 border border-zinc-500/20 px-4 py-2 rounded-xl text-sm font-medium transition-all">
-                    <XCircle size={16} /> Close Ticket
-                  </button>
-                )}
+                  <div>
+                    <h3 className="text-lg font-bold text-white">
+                      {ticket.title}
+                    </h3>
+                    <p className="text-sm text-zinc-400 mt-1 line-clamp-2 leading-relaxed">
+                      {ticket.description}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-2 border-t border-white/5">
+                    <div className="w-6 h-6 rounded-full bg-teal-500/20 text-teal-400 flex items-center justify-center text-[10px] font-bold uppercase">
+                      {ticket.student?.userName?.charAt(0) || "U"}
+                    </div>
+                    <span className="text-xs font-medium text-zinc-300">
+                      Raised by:{" "}
+                      <span className="text-white capitalize">
+                        {ticket.student?.fullName?.firstName ||
+                          ticket.student?.userName}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-row md:flex-col gap-2 shrink-0 border-t md:border-t-0 md:border-l border-white/5 pt-4 md:pt-0 md:pl-6">
+                  {ticket.status !== "resolved" && (
+                    <button
+                      onClick={() => handleStatusChange(ticket._id, "resolved")}
+                      className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 px-4 py-2 rounded-xl text-sm font-medium transition-all">
+                      <CheckCircle size={16} /> Mark Resolved
+                    </button>
+                  )}
+                  {ticket.status === "pending" && (
+                    <button
+                      onClick={() =>
+                        handleStatusChange(ticket._id, "in-progress")
+                      }
+                      className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 px-4 py-2 rounded-xl text-sm font-medium transition-all">
+                      <AlertCircle size={16} /> Mark In-Progress
+                    </button>
+                  )}
+                  {ticket.status === "resolved" && (
+                    <button
+                      onClick={() => handleStatusChange(ticket._id, "closed")}
+                      className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-zinc-500/10 hover:bg-zinc-500/20 text-zinc-400 border border-zinc-500/20 px-4 py-2 rounded-xl text-sm font-medium transition-all">
+                      <XCircle size={16} /> Close Ticket
+                    </button>
+                  )}
+                </div>
               </div>
             </motion.div>
           ))}

@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Search, Plus, Lightbulb, Briefcase } from "lucide-react";
+import { Search, Plus, Lightbulb, Briefcase, Sparkles } from "lucide-react";
 import api from "../../../utils/api";
 import toast from "react-hot-toast";
 import ThinkTankSkeleton from "./ThinkTankSkeleton";
 import ThinkTankCard from "./ThinkTankCard";
 import ThinkTankModal from "./ThinkTankModal";
 import PopUp from "../../../pop-up/PopUp";
+
 const ManageThinkTank = () => {
   const [members, setMembers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -16,9 +17,10 @@ const ManageThinkTank = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingMember, setEditingMember] = useState(null);
 
-    // pop-up
+  // pop-up
   const [showAlert, setShowAlert] = useState(false);
   const [selectedThinkTankId, setSelectedThinkTankId] = useState(null);
+
   const fetchMembers = async () => {
     try {
       setIsLoading(true);
@@ -55,11 +57,12 @@ const ManageThinkTank = () => {
     }
   };
 
-  const confirmDelete = async(id)=>{
+  const confirmDelete = async (id) => {
     setShowAlert(true);
     setSelectedThinkTankId(id);
-  }
-  const handleDelete = async (id) => {
+  };
+
+  const handleDelete = async () => {
     if (!selectedThinkTankId) return;
     const toastId = toast.loading("Removing profile...");
     try {
@@ -70,7 +73,7 @@ const ManageThinkTank = () => {
       toast.error(error.response?.data?.message || "Failed to remove member", {
         id: toastId,
       });
-    }finally{
+    } finally {
       setShowAlert(false);
       setSelectedThinkTankId(null);
     }
@@ -93,9 +96,10 @@ const ManageThinkTank = () => {
         m.roleOrContribution?.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [members, searchQuery]);
+
   return (
     <div className="w-full min-h-screen bg-zinc-950 text-white p-4 md:p-8 overflow-y-auto pb-24 relative">
-      {/* show Alert section  */}
+      {/* 🔴 ALERT POPUP */}
       <AnimatePresence>
         {showAlert && (
           <PopUp
@@ -103,12 +107,13 @@ const ManageThinkTank = () => {
               setShowAlert(false);
               setSelectedThinkTankId(null);
             }}
-            onConfirm={() =>handleDelete()}
-            text={`Are you sure you want to delete this thinkTank member`}
+            onConfirm={handleDelete}
+            text="Are you sure you want to delete this Think Tank member? This action cannot be undone."
           />
         )}
       </AnimatePresence>
-      {/* 🟢 MODAL COMPONENT */}
+
+      {/* 🟢 PREMIUM MODAL */}
       <ThinkTankModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -116,22 +121,31 @@ const ManageThinkTank = () => {
         editingMember={editingMember}
       />
 
-      {/* 🟢 HEADER & SEARCH */}
-      <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      {/* 🟢 HEADER SECTION */}
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-semibold tracking-widest uppercase mb-4">
+        <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
+        MYWA · Admin Think Tank
+      </div>
+
+      <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-6">
         <div>
           <motion.h1
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="text-3xl font-bold bg-clip-text text-transparent bg-linear-to-r from-indigo-400 to-purple-400 flex items-center gap-3">
-            <Lightbulb size={32} className="text-indigo-400" /> Think Tank
+            className="font-extrabold flex items-center bg-clip-text text-transparent mb-2 text-3xl md:text-4xl"
+            style={{
+              backgroundImage:
+                "linear-gradient(135deg, #f0fdf4 0%, #14b8a6 50%, #84cc16 100%)",
+            }}>
+            <Lightbulb size={32} className="text-teal-400 mr-3" /> Think Tank
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1 }}
-            className="text-zinc-400 mt-1">
-            Manage the core advisors, contributors, and experts of the MYWA
-            Organization.
+            className="text-slate-500 text-[14px] mt-1">
+            Manage the core advisors, contributors, and experts of the
+            organization.
           </motion.p>
         </div>
 
@@ -141,15 +155,15 @@ const ManageThinkTank = () => {
             animate={{ opacity: 1, y: 0 }}
             className="relative w-full sm:w-64">
             <Search
-              size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500"
+              size={16}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"
             />
             <input
               type="text"
               placeholder="Search by name or role..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:border-indigo-500/50 transition-all text-white"
+              className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-[13px] focus:outline-none focus:border-teal-500/40 focus:bg-teal-500/5 transition-all text-white placeholder:text-slate-600"
             />
           </motion.div>
 
@@ -158,7 +172,7 @@ const ManageThinkTank = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             onClick={openCreateModal}
-            className="flex items-center justify-center gap-2 bg-linear-to-r from-indigo-500 to-purple-500 text-white font-bold px-5 py-2.5 rounded-xl hover:shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all whitespace-nowrap">
+            className="flex items-center justify-center gap-2 bg-linear-to-r from-teal-500 to-lime-500 text-zinc-950 font-bold px-5 py-2.5 rounded-xl hover:shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:-translate-y-1 transition-all whitespace-nowrap">
             <Plus size={18} /> Add Member
           </motion.button>
         </div>
@@ -169,8 +183,13 @@ const ManageThinkTank = () => {
         <ThinkTankSkeleton />
       ) : filteredMembers.length === 0 ? (
         <div className="w-full h-64 flex flex-col items-center justify-center text-zinc-500 bg-white/5 border border-white/10 rounded-2xl border-dashed">
-          <Briefcase size={48} className="mb-4 opacity-30" />
-          <p className="text-lg font-medium">No members added yet.</p>
+          <Sparkles size={48} className="mb-4 opacity-30 text-teal-500" />
+          <p className="text-lg font-medium text-slate-300">
+            No members found.
+          </p>
+          <p className="text-sm mt-1">
+            Add experts to build your organization's core team.
+          </p>
         </div>
       ) : (
         <motion.div

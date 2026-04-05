@@ -9,8 +9,12 @@ import {
   Award,
   Star,
   X,
-  Image as ImageIcon,
   CalendarDays,
+  User,
+  Briefcase,
+  Link as LinkIcon,
+  Loader2,
+  Sparkles,
 } from "lucide-react";
 import api from "../../utils/api";
 import toast from "react-hot-toast";
@@ -24,18 +28,23 @@ const AchievementSkeleton = () => (
     {[1, 2, 3, 4, 5, 6].map((i) => (
       <div
         key={i}
-        className="bg-white/5 border border-white/10 rounded-2xl p-4 animate-pulse flex flex-col h-[340px]">
-        <div className="w-full h-48 bg-white/10 rounded-xl mb-4"></div>
-        <div className="h-6 w-3/4 bg-white/10 rounded-md mb-2"></div>
-        <div className="h-4 w-1/2 bg-white/5 rounded-md mb-4"></div>
-        <div className="mt-auto flex justify-between">
-          <div className="h-6 w-20 bg-white/5 rounded-md"></div>
-          <div className="h-6 w-16 bg-white/5 rounded-md"></div>
+        className="rounded-[20px] overflow-hidden animate-pulse"
+        style={{
+          background: "rgba(255,255,255,0.02)",
+          border: "1px solid rgba(255,255,255,0.05)",
+        }}>
+        <div className="w-full h-48 bg-white/5"></div>
+        <div className="p-5 space-y-3">
+          <div className="h-5 w-3/4 bg-white/10 rounded-md"></div>
+          <div className="h-4 w-1/2 bg-teal-500/10 rounded-md"></div>
+          <div className="h-3 w-full bg-white/5 rounded-md mt-4"></div>
+          <div className="h-3 w-5/6 bg-white/5 rounded-md"></div>
         </div>
       </div>
     ))}
   </div>
 );
+
 const ManageAchievements = () => {
   const [achievements, setAchievements] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -46,9 +55,10 @@ const ManageAchievements = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
-  // alert status
+  // Alert Status
   const [showAlert, setShowAlert] = useState(false);
   const [selectedStudentId, setSelectedStudentId] = useState(null);
+
   const {
     register,
     handleSubmit,
@@ -57,7 +67,7 @@ const ManageAchievements = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  // 1. fetch fetchAchievements
+  // 1. Fetch Achievements
   const fetchAchievements = async () => {
     try {
       setIsLoading(true);
@@ -72,6 +82,7 @@ const ManageAchievements = () => {
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
     fetchAchievements();
   }, [currentUser]);
@@ -103,21 +114,21 @@ const ManageAchievements = () => {
     setSelectedStudentId(id);
     setShowAlert(true);
   };
+
   // 3. Delete Achievement
   const handleDelete = async () => {
-    if (selectedStudentId) return;
+    if (!selectedStudentId) return;
     const toastId = toast.loading("Removing record...");
     try {
       await api.delete(`/achievements/${selectedStudentId}`);
       toast.success("Record removed!", { id: toastId });
       setAchievements(achievements.filter((a) => a._id !== selectedStudentId));
     } catch (error) {
-      console.error("Delete error:", error);
       toast.error(error.response?.data?.message || "Failed to remove record", {
         id: toastId,
       });
-    }finally{
-      showAlert(false);
+    } finally {
+      setShowAlert(false);
       setSelectedStudentId(null);
     }
   };
@@ -163,7 +174,7 @@ const ManageAchievements = () => {
 
   return (
     <div className="w-full min-h-screen bg-zinc-950 text-white p-4 md:p-8 overflow-y-auto pb-24 relative">
-      {/* show alert */}
+      {/* 🔴 ALERT POPUP */}
       <AnimatePresence>
         {showAlert && (
           <PopUp
@@ -171,159 +182,248 @@ const ManageAchievements = () => {
               setShowAlert(false);
               setSelectedStudentId(null);
             }}
-            onConfirm={() => handleDelete()}
-            text={`Are you sure you want delete Student Achievements? this action cannot be undone!`}
+            onConfirm={handleDelete}
+            text="Are you sure you want to delete this Achievement? This action cannot be undone!"
           />
         )}
       </AnimatePresence>
-      {/* 🟢 MODAL (Add / Edit Form) */}
+
+      {/* 🟢 PREMIUM MODAL (Add / Edit) */}
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={closeModal}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/60 backdrop-blur-md"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-lg bg-zinc-900 border border-amber-500/20 rounded-2xl shadow-2xl p-6 md:p-8 z-10">
-              <button
-                onClick={closeModal}
-                className="absolute top-4 right-4 text-zinc-400 hover:text-white transition bg-white/5 p-2 rounded-full">
-                <X size={18} />
-              </button>
-
-              <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <Trophy className="text-amber-400" />
-                {editingId ? "Edit Success Story" : "Add to Wall of Fame"}
-              </h2>
-
-              <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-1">
-                    Student Name *
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Rahul Sharma"
-                    {...register("studentName", {
-                      required: "Name is required",
-                    })}
-                    className={`w-full bg-black/20 border ${errors.studentName ? "border-rose-500" : "border-white/10"} rounded-xl py-3 px-4 text-white focus:outline-none focus:border-amber-500/50`}
-                  />
-                  {errors.studentName && (
-                    <p className="text-rose-400 text-xs mt-1">
-                      {errors.studentName.message}
-                    </p>
-                  )}
+              className="relative w-full max-w-xl rounded-[24px] p-px z-10"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(20,184,166,0.5), rgba(255,255,255,0.05), rgba(132,204,22,0.3))",
+              }}>
+              <div className="bg-[#0a0e14] rounded-[23px] overflow-hidden">
+                {/* Modal Header */}
+                <div className="relative px-6 py-5 border-b border-white/[0.05] bg-white/[0.02] flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400">
+                      <Trophy size={20} />
+                    </div>
+                    <div>
+                      <h2 className="text-[18px] font-bold text-slate-100 leading-tight">
+                        {editingId
+                          ? "Edit Success Story"
+                          : "Add to Wall of Fame"}
+                      </h2>
+                      <p className="text-[12px] text-slate-500">
+                        Celebrate student milestones
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={closeModal}
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 text-slate-400 hover:bg-rose-500/20 hover:text-rose-400 transition-colors">
+                    <X size={16} />
+                  </button>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                {/* Form */}
+                <form
+                  onSubmit={handleSubmit(onSubmitForm)}
+                  className="p-6 sm:p-8 space-y-5">
+                  {/* Student Name */}
                   <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-1">
-                      Selection / Exam *
+                    <label className="block text-[11px] font-bold tracking-widest uppercase text-slate-500 mb-2">
+                      Student Name <span className="text-rose-500">*</span>
                     </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. TCS Ninja or JEE"
-                      {...register("examName", {
-                        required: "Exam/Selection is required",
-                      })}
-                      className={`w-full bg-black/20 border ${errors.examName ? "border-rose-500" : "border-white/10"} rounded-xl py-3 px-4 text-white focus:outline-none focus:border-amber-500/50`}
-                    />
-                    {errors.examName && (
-                      <p className="text-rose-400 text-xs mt-1">
-                        {errors.examName.message}
+                    <div className="relative">
+                      <User
+                        size={16}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+                      />
+                      <input
+                        type="text"
+                        placeholder="e.g. Rahul Sharma"
+                        {...register("studentName", {
+                          required: "Name is required",
+                        })}
+                        className={`w-full bg-[#131920] border rounded-xl py-3 pl-11 pr-4 text-[14px] text-slate-200 placeholder:text-slate-600 outline-none transition-all focus:bg-teal-500/5 ${errors.studentName ? "border-rose-500/50" : "border-white/10 focus:border-teal-500/50"}`}
+                      />
+                    </div>
+                    {errors.studentName && (
+                      <p className="text-rose-400 text-[11px] mt-1.5">
+                        {errors.studentName.message}
                       </p>
                     )}
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-zinc-400 mb-1">
-                      Passing Year *
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. 2026"
-                      {...register("year", { required: "Year is required" })}
-                      className={`w-full bg-black/20 border ${errors.year ? "border-rose-500" : "border-white/10"} rounded-xl py-3 px-4 text-white focus:outline-none focus:border-amber-500/50`}
-                    />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    {/* Exam Name */}
+                    <div>
+                      <label className="block text-[11px] font-bold tracking-widest uppercase text-slate-500 mb-2">
+                        Selection / Exam{" "}
+                        <span className="text-rose-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <Briefcase
+                          size={16}
+                          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+                        />
+                        <input
+                          type="text"
+                          placeholder="e.g. TCS Ninja or JEE"
+                          {...register("examName", {
+                            required: "Exam/Selection is required",
+                          })}
+                          className={`w-full bg-[#131920] border rounded-xl py-3 pl-11 pr-4 text-[14px] text-slate-200 placeholder:text-slate-600 outline-none transition-all focus:bg-teal-500/5 ${errors.examName ? "border-rose-500/50" : "border-white/10 focus:border-teal-500/50"}`}
+                        />
+                      </div>
+                      {errors.examName && (
+                        <p className="text-rose-400 text-[11px] mt-1.5">
+                          {errors.examName.message}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Passing Year */}
+                    <div>
+                      <label className="block text-[11px] font-bold tracking-widest uppercase text-slate-500 mb-2">
+                        Passing Year <span className="text-rose-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <CalendarDays
+                          size={16}
+                          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+                        />
+                        <input
+                          type="text"
+                          placeholder="e.g. 2026"
+                          {...register("year", {
+                            required: "Year is required",
+                          })}
+                          className={`w-full bg-[#131920] border rounded-xl py-3 pl-11 pr-4 text-[14px] text-slate-200 placeholder:text-slate-600 outline-none transition-all focus:bg-teal-500/5 ${errors.year ? "border-rose-500/50" : "border-white/10 focus:border-teal-500/50"}`}
+                        />
+                      </div>
+                      {errors.year && (
+                        <p className="text-rose-400 text-[11px] mt-1.5">
+                          {errors.year.message}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-1">
-                    Image URL{" "}
-                    <span className="text-xs text-zinc-500">
-                      (Optional - Drive/Imgur Link)
-                    </span>
-                  </label>
-                  <input
-                    type="url"
-                    placeholder="https://..."
-                    {...register("imageUrl")}
-                    className="w-full bg-black/20 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-amber-500/50"
-                  />
-                </div>
+                  {/* Image URL */}
+                  <div>
+                    <label className="block text-[11px] font-bold tracking-widest uppercase text-slate-500 mb-2">
+                      Image URL{" "}
+                      <span className="text-slate-600 font-normal normal-case">
+                        (Optional)
+                      </span>
+                    </label>
+                    <div className="relative">
+                      <LinkIcon
+                        size={16}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
+                      />
+                      <input
+                        type="url"
+                        placeholder="https://..."
+                        {...register("imageUrl")}
+                        className="w-full bg-[#131920] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-[14px] text-slate-200 placeholder:text-slate-600 outline-none transition-all focus:bg-teal-500/5 focus:border-teal-500/50"
+                      />
+                    </div>
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-1">
-                    Short Description *
-                  </label>
-                  <textarea
-                    rows="3"
-                    placeholder="e.g. Secured AIR 500 and got placed as SDE."
-                    {...register("description", {
-                      required: "Description is required",
-                    })}
-                    className={`w-full bg-black/20 border ${errors.description ? "border-rose-500" : "border-white/10"} rounded-xl py-3 px-4 text-white focus:outline-none focus:border-amber-500/50 resize-none`}
-                  />
-                </div>
+                  {/* Description */}
+                  <div>
+                    <label className="block text-[11px] font-bold tracking-widest uppercase text-slate-500 mb-2">
+                      Short Description <span className="text-rose-500">*</span>
+                    </label>
+                    <textarea
+                      rows="3"
+                      placeholder="e.g. Secured AIR 500 and got placed as SDE."
+                      {...register("description", {
+                        required: "Description is required",
+                      })}
+                      className={`w-full bg-[#131920] border rounded-xl py-3 px-4 text-[14px] text-slate-200 placeholder:text-slate-600 outline-none transition-all focus:bg-teal-500/5 resize-none ${errors.description ? "border-rose-500/50" : "border-white/10 focus:border-teal-500/50"}`}
+                    />
+                    {errors.description && (
+                      <p className="text-rose-400 text-[11px] mt-1.5">
+                        {errors.description.message}
+                      </p>
+                    )}
+                  </div>
 
-                <div className="pt-4 flex gap-3">
-                  <button
-                    type="button"
-                    onClick={closeModal}
-                    className="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white transition font-medium">
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="flex-1 py-3 rounded-xl bg-linear-to-r from-amber-500 to-orange-500 text-zinc-950 font-bold shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)] transition disabled:opacity-50">
-                    {isSubmitting
-                      ? "Saving..."
-                      : editingId
-                        ? "Update Record"
-                        : "Add Student"}
-                  </button>
-                </div>
-              </form>
+                  {/* Form Actions */}
+                  <div className="pt-4 flex items-center justify-end gap-3 border-t border-white/5 mt-6">
+                    <button
+                      type="button"
+                      onClick={closeModal}
+                      className="px-6 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 text-[13px] font-bold transition-colors">
+                      Cancel
+                    </button>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-zinc-950 text-[13px] font-bold shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:shadow-[0_0_25px_rgba(20,184,166,0.5)] disabled:opacity-70 disabled:cursor-not-allowed transition-all"
+                      style={{
+                        background: "linear-gradient(135deg, #14b8a6, #84cc16)",
+                      }}>
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 size={16} className="animate-spin" />{" "}
+                          Saving...
+                        </>
+                      ) : editingId ? (
+                        "Save Changes"
+                      ) : (
+                        "Add Record"
+                      )}
+                    </motion.button>
+                  </div>
+                </form>
+              </div>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
 
-      {/* 🟢 HEADER & SEARCH */}
-      <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      {/* 🟢 HEADER SECTION */}
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-semibold tracking-widest uppercase mb-4">
+        <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
+        MYWA · Admin Achievement Panel
+      </div>
+
+      <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-6">
         <div>
           <motion.h1
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="text-3xl font-bold bg-clip-text text-transparent bg-linear-to-r from-amber-400 to-orange-400 flex items-center gap-3">
-            <Award size={32} className="text-amber-400" /> Wall of Fame
+            className="font-extrabold flex items-center bg-clip-text text-transparent mb-2 text-3xl md:text-4xl"
+            style={{
+              backgroundImage:
+                "linear-gradient(135deg, #f0fdf4 0%, #14b8a6 50%, #84cc16 100%)",
+            }}>
+            <Trophy size={32} className="text-teal-400 mr-3" /> Wall of Fame
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1 }}
-            className="text-zinc-400 mt-1">
+            className="text-slate-500 text-[14px] mt-1">
             Showcase successful selections and achievements of{" "}
-            {currentUser?.branch} students.
+            <span className="text-slate-300 font-medium">
+              {currentUser?.branch}
+            </span>{" "}
+            students.
           </motion.p>
         </div>
 
@@ -333,15 +433,15 @@ const ManageAchievements = () => {
             animate={{ opacity: 1, y: 0 }}
             className="relative w-full sm:w-64">
             <Search
-              size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500"
+              size={16}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"
             />
             <input
               type="text"
               placeholder="Search student or exam..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:outline-none focus:border-amber-500/50 transition-all text-white"
+              className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-[13px] focus:outline-none focus:border-teal-500/40 focus:bg-teal-500/5 transition-all text-white placeholder:text-slate-600"
             />
           </motion.div>
 
@@ -350,7 +450,7 @@ const ManageAchievements = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             onClick={openCreateModal}
-            className="flex items-center justify-center gap-2 bg-linear-to-r from-amber-500 to-orange-500 text-zinc-950 font-bold px-5 py-2.5 rounded-xl hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] transition-all whitespace-nowrap">
+            className="flex items-center justify-center gap-2 bg-linear-to-r from-teal-500 to-lime-500 text-zinc-950 font-bold px-5 py-2.5 rounded-xl hover:shadow-[0_0_20px_rgba(20,184,166,0.3)] hover:-translate-y-1 transition-all whitespace-nowrap">
             <Plus size={18} /> Add Success Story
           </motion.button>
         </div>
@@ -361,9 +461,11 @@ const ManageAchievements = () => {
         <AchievementSkeleton />
       ) : filteredAchievements.length === 0 ? (
         <div className="w-full h-64 flex flex-col items-center justify-center text-zinc-500 bg-white/5 border border-white/10 rounded-2xl border-dashed">
-          <Star size={48} className="mb-4 opacity-30" />
-          <p className="text-lg font-medium">No success stories yet.</p>
-          <p className="text-sm">
+          <Sparkles size={48} className="mb-4 opacity-30 text-teal-500" />
+          <p className="text-lg font-medium text-slate-300">
+            No success stories found.
+          </p>
+          <p className="text-sm mt-1">
             Add students who got selected to inspire others!
           </p>
         </div>
@@ -380,66 +482,89 @@ const ManageAchievements = () => {
             <motion.div
               variants={{
                 hidden: { opacity: 0, y: 20 },
-                show: { opacity: 1, y: 0 },
+                show: {
+                  opacity: 1,
+                  y: 0,
+                  transition: { type: "spring", stiffness: 280 },
+                },
               }}
               key={ach._id}
-              className="group relative bg-zinc-900 border border-white/10 rounded-2xl p-4 hover:border-amber-500/40 transition-all hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(245,158,11,0.1)] flex flex-col h-full overflow-hidden">
-              {/* Image Container with Glow */}
-              <div className="w-full h-48 rounded-xl bg-zinc-950 mb-4 overflow-hidden relative border border-white/5 flex items-center justify-center">
-                {ach.imageUrl ? (
-                  <img
-                    src={ach.imageUrl}
-                    alt={ach.studentName}
-                    className="w-full h-full object-cover opacity-90 group-hover:scale-105 group-hover:opacity-100 transition-all duration-500"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = "";
+              className="group relative rounded-[20px] p-px overflow-hidden cursor-pointer"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(20,184,166,0.2), rgba(255,255,255,0.03), rgba(132,204,22,0.1))",
+              }}>
+              {/* Internal Card Background */}
+              <div className="bg-[#0d1117] rounded-[19px] flex flex-col h-full relative z-10">
+                {/* Image Container */}
+                <div className="w-full h-48 relative overflow-hidden bg-[#131920] border-b border-white/5 flex items-center justify-center rounded-t-[19px]">
+                  {ach.imageUrl ? (
+                    <img
+                      src={ach.imageUrl}
+                      alt={ach.studentName}
+                      className="w-full h-full object-cover opacity-80 group-hover:scale-110 group-hover:opacity-100 transition-all duration-700 ease-out"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    // Fallback Teal Gradient
+                    <div className="w-full h-full bg-linear-to-br from-teal-900/30 to-[#0d1117] flex flex-col items-center justify-center text-teal-500/20">
+                      <Award size={48} strokeWidth={1} />
+                    </div>
+                  )}
+
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-linear-to-t from-[#0d1117] via-transparent to-transparent opacity-80 pointer-events-none" />
+
+                  {/* Sleek Year Badge */}
+                  <div className="absolute top-3 right-3 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-1.5 text-[11px] font-bold text-slate-200">
+                    <CalendarDays size={12} className="text-teal-400" />{" "}
+                    {ach.year}
+                  </div>
+                </div>
+
+                {/* Content Section */}
+                <div className="p-5 flex-1 flex flex-col relative overflow-hidden">
+                  {/* Decorative Mesh Background */}
+                  <div
+                    className="absolute bottom-0 right-0 w-20 h-20 pointer-events-none rounded-br-[19px] opacity-30 transition-opacity group-hover:opacity-100"
+                    style={{
+                      backgroundImage:
+                        "radial-gradient(circle, rgba(20,184,166,0.2) 1px, transparent 1px)",
+                      backgroundSize: "10px 10px",
                     }}
                   />
-                ) : (
-                  // Fallback Gradient if no image
-                  <div className="w-full h-full bg-linear-to-br from-amber-900/40 to-zinc-900 flex flex-col items-center justify-center text-amber-500/30">
-                    <Trophy size={40} className="mb-2" />
+
+                  <h3 className="text-[17px] font-black text-slate-100 mb-1 line-clamp-1 group-hover:text-teal-400 transition-colors">
+                    {ach.studentName}
+                  </h3>
+
+                  <div className="inline-flex items-center gap-1.5 text-[11px] font-extrabold tracking-widest uppercase text-teal-400/90 mb-3 bg-teal-500/10 self-start px-2 py-1 rounded-md border border-teal-500/20">
+                    <Star size={12} className="fill-teal-400/50" />{" "}
+                    {ach.examName}
                   </div>
-                )}
 
-                {/* Year Badge */}
-                <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/10 flex items-center gap-1.5 text-xs font-bold text-white shadow-lg">
-                  <CalendarDays size={12} className="text-amber-400" />{" "}
-                  {ach.year}
-                </div>
-              </div>
+                  <p className="text-slate-400 text-[13px] line-clamp-3 leading-relaxed mb-4 relative z-10">
+                    "{ach.description}"
+                  </p>
 
-              {/* Student Details */}
-              <div className="flex-1 flex flex-col">
-                <h3
-                  className="text-xl font-bold text-white mb-1 group-hover:text-amber-400 transition-colors line-clamp-1"
-                  title={ach.studentName}>
-                  {ach.studentName}
-                </h3>
-                {/* Exam / Selection Highlight */}
-                <p className="text-amber-500 font-semibold text-sm mb-3 line-clamp-1 flex items-center gap-1.5">
-                  <Star size={14} className="fill-amber-500" /> Selected in{" "}
-                  {ach.examName}
-                </p>
-                <p className="text-zinc-400 text-sm mb-4 line-clamp-3 leading-relaxed">
-                  "{ach.description}"
-                </p>
-
-                {/* Footer Controls (Admin Only Actions) */}
-                <div className="mt-auto pt-3 border-t border-white/10 flex items-center justify-end gap-2 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button
-                    onClick={() => openEditModal(ach)}
-                    className="p-2 rounded-lg bg-teal-500/10 text-teal-400 hover:bg-teal-500/20 transition"
-                    title="Edit Record">
-                    <Edit2 size={16} />
-                  </button>
-                  <button
-                    onClick={() => confirmDelete(ach._id)}
-                    className="p-2 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition"
-                    title="Delete Record">
-                    <Trash2 size={16} />
-                  </button>
+                  {/* Footer Controls (Edit/Delete) */}
+                  <div className="mt-auto pt-3 border-t border-white/5 flex items-center justify-end gap-2 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity relative z-10">
+                    <button
+                      onClick={() => openEditModal(ach)}
+                      className="p-2 rounded-xl bg-teal-500/10 text-teal-400 hover:bg-teal-500/20 transition hover:scale-105"
+                      title="Edit Record">
+                      <Edit2 size={15} />
+                    </button>
+                    <button
+                      onClick={() => confirmDelete(ach._id)}
+                      className="p-2 rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition hover:scale-105"
+                      title="Delete Record">
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
                 </div>
               </div>
             </motion.div>

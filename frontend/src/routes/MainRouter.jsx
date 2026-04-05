@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 // ─────────────────────────────────────────
-// 🟢 SYNC IMPORTS (Layouts & Core Components - Do NOT lazy load these)
+//  SYNC IMPORTS (Layouts & Core Components - Do NOT lazy load these)
 // ─────────────────────────────────────────
 import ProtectedRoute from "./ProtectedRoute";
 import PublicLayout from "../components/PublicLayout";

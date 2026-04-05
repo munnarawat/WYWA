@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import PopUp from "../../pop-up/PopUp";
 import { useForm } from "react-hook-form";
 import NoticeCard from "../../components/NoticeCard";
+import { useSelector } from "react-redux";
 
 // 🌟 SKELETON LOADER FOR CARDS
 const NoticeSkeleton = () => {
@@ -38,6 +39,7 @@ const categoryOptions = [
   "announcement",
 ];
 const ManageNoticeBoard = () => {
+  const {user:currentUser} = useSelector((state)=>state.auth)
   const [notices, setNotices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -305,6 +307,10 @@ const ManageNoticeBoard = () => {
       </AnimatePresence>
 
       {/* 🟢 PAGE HEADER & CONTROLS */}
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-semibold tracking-widest uppercase mb-3">
+        <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
+        MYWA · Admin notice board
+      </div>
       <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <motion.h1
@@ -317,12 +323,17 @@ const ManageNoticeBoard = () => {
             }}>
             Notice Board
           </motion.h1>
+          {/* description */}
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1 }}
-            className="text-zinc-400 mt-1">
-            Publish announcements and keep students updated.
+            className="text-[14px] text-slate-500">
+            Publish announcements and keep students updated. for{" "}
+            <span className="text-slate-300 font-medium">
+              {currentUser?.branch}
+            </span>{" "}
+            branch.
           </motion.p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4">

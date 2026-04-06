@@ -1,14 +1,19 @@
 const achievementModel = require("../models/achievement.model");
-
+const uploadFile = require("../service/storage.service");
 // createAchievement (admin only);
 const createAchievement = async (req, res) => {
   try {
-    const { studentName, examName, year, description,imageUrl } = req.body;
-
+    const { studentName, examName, year, description } = req.body;
+    let imageUrl = "";
     if (!studentName || !examName || !year) {
       return res
         .status(400)
         .json({ message: "studentName, examName, year are required" });
+    }
+
+    if(req.file){
+      const uploadResult = await uploadFile(req.file, "MYWA_Achievements");
+      imageUrl = uploadResult.url;
     }
 
     const achievement = await achievementModel.create({
@@ -16,7 +21,7 @@ const createAchievement = async (req, res) => {
       examName,
       year,
       description,
-      imageUrl:imageUrl || '',
+      imageUrl ,
       createdBy: req.user._id,
       branch:req.user.branch,
     });

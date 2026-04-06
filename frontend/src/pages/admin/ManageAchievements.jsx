@@ -93,11 +93,25 @@ const ManageAchievements = () => {
       editingId ? "Updating record..." : "Adding to Wall of Fame...",
     );
     try {
+      const formData = new FormData();
+      formData.append("studentName", data.studentName);
+      formData.append("examName", data.examName);
+      formData.append("year", data.year);
+      formData.append("description", data.description);
+
+      if (data.imageUrl && data.imageUrl.length > 0) {
+        formData.append("image", data.imageUrl[0]);
+      }
+
       if (editingId) {
-        await api.put(`/achievements/${editingId}`, data);
+        await api.put(`/achievements/${editingId}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         toast.success("Record updated successfully! 🏆", { id: toastId });
       } else {
-        await api.post("/achievements/create", data);
+        await api.post("/achievements/create", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         toast.success("Added to Wall of Fame! 🎉", { id: toastId });
       }
       closeModal();
@@ -203,14 +217,14 @@ const ManageAchievements = () => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-xl rounded-[24px] p-px z-10"
+              className="relative w-full max-w-xl rounded-3xl p-px z-10"
               style={{
                 background:
                   "linear-gradient(135deg, rgba(20,184,166,0.5), rgba(255,255,255,0.05), rgba(132,204,22,0.3))",
               }}>
               <div className="bg-[#0a0e14] rounded-[23px] overflow-hidden">
                 {/* Modal Header */}
-                <div className="relative px-6 py-5 border-b border-white/[0.05] bg-white/[0.02] flex items-center justify-between">
+                <div className="relative px-6 py-5 border-b border-white/5 bg-white/2 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400">
                       <Trophy size={20} />
@@ -332,7 +346,8 @@ const ManageAchievements = () => {
                         className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
                       />
                       <input
-                        type="url"
+                        type="file"
+                        accept="image/*"
                         placeholder="https://..."
                         {...register("imageUrl")}
                         className="w-full bg-[#131920] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-[14px] text-slate-200 placeholder:text-slate-600 outline-none transition-all focus:bg-teal-500/5 focus:border-teal-500/50"

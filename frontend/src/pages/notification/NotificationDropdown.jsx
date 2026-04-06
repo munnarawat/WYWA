@@ -5,15 +5,15 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import api from "../../utils/api";
 
-
-
-const NotificationDropdown = ({socket}) => {
+const NotificationDropdown = ({ socket }) => {
   const { user } = useSelector((state) => state.auth);
   // notification state
   const [notifications, setNotifications] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef(null);
+
+  console.log(notifications);
 
   useEffect(() => {
     const fetchNotification = async () => {
@@ -29,18 +29,33 @@ const NotificationDropdown = ({socket}) => {
       }
     };
     fetchNotification();
-  }, [user]);
+  }, [user?._id]);
 
   // handle read (delete single);
-  const handleReadNotification = async (id) => {
+  const handleReadNotification = async (clickId) => {
+    if (!clickId || clickId === "undefined") {
+      console.error("Missing Notification ID!");
+      return;
+    }
+    //save preview state  for rollback
+    const previousNotifications = [...notifications];
+    const previousUnreadCount = unreadCount;
+
     // optimistic ui update
-    setNotifications((prev) => prev.filter((n) => n._id !== id));
+    setNotifications((prev) => prev.filter((n) => (n._id || n.id) !== clickId));
     setUnreadCount((prev) => Math.max(0, prev - 1));
 
+    if (clickId.toString().length !== 24) {
+      console.log("Dismissed local socket notification.");
+      return;
+    }
     try {
-      await api.delete(`/notification/${id}`);
+      await api.delete(`/notification/${clickId}`);
     } catch (error) {
       console.error("Failed to delete notification", error);
+      setNotifications(previousNotifications);
+      setUnreadCount(previousUnreadCount);
+      toast.error("Failed to dismiss notification.");
     }
   };
 
@@ -54,15 +69,20 @@ const NotificationDropdown = ({socket}) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  
+
   //   HANDLE CLEAR ALL
   const handleClearAll = async () => {
+    const previousNotifications = [...notifications];
+    const previousUnreadCount = unreadCount;
     setNotifications([]);
     setUnreadCount(0);
     try {
       await api.delete("/notification/clear-all/me");
     } catch (error) {
       console.error("Failed to clear notifications", error);
+      setNotifications(previousNotifications);
+      setUnreadCount(previousUnreadCount);
+      toast.error("Failed to clear all notifications.");
     }
   };
   // socket io
@@ -116,7 +136,7 @@ const NotificationDropdown = ({socket}) => {
       socket.off("connect", setupRooms);
       socket.off("receive_notification", handleNotification);
     };
-  }, [user]);
+  }, [user?._id, user?.branch, socket]);
   return (
     <div className="relative" ref={dropdownRef}>
       <button
@@ -125,7 +145,7 @@ const NotificationDropdown = ({socket}) => {
         <Bell size={20} />
         {unreadCount > 0 && (
           <span className="absolute top-1 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white border-2 border-zinc-950 animate-bounce">
-            {unreadCount}
+            {unreadCount > 99 ? "99" : unreadCount}
           </span>
         )}
       </button>
@@ -174,45 +194,51 @@ const NotificationDropdown = ({socket}) => {
                 </div>
               ) : (
                 <div className="space-y-1">
-                  {notifications.map((notify) => (
-                    <div
-                      key={notify._id}
-                      onClick={() => handleReadNotification(notify._id)}
-                      className="group relative p-4 bg-transparent hover:bg-white/4 rounded-xl transition-all duration-200 cursor-pointer flex gap-3.5">
-                      <div className="shrink-0 mt-0.5">
-                        <div className="w-8 h-8 rounded-full bg-teal-500/10 border border-teal-500/20 flex items-center justify-center group-hover:scale-110 group-hover:bg-teal-500/20 transition-all duration-300">
-                          {notify.title.includes("Announcement") ||
-                          notify.title.includes("Notice") ? (
-                            <span className="text-sm">📢</span>
-                          ) : notify.title.includes("Streak") ? (
-                            <span className="text-sm">🔥</span>
-                          ) : notify.title.includes("Badge") ||
-                            notify.title.includes("Welcome") ? (
-                            <span className="text-sm">🏆</span>
-                          ) : (
-                            <Bell size={14} className="text-teal-400" />
-                          )}
+                  {notifications.map((notify) => {
+                    const safeId = notify._id || notify.id;
+                    return (
+                      <div
+                        key={safeId}
+                        onClick={() => handleReadNotification(safeId)}
+                        className="group relative p-4 bg-transparent hover:bg-white/4 rounded-xl transition-all duration-200 cursor-pointer flex gap-3.5">
+                        <div className="shrink-0 mt-0.5">
+                          <div className="w-8 h-8 rounded-full bg-teal-500/10 border border-teal-500/20 flex items-center justify-center group-hover:scale-110 group-hover:bg-teal-500/20 transition-all duration-300">
+                            {notify.title.includes("Announcement") ||
+                            notify.title.includes("Notice") ? (
+                              <span className="text-sm">📢</span>
+                            ) : notify.title.includes("Streak") ? (
+                              <span className="text-sm">🔥</span>
+                            ) : notify.title.includes("Badge") ||
+                              notify.title.includes("Welcome") ? (
+                              <span className="text-sm">🏆</span>
+                            ) : (
+                              <Bell size={14} className="text-teal-400" />
+                            )}
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="flex-1 min-w-0">
-                        <div className="flex justify-between items-start gap-2 mb-1">
-                          <h4 className="text-sm font-bold text-zinc-100 truncate pr-2 group-hover:text-teal-400 transition-colors">
-                            {notify.title}
-                          </h4>
-                          <p className="shrink-0 text-[10px] font-medium text-zinc-500 mt-0.5 whitespace-nowrap">
-                            {new Date(notify.createdAt).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-start gap-2 mb-1">
+                            <h4 className="text-sm font-bold text-zinc-100 truncate pr-2 group-hover:text-teal-400 transition-colors">
+                              {notify.title}
+                            </h4>
+                            <p className="shrink-0 text-[10px] font-medium text-zinc-500 mt-0.5 whitespace-nowrap">
+                              {new Date(notify.createdAt).toLocaleTimeString(
+                                [],
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                },
+                              )}
+                            </p>
+                          </div>
+                          <p className="text-xs text-zinc-400 leading-relaxed line-clamp-2">
+                            {notify.message}
                           </p>
                         </div>
-                        <p className="text-xs text-zinc-400 leading-relaxed line-clamp-2">
-                          {notify.message}
-                        </p>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

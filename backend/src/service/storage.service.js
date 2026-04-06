@@ -12,18 +12,18 @@ function uploadFile(file, folderName = "MYWA") {
   return new Promise((res, rej) => {
     try {
       if (!file) {
-        return rej(new (Error("No file Provided for upload")));
+        return rej(new (Error("No file Provided for upload"))());
       }
       const ext = path.extname(file.originalname);
       const cleanFileName = `${uuidv4()}${ext}`;
 
-    //   buffer convert to base64;
-     const fileBase64 = file.buffer.toString("base64");
+      //   buffer convert to base64;
+      const fileBase64 = file.buffer.toString("base64");
       imagekit.upload(
         {
           file: fileBase64,
           fileName: cleanFileName,
-          folder:folderName,
+          folder: folderName,
         },
         (error, result) => {
           if (error) {
@@ -34,9 +34,19 @@ function uploadFile(file, folderName = "MYWA") {
         },
       );
     } catch (error) {
-        rej(error)
+      rej(error);
     }
   });
 }
 
-module.exports = uploadFile;
+function deleteFile(fileId) {
+  return new Promise((resolve, reject) => {
+    if (!fileId) return resolve();
+    imagekit.deleteFile(fileId, (error, result) => {
+      if (error) reject(error);
+      else resolve(result);
+    });
+  });
+}
+
+module.exports = { uploadFile, deleteFile };

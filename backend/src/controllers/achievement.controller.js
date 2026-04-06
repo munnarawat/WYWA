@@ -1,19 +1,21 @@
 const achievementModel = require("../models/achievement.model");
-const uploadFile = require("../service/storage.service");
+const { uploadFile, deleteFile } = require("../service/storage.service");
 // createAchievement (admin only);
 const createAchievement = async (req, res) => {
   try {
     const { studentName, examName, year, description } = req.body;
     let imageUrl = "";
+    let imageId = "";
     if (!studentName || !examName || !year) {
       return res
         .status(400)
         .json({ message: "studentName, examName, year are required" });
     }
 
-    if(req.file){
+    if (req.file) {
       const uploadResult = await uploadFile(req.file, "MYWA_Achievements");
       imageUrl = uploadResult.url;
+      imageId = uploadResult.fileId;
     }
 
     const achievement = await achievementModel.create({
@@ -21,9 +23,10 @@ const createAchievement = async (req, res) => {
       examName,
       year,
       description,
-      imageUrl ,
+      imageUrl,
+      imageId,
       createdBy: req.user._id,
-      branch:req.user.branch,
+      branch: req.user.branch,
     });
     return res.status(201).json({
       message: "create Achievement successfully 🎉",
@@ -43,7 +46,7 @@ const getAllAchievement = async (req, res) => {
     const achievement = await achievementModel
       .find(query)
       .populate("createdBy", "userName email")
-      .sort({year:-1 ,  createdAt: -1 });
+      .sort({ year: -1, createdAt: -1 });
 
     return res.status(200).json({
       message: "getAll achievement fetched successfully 🎉",
@@ -66,6 +69,14 @@ const deleteAchievement = async (req, res) => {
     }
     if (achievement.branch !== req.user.branch) {
       return res.status(403).json({ message: "Unauthorized branch access" });
+    }
+    // delete from imageKit
+    if (achievement.imageId) {
+      try {
+        await deleteFile(achievement.imageId);
+      } catch (error) {
+        console.error("ImageKit delete error", error);
+      }
     }
     await achievement.deleteOne();
     return res.status(200).json({
@@ -92,6 +103,21 @@ const updateAchievement = async (req, res) => {
     if (achievement.branch !== req.user.branch) {
       return res.status(403).json({ message: "Unauthorized branch access" });
     }
+
+    if (req.file) {
+      if (achievement.imageId) {
+        try {
+          await deleteFile(achievement.imageId);
+        } catch (error) {
+          console.error("Old Image Delete Error:", err);
+        }
+      }
+    };
+    // upload new image
+    const uploadResult = await uploadFile(req.file , "MYWA-Achievements");
+    achievement.imageUrl = uploadResult.url;
+    achievement.imageId = uploadResult.fileId;
+
     if (studentName) achievement.studentName = studentName;
     if (examName) achievement.examName = examName;
     if (year) achievement.year = year;
@@ -111,5 +137,5 @@ module.exports = {
   createAchievement,
   getAllAchievement,
   deleteAchievement,
-  updateAchievement
+  updateAchievement,
 };

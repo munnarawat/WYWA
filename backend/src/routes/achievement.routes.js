@@ -18,7 +18,7 @@ router.get("/student",authMiddleware , getMyAchievements);
 router.post("/create",  authMiddleware, adminMiddleware, upload.single("image") , createAchievement);
 
 // update achievement (admin only);
-router.put("/:id", authMiddleware, adminMiddleware, updateAchievement);
+router.put("/:id", authMiddleware, adminMiddleware,upload.single("image"), updateAchievement);
 
 // delete achievement (admin only);
 router.delete("/:id", authMiddleware, adminMiddleware, deleteAchievement);

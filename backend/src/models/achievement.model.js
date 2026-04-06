@@ -29,6 +29,10 @@ const achievementSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    imageId: {
+      type: String,
+      default: "",
+    },
     branch: {
       type: String,
       enum: ["dehradun", "haldwani"],

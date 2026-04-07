@@ -112,9 +112,9 @@ const updateAchievement = async (req, res) => {
           console.error("Old Image Delete Error:", err);
         }
       }
-    };
+    }
     // upload new image
-    const uploadResult = await uploadFile(req.file , "MYWA-Achievements");
+    const uploadResult = await uploadFile(req.file, "MYWA-Achievements");
     achievement.imageUrl = uploadResult.url;
     achievement.imageId = uploadResult.fileId;
 

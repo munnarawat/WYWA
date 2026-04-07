@@ -3,11 +3,14 @@ const Issue = require("../models/issue.model");
 const {
   autoAwardBadge,
 } = require("../controllers/studentAchievement.controller");
-// add a book to the library admin only
+const { uploadFile, deleteFile } = require("../service/storage.service");
 
+// add a book to the library admin only
 const addBook = async (req, res) => {
   try {
     const { title, author, quantity, category } = req.body;
+    let coverImage = "";
+    let imageId = "";
 
     if (!title || !author || !quantity) {
       return res.status(400).json({ message: "All fields are required" });
@@ -15,12 +18,19 @@ const addBook = async (req, res) => {
     if (quantity < 0) {
       return res.status(400).json({ message: "Quantity cannot be negative" });
     }
+    if (req.file) {
+      const uploadResult = await uploadFile(req.file, "MYWA_Library");
+      coverImage = uploadResult.url;
+      imageId = uploadResult.fileId;
+    }
     const book = await Book.create({
       title,
       author,
       category: category || "General",
       quantity,
       available: quantity,
+      coverImage,
+      imageId,
       createdBy: req.user._id,
       branch: req.user.branch,
     });
@@ -94,6 +104,19 @@ const updateBook = async (req, res) => {
         .status(403)
         .json({ message: " You can only update books from your branch" });
     }
+
+    if (req.file) {
+      if (book.coverImage) {
+        try {
+          await deleteFile(book.imageId);
+        } catch (error) {
+          console.error("Old Image Delete Error:", err);
+        }
+      }
+    }
+    const uploadResult = await uploadFile(req.file, "MYWA_Library");
+    book.coverImage = uploadResult.url;
+    book.imageId = uploadResult.fileId;
     if (title) book.title = title;
     if (author) book.author = author;
     if (category) book.category = category;
@@ -128,6 +151,13 @@ const deleteBook = async (req, res) => {
       return res.status(403).json({
         message: "You can only delete books from your branch",
       });
+    }
+    if (book.imageId) {
+      try {
+        await deleteFile(book.imageId);
+      } catch (error) {
+        console.log("imageKit delete error", error);
+      }
     }
     await book.deleteOne();
     return res.status(200).json({ message: "Book deleted successfully 🎉" });

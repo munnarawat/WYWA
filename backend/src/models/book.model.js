@@ -12,11 +12,11 @@ const bookSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    category:{
-      type:String,
-      trim:true,
-      required:true,
-      default: "General"
+    category: {
+      type: String,
+      trim: true,
+      required: true,
+      default: "General",
     },
     quantity: {
       type: Number,
@@ -25,8 +25,8 @@ const bookSchema = new mongoose.Schema(
     },
     available: {
       type: Number,
-      required:true,
-      min:0,
+      required: true,
+      min: 0,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
@@ -39,6 +39,10 @@ const bookSchema = new mongoose.Schema(
       required: true,
     },
     coverImage: {
+      type: String,
+      default: "",
+    },
+    imageId: {
       type: String,
       default: "",
     },

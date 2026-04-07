@@ -133,7 +133,8 @@ const BookFormModal = ({
                     <div className="relative">
                       <LinkIcon size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
                       <input
-                        type="url"
+                        type="file"
+                        accept="image/*"
                         placeholder="https://..."
                         {...register("coverImage")}
                         className="w-full bg-[#131920] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-[14px] text-slate-200 placeholder:text-slate-600 outline-none transition-all focus:bg-teal-500/5 focus:border-teal-500/50"

@@ -55,7 +55,7 @@ const LibraryInventory = () => {
     setValue,
     formState: { errors, isSubmitting },
   } = useForm();
-  
+
   // alert status
   const [showAlert, setShowAlert] = useState(false);
   const [selectedBookId, setSelectedBookId] = useState(null);
@@ -71,7 +71,7 @@ const LibraryInventory = () => {
         }
 
         const res = await api.get(
-          `/library/books?page=${pageNumber}&limit=12&search=${encodeURIComponent(searchQuery)}`
+          `/library/books?page=${pageNumber}&limit=12&search=${encodeURIComponent(searchQuery)}`,
         );
         const newBookList = res.data.books || [];
 
@@ -82,8 +82,10 @@ const LibraryInventory = () => {
           // If scrolling, append only unique items
           setBooks((prev) => {
             const existingIds = new Set(prev.map((b) => b._id));
-            const uniqueNewBooks = newBookList.filter((b) => !existingIds.has(b._id));
-            
+            const uniqueNewBooks = newBookList.filter(
+              (b) => !existingIds.has(b._id),
+            );
+
             // Stop loading if no new books were added but backend sent data
             if (uniqueNewBooks.length === 0 && newBookList.length > 0) {
               setHasMore(false);
@@ -92,11 +94,10 @@ const LibraryInventory = () => {
             return [...prev, ...uniqueNewBooks];
           });
         }
-        
+
         // Use standard boolean cast or default to false
         setHasMore(res.data?.pagination?.hasNextPage || false);
         setPage(pageNumber);
-
       } catch (error) {
         toast.error("Failed to load catalog.");
         setHasMore(false);
@@ -104,35 +105,45 @@ const LibraryInventory = () => {
         setIsLoading(false);
       }
     },
-    [searchQuery] // Re-create function when search changes
+    [searchQuery], // Re-create function when search changes
   );
+console.log(books);
 
   // Smart Search (Debouncing)
   useEffect(() => {
     const timeOutId = setTimeout(() => {
       fetchBooks(1, true);
     }, 500); // Wait 500ms before sending search API
-    
+
     return () => clearTimeout(timeOutId);
   }, [fetchBooks, currentUser?.branch]);
 
   // 2. Add / Update Book
   const onSubmitFrom = async (data) => {
     const toastId = toast.loading(
-      editingId ? "Updating book..." : "Adding book to library..."
+      editingId ? "Updating book..." : "Adding book to library...",
     );
     try {
-      const payload = {
-        ...data,
-        quantity: Number(data.quantity),
-      };
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("author", data.author);
+      formData.append("category", data.category);
+      formData.append("quantity", Number(data.quantity));
+
+      if (data.coverImage && data.coverImage.length > 0) {
+        formData.append("image", data.coverImage[0]);
+      }
       if (editingId) {
         // update book
-        await api.put(`/library/books/${editingId}`, payload);
+        await api.put(`/library/books/${editingId}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         toast.success("Book updated successfully!", { id: toastId });
       } else {
         // add book
-        await api.post("/library/books", payload);
+        await api.post("/library/books", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         toast.success("Book added to library! 🎉", { id: toastId });
       }
       closeModal();
@@ -203,8 +214,7 @@ const LibraryInventory = () => {
   return (
     <div
       id="scrollableDiv"
-      className="w-full min-h-screen bg-zinc-950 text-white p-4 md:p-8 overflow-y-auto pb-24 relative"
-    >
+      className="w-full min-h-screen bg-zinc-950 text-white p-4 md:p-8 overflow-y-auto pb-24 relative">
       {/* show alert */}
       <AnimatePresence>
         {showAlert && (
@@ -274,8 +284,7 @@ const LibraryInventory = () => {
             <p className="text-center text-slate-500 my-6 text-sm">
               Yay! You have seen it all. 🎉
             </p>
-          }
-        >
+          }>
           <motion.div
             variants={{
               hidden: { opacity: 0 },
@@ -283,8 +292,7 @@ const LibraryInventory = () => {
             }}
             initial="hidden"
             animate="show"
-            className="grid grid-cols-1 pt-4  sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 overflow-hidden p-1"
-          >
+            className="grid grid-cols-1 pt-4  sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 overflow-hidden p-1">
             {books.map((book, i) => (
               <InventoryBook
                 key={book._id}

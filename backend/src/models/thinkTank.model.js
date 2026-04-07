@@ -25,10 +25,14 @@ const thinkTankSchema = new mongoose.Schema(
       ref: "User",
       trim: true,
     },
-    imageUrl:{
-      type:String,
-      default:"",
-    }
+    imageUrl: {
+      type: String,
+      default: "",
+    },
+    imageId: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,

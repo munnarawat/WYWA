@@ -39,7 +39,7 @@ const categoryOptions = [
   "announcement",
 ];
 const ManageNoticeBoard = () => {
-  const {user:currentUser} = useSelector((state)=>state.auth)
+  const { user: currentUser } = useSelector((state) => state.auth);
   const [notices, setNotices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -191,116 +191,123 @@ const ManageNoticeBoard = () => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="relative w-full max-w-xl rounded-3xl p-px overflow-hidden z-10"
               style={{
                 background:
-                  "linear-gradient(135deg, rgba(20,184,166,0.3), rgba(255,255,255,0.05), rgba(132,204,22,0.15))",
-              }}
-              className="relative w-full max-w-lg  border border-white/10 rounded-2xl shadow-2xl p-6 md:p-8 z-10">
-              <button
-                onClick={closeModal}
-                className="absolute top-4 right-4 text-zinc-400 hover:text-white transition bg-white/5 p-2 rounded-full">
-                <X size={18} />
-              </button>
+                  "linear-gradient(135deg, rgba(20,184,166,0.5), rgba(255,255,255,0.05), rgba(132,204,22,0.3))",
+              }}>
+              <div className="bg-[#0a0e14] p-6 rounded-[23px] overflow-hidden">
+                <button
+                  onClick={closeModal}
+                  className="absolute top-4 right-4 text-zinc-400 hover:text-white transition bg-white/5 p-2 rounded-full">
+                  <X size={18} />
+                </button>
 
-              <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                <Megaphone className="text-teal-400" />
-                {editingId ? "Edit Notice" : "Create Notice"}
-              </h2>
+                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <Megaphone className="text-teal-400" />
+                  {editingId ? "Edit Notice" : "Create Notice"}
+                </h2>
 
-              {/* 🌟 FORM SE ONSUBMIT CHANGE HUA HAI */}
-              <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-4">
-                {/* category */}
-                <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-1">
-                    Notice Category
-                  </label>
-                  <select
-                    {...register("category", {
-                      required: "Category is required",
-                    })}
-                    className={`w-full bg-black/20 border ${
-                      errors.category ? "border-rose-500" : "border-white/10"
-                    } rounded-xl py-3 px-4 text-white focus:outline-none focus:border-teal-500/50 transition-colors cursor-pointer appearance-none`}>
-                    {/* Dark theme fix for default option */}
-                    <option value="" className="bg-[#0d1117] text-slate-100">
-                      Select a category
-                    </option>
-
-                    {/* Mapping with capitalized first letter for UI */}
-                    {categoryOptions.map((cat) => (
-                      <option
-                        className="bg-[#0d1117] text-slate-100"
-                        key={cat}
-                        value={cat}>
-                        {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                {/* 🌟 FORM SE ONSUBMIT CHANGE HUA HAI */}
+                <form
+                  onSubmit={handleSubmit(onSubmitForm)}
+                  className="space-y-4">
+                  {/* category */}
+                  <div>
+                    <label className="block text-sm font-medium text-zinc-400 mb-1">
+                      Notice Category
+                    </label>
+                    <select
+                      {...register("category", {
+                        required: "Category is required",
+                      })}
+                      className={`w-full bg-black/20 border ${
+                        errors.category ? "border-rose-500" : "border-white/10"
+                      } rounded-xl py-3 px-4 text-white focus:outline-none focus:border-teal-500/50 transition-colors cursor-pointer appearance-none`}>
+                      {/* Dark theme fix for default option */}
+                      <option value="" className="bg-[#0d1117] text-slate-100">
+                        Select a category
                       </option>
-                    ))}
-                  </select>
-                  {errors.category && (
-                    <p className="text-rose-400 text-xs mt-1">
-                      {errors.category.message}
-                    </p>
-                  )}
-                </div>
-                {/* title */}
-                <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-1">
-                    Notice Title
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="E.g., Tomorrow is a holiday"
-                    {...register("title", { required: "Title is required" })}
-                    className={`w-full bg-black/20 border ${
-                      errors.title ? "border-rose-500" : "border-white/10"
-                    } rounded-xl py-3 px-4 text-white focus:outline-none focus:border-teal-500/50 transition-colors`}
-                  />
-                  {errors.title && (
-                    <p className="text-rose-400 text-xs mt-1">
-                      {errors.title.message}
-                    </p>
-                  )}
-                </div>
-                {/* description */}
-                <div>
-                  <label className="block text-sm font-medium text-zinc-400 mb-1">
-                    Description
-                  </label>
-                  <textarea
-                    rows="4"
-                    placeholder="Provide details here..."
-                    {...register("description", {
-                      required: "Description is required",
-                    })}
-                    className={`w-full bg-black/20 border ${
-                      errors.description ? "border-rose-500" : "border-white/10"
-                    } rounded-xl py-3 px-4 text-white focus:outline-none focus:border-teal-500/50 transition-colors resize-none`}
-                  />
-                  {errors.description && (
-                    <p className="text-rose-400 text-xs mt-1">
-                      {errors.description.message}
-                    </p>
-                  )}
-                </div>
-                <div className="pt-4 flex gap-3">
-                  <button
-                    type="button"
-                    onClick={closeModal}
-                    className="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white transition font-medium">
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="flex-1 py-3 rounded-xl bg-linear-to-r from-teal-500 to-lime-500 text-zinc-950 font-bold shadow-lg hover:shadow-teal-500/25 transition disabled:opacity-50 disabled:cursor-not-allowed">
-                    {isSubmitting
-                      ? "Processing..."
-                      : editingId
-                        ? "Update"
-                        : "Publish"}
-                  </button>
-                </div>
-              </form>
+
+                      {/* Mapping with capitalized first letter for UI */}
+                      {categoryOptions.map((cat) => (
+                        <option
+                          className="bg-[#0d1117] text-slate-100"
+                          key={cat}
+                          value={cat}>
+                          {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.category && (
+                      <p className="text-rose-400 text-xs mt-1">
+                        {errors.category.message}
+                      </p>
+                    )}
+                  </div>
+                  {/* title */}
+                  <div>
+                    <label className="block text-sm font-medium text-zinc-400 mb-1">
+                      Notice Title
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="E.g., Tomorrow is a holiday"
+                      {...register("title", { required: "Title is required" })}
+                      className={`w-full bg-black/20 border ${
+                        errors.title ? "border-rose-500" : "border-white/10"
+                      } rounded-xl py-3 px-4 text-white focus:outline-none focus:border-teal-500/50 transition-colors`}
+                    />
+                    {errors.title && (
+                      <p className="text-rose-400 text-xs mt-1">
+                        {errors.title.message}
+                      </p>
+                    )}
+                  </div>
+                  {/* description */}
+                  <div>
+                    <label className="block text-sm font-medium text-zinc-400 mb-1">
+                      Description
+                    </label>
+                    <textarea
+                      rows="4"
+                      placeholder="Provide details here..."
+                      {...register("description", {
+                        required: "Description is required",
+                      })}
+                      className={`w-full bg-black/20 border ${
+                        errors.description
+                          ? "border-rose-500"
+                          : "border-white/10"
+                      } rounded-xl py-3 px-4 text-white focus:outline-none focus:border-teal-500/50 transition-colors resize-none`}
+                    />
+                    {errors.description && (
+                      <p className="text-rose-400 text-xs mt-1">
+                        {errors.description.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="pt-4 flex gap-3">
+                    <button
+                      type="button"
+                      onClick={closeModal}
+                      className="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white transition font-medium">
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="flex-1 py-3 rounded-xl bg-linear-to-r from-teal-500 to-lime-500 text-zinc-950 font-bold shadow-lg hover:shadow-teal-500/25 transition disabled:opacity-50 disabled:cursor-not-allowed">
+                      {isSubmitting
+                        ? "Processing..."
+                        : editingId
+                          ? "Update"
+                          : "Publish"}
+                    </button>
+                  </div>
+                </form>
+              </div>
             </motion.div>
           </div>
         )}

@@ -1,4 +1,4 @@
-const {Server, Socket} = require("socket.io");
+const {Server} = require("socket.io");
 
 
 function initSocketServer(httpServer){

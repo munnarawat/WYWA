@@ -1,19 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell, CheckCircle2 } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import api from "../../utils/api";
+import {
+  addNotification,
+  removeAllNotification,
+  removeNotification,
+  setInitialNotifications,
+} from "../../store/slice/notificationSlice";
 
 const NotificationDropdown = ({ socket }) => {
+  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  // notification state
-  const [notifications, setNotifications] = useState([]);
+  const { notifications, unreadCount } = useSelector(
+    (state) => state.notification,
+  );
   const [isOpen, setIsOpen] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef(null);
-
-  console.log(notifications);
 
   useEffect(() => {
     const fetchNotification = async () => {
@@ -21,8 +26,12 @@ const NotificationDropdown = ({ socket }) => {
       try {
         const res = await api.get("/notification/me");
         if (res.data.success) {
-          setNotifications(res.data.notifications);
-          setUnreadCount(res.data.unreadCount);
+          dispatch(
+            setInitialNotifications({
+              notifications: res.data.notifications,
+              unreadCount: res.data.unreadCount,
+            }),
+          );
         }
       } catch (error) {
         console.error("Failed to fetch notifications:", error);
@@ -34,27 +43,13 @@ const NotificationDropdown = ({ socket }) => {
   // handle read (delete single);
   const handleReadNotification = async (clickId) => {
     if (!clickId || clickId === "undefined") {
-      console.error("Missing Notification ID!");
       return;
     }
-    //save preview state  for rollback
-    const previousNotifications = [...notifications];
-    const previousUnreadCount = unreadCount;
-
-    // optimistic ui update
-    setNotifications((prev) => prev.filter((n) => (n._id || n.id) !== clickId));
-    setUnreadCount((prev) => Math.max(0, prev - 1));
-
-    if (clickId.toString().length !== 24) {
-      console.log("Dismissed local socket notification.");
-      return;
-    }
+    dispatch(removeNotification(clickId));
     try {
       await api.delete(`/notification/${clickId}`);
     } catch (error) {
       console.error("Failed to delete notification", error);
-      setNotifications(previousNotifications);
-      setUnreadCount(previousUnreadCount);
       toast.error("Failed to dismiss notification.");
     }
   };
@@ -72,16 +67,11 @@ const NotificationDropdown = ({ socket }) => {
 
   //   HANDLE CLEAR ALL
   const handleClearAll = async () => {
-    const previousNotifications = [...notifications];
-    const previousUnreadCount = unreadCount;
-    setNotifications([]);
-    setUnreadCount(0);
+    dispatch(removeAllNotification());
     try {
       await api.delete("/notification/clear-all/me");
     } catch (error) {
       console.error("Failed to clear notifications", error);
-      setNotifications(previousNotifications);
-      setUnreadCount(previousUnreadCount);
       toast.error("Failed to clear all notifications.");
     }
   };
@@ -125,9 +115,7 @@ const NotificationDropdown = ({ socket }) => {
         createdAt: new Date().toISOString(),
         type: data.type || "info",
       };
-
-      setNotifications((prev) => [newNotify, ...prev]);
-      setUnreadCount((prev) => prev + 1);
+      dispatch(addNotification(newNotify));
     };
 
     socket.on("receive_notification", handleNotification);

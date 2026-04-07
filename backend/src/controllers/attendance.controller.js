@@ -75,19 +75,13 @@ const markAttendance = async (req, res) => {
           "Marked your very first attendance.",
           "attendance",
         );
-        io.to(
-          studentId.toString().emit("receive_notification", {
-            title: "Welcome! 🌟",
-            message: "Great start! You unlocked the 'First Step' badge!",
-            type: "success",
-          }),
-        );
-        await Notification.create({
+        const notify = await Notification.create({
           recipient: studentId,
           title: "Welcome! 🌟",
           message: "Great start! You unlocked the 'First Step' badge!",
           type: "success",
         });
+        io.to(studentId.toString()).emit("receive_notification", notify);
       }
 
       const nowForStreak = new Date(requestDate);
@@ -117,19 +111,14 @@ const markAttendance = async (req, res) => {
 
       // --- NOTIFICATION: 6-DAY STREAK ---
       if (currentStreak === 6) {
-        io.to(studentId.toString()).emit("receive_notification", {
-          title: "Almost There! 🔥",
-          message:
-            "You are on a 6-day streak! Come tomorrow to unlock the 7-Day Streak Badge! 🏆",
-          type: "motivation",
-        });
-        await Notification.create({
+        const notify = await Notification.create({
           recipient: studentId,
           title: "Almost There! 🔥",
           message:
             "You are on a 6-day streak! Come tomorrow to unlock the 7-Day Streak Badge! 🏆",
           type: "motivation",
         });
+        io.to(studentId.toString()).emit("receive_notification", notify);
       }
       // --- BADGE 2: 7 DAYS STREAK 🔥 ---
       if (currentStreak === 7) {
@@ -140,17 +129,13 @@ const markAttendance = async (req, res) => {
           "You attended the library for 7 consecutive days!",
           "attendance",
         );
-        io.to(studentId.toString()).emit("receive_notification", {
-          title: "Badge Unlocked! 🏆✨",
-          message: "Congratulations! You earned the '7 Days Streak' badge!",
-          type: "success",
-        });
-        await Notification.create({
+        const notify = await Notification.create({
           recipient: studentId,
           title: "Badge Unlocked! 🏆✨",
           message: "Congratulations! You earned the '7 Days Streak' badge!",
           type: "success",
         });
+        io.to(studentId.toString()).emit("receive_notification", notify);
       }
 
       // --- BADGE 3: CONSISTENCY KING 👑 (15 Days) ---
@@ -162,17 +147,13 @@ const markAttendance = async (req, res) => {
           "Maintained a 15-day streak.",
           "attendance",
         );
-        io.to(studentId.toString()).emit("receive_notification", {
-          title: "Unstoppable! 👑",
-          message: "15 Days Streak! You unlocked the Consistency King badge!",
-          type: "success",
-        });
-        await Notification.create({
+        const notify = await Notification.create({
           recipient: studentId,
           title: "Unstoppable! 👑",
           message: "15 Days Streak! You unlocked the Consistency King badge!",
           type: "success",
         });
+        io.to(studentId.toString()).emit("receive_notification", notify);
       }
 
       // --- BADGE 4: MONTHLY CHAMP 🏆 ---

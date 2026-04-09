@@ -42,14 +42,28 @@ const ManageThinkTank = () => {
       id ? "Updating profile..." : "Adding team member...",
     );
     try {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("roleOrContribution", data.roleOrContribution);
+      formData.append("description", data.description);
+      formData.append("contact", data.contact);
+
+      if (data.imageUrl && data.imageUrl.length > 0) {
+        formData.append("image", data.imageUrl[0]);
+      }
       if (id) {
-        await api.put(`/thinkTank/${id}`, data);
+        await api.put(`/thinkTank/${id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         toast.success("Profile updated successfully! ✨", { id: toastId });
       } else {
-        await api.post("/thinkTank/create", data);
+        await api.post("/thinkTank/create", formData, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         toast.success("Team member added! 🎉", { id: toastId });
       }
       fetchMembers();
+      
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong", {
         id: toastId,

@@ -1,20 +1,28 @@
 const thinkTankModel = require("../models/thinkTank.model");
-
+const { uploadFile, deleteFile } = require("../service/storage.service");
 // createThinkTank (admin only)
 const createThinkTank = async (req, res) => {
   try {
-    const { name, roleOrContribution, description, contact,imageUrl } = req.body;
+    const { name, roleOrContribution, description, contact } = req.body;
+    let imageUrl = "";
+    let imageId = "";
     if (!name || !roleOrContribution) {
       return res
         .status(400)
         .json({ message: "name and roleOrContribution are required" });
+    }
+    if (req.file) {
+      const uploadResult = await uploadFile(req.file, "MYWA_ThinkThank");
+      imageUrl = uploadResult.url;
+      imageId = uploadResult.fileId;
     }
     const member = await thinkTankModel.create({
       name,
       roleOrContribution,
       description,
       contact,
-      imageUrl:imageUrl || "",
+      imageUrl,
+      imageId,
       createdBy: req.user._id,
     });
 
@@ -53,18 +61,32 @@ const updateThinkTank = async (req, res) => {
       return res.status(400).json({ message: "Request body is missing" });
     }
     const { id } = req.params;
-    const { name, roleOrContribution, description, contact , imageUrl } = req.body;
+    const { name, roleOrContribution, description, contact, imageUrl } =
+      req.body;
 
     const member = await thinkTankModel.findById(id);
 
     if (!member) {
       return res.status(404).json({ message: "Think Tank member not found" });
     }
+    // image upload
+    if (req.file) {
+      if (thinkTankModel(imageUrl)) {
+        try {
+          await deleteFile(member.imageId);
+        } catch (error) {
+          console.error("Old Image Delete Error:", err);
+        }
+      }
+    }
+    const resultUpload = await uploadFile(req.file, "MYWA_ThinkThank");
+    member.imageUrl = resultUpload.url;
+    member.imageId = resultUpload.fileId;
+
     if (name) member.name = name;
     if (roleOrContribution) member.roleOrContribution = roleOrContribution;
     if (description !== undefined) member.description = description;
     if (contact !== undefined) member.contact = contact;
-    if(imageUrl !== undefined)member.imageUrl = imageUrl
 
     await member.save();
 
@@ -85,6 +107,14 @@ const deleteThinkTank = async (req, res) => {
     const member = await thinkTankModel.findById(id);
     if (!member) {
       return res.status(404).json({ message: "Think Tank member not found" });
+    }
+    // delete from imageKit
+    if (member.imageUrl) {
+      try {
+        await deleteFile(member.imageId);
+      } catch (error) {
+        console.error("ImageKit delete error", error);
+      }
     }
     await member.deleteOne();
 

@@ -12,6 +12,10 @@ const {
   getMyProfileController,
   updateProfile,
 } = require("../controllers/profile.controller");
+const multer = require("multer");
+
+const upload = multer({storage:multer.memoryStorage()})
+
 const router = express.Router();
 
 // user register route
@@ -30,7 +34,7 @@ router.post("/refresh", refreshController);
 router.get("/profile", authMiddleware, getMyProfileController);
 
 // update profile
-router.put("/profile/update", authMiddleware, updateProfile);
+router.put("/profile/update", authMiddleware, upload.single("image"), updateProfile);
 
 // logout user
 router.post("/logout", logoutController);

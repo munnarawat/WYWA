@@ -67,7 +67,14 @@ const userSchema = new mongoose.Schema(
           type: String,
           enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
         },
-        avatar: { type: String, default: "https://i.pravatar.cc/150" },
+        imageUrl: {
+          type: String,
+          default: "", // Default dummy image
+        },
+        imageId: {
+          type: String,
+          default: "",
+        },
       },
       academic: {
         studentId: { type: String },

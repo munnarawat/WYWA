@@ -7,6 +7,7 @@ import ThinkTankSkeleton from "./ThinkTankSkeleton";
 import ThinkTankCard from "./ThinkTankCard";
 import ThinkTankModal from "./ThinkTankModal";
 import PopUp from "../../../pop-up/PopUp";
+import { Helmet } from "react-helmet-async";
 
 const ManageThinkTank = () => {
   const [members, setMembers] = useState([]);
@@ -63,7 +64,6 @@ const ManageThinkTank = () => {
         toast.success("Team member added! 🎉", { id: toastId });
       }
       fetchMembers();
-      
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong", {
         id: toastId,
@@ -113,6 +113,10 @@ const ManageThinkTank = () => {
 
   return (
     <div className="w-full min-h-screen bg-zinc-950 text-white p-4 md:p-8 overflow-y-auto pb-24 relative">
+      {/* Helmet */}
+      <Helmet>
+        <title>Manage ThinkTank | MYWA</title>
+      </Helmet>
       {/* 🔴 ALERT POPUP */}
       <AnimatePresence>
         {showAlert && (

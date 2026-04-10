@@ -7,6 +7,7 @@ import api from "../../utils/api";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../store/slice/authSlice";
 import toast from "react-hot-toast";
+import { Helmet } from "react-helmet-async";
 const Login = () => {
   const dispatch = useDispatch();
   const {user: currentUser} = useSelector((state)=>state.auth);
@@ -67,6 +68,10 @@ const Login = () => {
   };
   return (
     <div className=" relative w-full text-white px-4 flex items-center justify-center min-h-screen overflow-hidden pb-10">
+      <Helmet>
+        <title>Login | MYWA</title>
+        <meta name="description" content="Login to your MYWA account to access the library, track your attendance, and stay connected with the student dashboard."/>
+      </Helmet>
       {/* Background Gradients */}
       <motion.div
         animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}

@@ -4,6 +4,7 @@ import { Crown, Flame, Lock, Star, Trophy, Zap } from "lucide-react";
 import { useSelector } from "react-redux";
 import api from "../../../utils/api";
 import BadgeCard from "./BadgeCard";
+import { Helmet } from "react-helmet-async";
 
 const ALL_BADGES_TEMPLATE = [
   {
@@ -123,6 +124,10 @@ const MyAchievements = () => {
 
   return (
     <div className="p-4 sm:p-8 w-full max-w-6xl mx-auto">
+      {/* helmet */}
+      <Helmet>
+        <title>My Achievement | MYWA</title>
+      </Helmet>
       {/* Eyebrow */}
       <div>
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-semibold tracking-widest uppercase mb-3">

@@ -21,6 +21,7 @@ import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import PopUp from "../../pop-up/PopUp";
+import { Helmet } from "react-helmet-async";
 
 // 🌟 SKELETON LOADER
 const AchievementSkeleton = () => (
@@ -188,6 +189,10 @@ const ManageAchievements = () => {
 
   return (
     <div className="w-full min-h-screen bg-zinc-950 text-white p-4 md:p-8 overflow-y-auto pb-24 relative">
+      {/* Helmet */}
+      <Helmet>
+        <title>Manage Achievement | MYWA</title>
+      </Helmet>
       {/* 🔴 ALERT POPUP */}
       <AnimatePresence>
         {showAlert && (

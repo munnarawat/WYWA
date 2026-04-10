@@ -9,6 +9,7 @@ import PopUp from "../../../pop-up/PopUp";
 import IssueTableRow from "./IssueTableRow";
 import IssueCard from "./IssueCard";
 import IssueBookModal from "./IssueBookModal";
+import { Helmet } from "react-helmet-async";
 
 // ─────────────────────────────────────────
 // SKELETON
@@ -153,6 +154,10 @@ const ManageIssues = () => {
 
   return (
     <div className="w-full min-h-screen text-white p-4 md:p-8 pb-24 overflow-y-auto flex flex-col gap-5">
+      {/* Helmet */}
+      <Helmet>
+        <title>Manage Issue | MYWA</title>
+      </Helmet>
       {/* ── CONFIRM POPUP ── */}
       <AnimatePresence>
         {showAlert && (

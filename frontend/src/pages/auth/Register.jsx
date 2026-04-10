@@ -17,6 +17,7 @@ import api from "../../utils/api";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../store/slice/authSlice";
 import toast from "react-hot-toast";
+import { Helmet } from "react-helmet-async";
 const Register = () => {
   const dispatch = useDispatch();
   const {
@@ -81,6 +82,13 @@ const Register = () => {
   };
   return (
     <div className=" relative w-full text-white px-4 flex items-center justify-center min-h-screen overflow-hidden pb-10">
+      <Helmet>
+        <title>Register | MYWA</title>
+        <meta
+          name="description"
+          content="Join the Munsyari Youth Welfare Association (MYWA). Create your account to access educational resources, issue library books, and be part of our community."
+        />
+      </Helmet>
       {/* Background Gradients */}
       <motion.div
         animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}

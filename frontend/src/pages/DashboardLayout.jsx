@@ -17,6 +17,7 @@ import { clearUser } from "../store/slice/authSlice";
 import { io } from "socket.io-client";
 import toast from "react-hot-toast";
 import NotificationDropdown from "./notification/NotificationDropdown";
+import { Helmet } from "react-helmet-async";
 const socket = io("http://localhost:3000", {
   withCredentials: true,
 });
@@ -75,6 +76,11 @@ const DashboardLayout = ({ menuItems }) => {
 
   return (
     <div className="flex  h-screen bg-zinc-950 text-white overflow-hidden">
+      <Helmet>
+        <title>
+          {user?.role ? `${user.role} Dashboard | MYWA` : "MYWA Dashboard"}
+        </title>
+      </Helmet>
       {/* Mobile Sidebar Overlay */}
       <AnimatePresence>
         {isSidebarOpen && !isDesktop && (
@@ -181,19 +187,19 @@ const DashboardLayout = ({ menuItems }) => {
             <div
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               className="flex action-dropdown relative items-center gap-3 pl-4 md:pl-6 border-l border-white/10 cursor-pointer">
-                  {user?.profile?.personal?.imageUrl !== "" ? (
-                    <div className="w-8 h-8 rounded-full overflow-hidden">
-                      <img
-                        className="w-full h-full object-cover"
-                        src={user?.profile?.personal?.imageUrl}
-                        alt=""
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-linear-to-tr from-teal-500 to-lime-600 flex items-center justify-center text-xs font-bold text-white shadow-inner">
-                      {user?.userName?.[0]?.toUpperCase()}
-                    </div>
-                  )}
+              {user?.profile?.personal?.imageUrl !== "" ? (
+                <div className="w-8 h-8 rounded-full overflow-hidden">
+                  <img
+                    className="w-full h-full object-cover"
+                    src={user?.profile?.personal?.imageUrl}
+                    alt=""
+                  />
+                </div>
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-linear-to-tr from-teal-500 to-lime-600 flex items-center justify-center text-xs font-bold text-white shadow-inner">
+                  {user?.userName?.[0]?.toUpperCase()}
+                </div>
+              )}
 
               <ChevronDown
                 size={14}
@@ -247,8 +253,7 @@ const DashboardLayout = ({ menuItems }) => {
         {/* main content */}
         <main
           id="dashboard-scroll-container"
-          className="flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth"
-        >
+          className="flex-1 overflow-y-auto overflow-x-hidden relative scroll-smooth">
           <Outlet />
         </main>
       </div>

@@ -10,6 +10,7 @@ import InventoryHeader from "./InventoryHeader";
 import InventoryBook from "./InventoryBook";
 import InfiniteScroll from "react-infinite-scroll-component";
 import BookFormModal from "./BookFormModal";
+import { Helmet } from "react-helmet-async";
 
 // SKELETON LOADER FOR BOOKS
 const BookSkeleton = () => {
@@ -107,7 +108,7 @@ const LibraryInventory = () => {
     },
     [searchQuery], // Re-create function when search changes
   );
-console.log(books);
+  console.log(books);
 
   // Smart Search (Debouncing)
   useEffect(() => {
@@ -215,6 +216,10 @@ console.log(books);
     <div
       id="scrollableDiv"
       className="w-full min-h-screen bg-zinc-950 text-white p-4 md:p-8 overflow-y-auto pb-24 relative">
+      {/* helmet  */}
+      <Helmet>
+        <title>Library Inventory | MYWA</title>
+      </Helmet>
       {/* show alert */}
       <AnimatePresence>
         {showAlert && (

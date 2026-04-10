@@ -11,6 +11,7 @@ import RecentIssuesTable from "./RecentIssuesTable";
 import TopStreakers from "./TopStreakers";
 import PendingTicketsSidebar from "./PendingTicketsSidebar";
 import NoticesSidebar from "./NoticesSidebar";
+import { Helmet } from "react-helmet-async";
 
 // ─────────────────────────────────────────
 // SKELETON
@@ -72,6 +73,9 @@ const DashboardOverview = () => {
 
   return (
     <div className="w-full min-h-screen text-white p-4 md:p-8 pb-24 overflow-y-auto flex flex-col gap-6">
+      <Helmet>
+         <title>Admin Dashboard | MYWA</title>
+      </Helmet>
       {/* ── HERO ── */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>

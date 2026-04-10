@@ -8,6 +8,7 @@ import api from "../../../utils/api";
 import MarkAttendanceTab from "./MarkAttendanceTab";
 import MonthlyReportTab from "./MonthlyReportTab";
 import LeaderboardTab from "./LeaderboardTab";
+import { Helmet } from "react-helmet-async";
 
 const TABS = [
   { id: "mark", label: "Mark Daily", emoji: "✅", icon: UserCheck },
@@ -36,6 +37,9 @@ const ManageAttendance = () => {
 
   return (
     <div className="w-full min-h-screen text-white p-4 md:p-8 pb-24 overflow-y-auto flex flex-col gap-5">
+      <Helmet>
+        <title>Manage Attendance | MYWA</title>
+      </Helmet>
       {/* ── HEADER ── */}
       <div className="pb-6 border-b border-white/5">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-semibold tracking-widest uppercase mb-3">

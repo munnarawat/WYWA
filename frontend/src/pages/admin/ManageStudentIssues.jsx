@@ -13,6 +13,7 @@ import api from "../../utils/api";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import TicketStatsGrid from "../student/helpdesk/TicketStatsGrid";
+import { Helmet } from "react-helmet-async";
 
 const IssueSkelton = () => {
   return (
@@ -103,6 +104,10 @@ const ManageStudentIssues = () => {
 
   return (
     <div className="w-full min-h-screen bg-zinc-950 text-white p-4 md:p-8 overflow-y-auto pb-24">
+      {/* Helmet */}
+      <Helmet>
+        <title>Manage Student Issue | MYWA</title>
+      </Helmet>
       {/* HEADER */}
       <div className="flex flex-col border-b border-white/5 pb-4 md:flex-row justify-between items-start md:items-end gap-6 mb-8">
         <div>

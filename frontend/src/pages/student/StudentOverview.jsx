@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import StudentStats from "./StudentStats";
 import IssuedBooks from "./IssuedBooks";
 import DashboardSidebar from "./DashboardSidebar";
+import { Helmet } from "react-helmet-async";
 
 // ─────────────────────────────────────────
 // SKELETON
@@ -269,6 +270,10 @@ const StudentOverview = () => {
 
   return (
     <div className="w-full min-h-screen text-white p-4 md:p-8 pb-24 overflow-y-auto">
+      {/* helmet */}
+      <Helmet>
+        <title>Student DashBoard | MYWA</title>
+      </Helmet>
       {/* ── HERO ── */}
       <div className="mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-semibold tracking-widest uppercase mb-3">

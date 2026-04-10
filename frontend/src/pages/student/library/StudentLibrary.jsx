@@ -11,6 +11,7 @@ import BookCard from "./BookCard";
 import IssuedBookCard from "./IssuedBookCard";
 import BookSkeleton from "./BookSkeleton";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Helmet } from "react-helmet-async";
 
 // ─────────────────────────────────────────
 // EMPTY STATE
@@ -112,7 +113,13 @@ const StudentLibrary = () => {
   }, [issuedBooks, searchQuery]);
 
   return (
-    <div id="scrollableDiv" className="w-full min-h-screen text-white p-4 md:p-8 pb-24 overflow-y-auto flex flex-col gap-6">
+    <div
+      id="scrollableDiv"
+      className="w-full min-h-screen text-white p-4 md:p-8 pb-24 overflow-y-auto flex flex-col gap-6">
+      {/* helmet */}
+      <Helmet>
+        <title>Student Library | MYWA</title>
+      </Helmet>
       {/* Header + Tabs + Stats */}
       <LibraryHeader
         activeTab={activeTab}
@@ -157,10 +164,10 @@ const StudentLibrary = () => {
               />
             ) : (
               <InfiniteScroll
-                dataLength={allBooks.length} 
-                next={() => fetchAllBooks(page + 1, false)} 
-                hasMore={hasMore} 
-                style={{overflow:"hidden"}}
+                dataLength={allBooks.length}
+                next={() => fetchAllBooks(page + 1, false)}
+                hasMore={hasMore}
+                style={{ overflow: "hidden" }}
                 scrollableTarget="dashboard-scroll-container"
                 loader={
                   <h4 className="text-center text-teal-500 my-4 animate-pulse">

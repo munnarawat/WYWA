@@ -12,6 +12,7 @@ import ProfileHeader from "./ProfileHeader";
 import BasicInfoTab from "./tabs/BasicInfoTab";
 import AcademicInfoTab from "./tabs/AcademicInfoTab";
 import ContactInfoTab from "./tabs/ContactInfoTab";
+import { Helmet } from "react-helmet-async";
 
 const ProfileSkeleton = () => (
   <div className="animate-pulse space-y-5 max-w-[860px] mx-auto p-4 sm:p-8">
@@ -135,13 +136,13 @@ const Profile = () => {
     }
   };
 
-  const handleAvatarUpload = (e) =>{
+  const handleAvatarUpload = (e) => {
     const file = e.target.files[0];
-    if(file){
+    if (file) {
       setAvatarFile(file);
-      setAvatarPreview(URL.createObjectURL(file))
+      setAvatarPreview(URL.createObjectURL(file));
     }
-  }
+  };
 
   const tabs = [
     { id: "basic", label: "Basic Info", emoji: "👤" },
@@ -156,9 +157,13 @@ const Profile = () => {
   const firstName =
     authUser?.fullName?.firstName || authUser?.userName || "User";
 
-    const hasChange = isDirty || avatarFile !== null; 
+  const hasChange = isDirty || avatarFile !== null;
   return (
     <div className="w-full mx-auto p-4 sm:p-8 pb-24 flex flex-col gap-5">
+      {/* Helmet */}
+      <Helmet>
+        <title>{firstName ? `${firstName} Profile | MYWA`:'Profile' }</title>
+      </Helmet>
       {/* Eyebrow */}
       <div>
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-semibold tracking-widest uppercase">

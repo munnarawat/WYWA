@@ -11,6 +11,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import api from "../../utils/api";
 import toast from "react-hot-toast";
 import NoticeCard from "../../components/NoticeCard";
+import { Helmet } from "react-helmet-async";
 
 const NoticeSkeleton = () => {
   return (
@@ -71,6 +72,10 @@ const NoticeBoard = () => {
 
   return (
     <div className="w-full min-h-screen  text-white p-4 md:p-8 overflow-y-auto pb-24 relative">
+      {/* helmet */}
+      <Helmet>
+        <title>Student NoticeBoard | MYWA</title>
+      </Helmet>
       {/* Eyebrow */}
       <div>
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-semibold tracking-widest uppercase mb-3">

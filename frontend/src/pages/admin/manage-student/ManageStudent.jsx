@@ -8,6 +8,7 @@ import PopUp from "../../../pop-up/PopUp";
 import ManageHeader from "./ManageHeader";
 import StudentDesktopTable from "./StudentDesktopTable";
 import StudentMobileList from "./StudentMobileList";
+import { Helmet } from "react-helmet-async";
 
 // ─────────────────────────────────────────
 // SKELETON
@@ -252,6 +253,10 @@ const ManageStudent = () => {
 
   return (
     <div className="w-full min-h-screen text-white p-4 md:p-8 pb-24 overflow-y-auto flex flex-col gap-5 relative">
+      {/* Helmet */}
+      <Helmet>
+        <title>Manage Student | MYWA</title>
+      </Helmet>
       {/* ── CONFIRM POPUP ── */}
       <AnimatePresence>
         {showAlert && (

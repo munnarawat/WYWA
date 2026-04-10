@@ -7,6 +7,7 @@ import api from "../../../utils/api";
 import TicketStatsGrid from "./TicketStatsGrid";
 import TicketCard from "./TicketCard";
 import RaiseTicketModal from "./RaiseTicketModal";
+import { Helmet } from "react-helmet-async";
 
 // ─────────────────────────────────────────
 // SKELETON
@@ -89,6 +90,10 @@ const HelpDesk = () => {
 
   return (
     <div className="w-full min-h-screen text-white p-4 md:p-8 pb-24 overflow-y-auto flex flex-col gap-6">
+      {/* helmet */}
+      <Helmet>
+        <title>Student HelpDesk | MYWA</title>
+      </Helmet>
       {/* ── HEADER ── */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 pb-6 border-b border-white/5">
         <div>

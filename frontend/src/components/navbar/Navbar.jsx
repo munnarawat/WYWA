@@ -36,7 +36,6 @@ const Navbar = () => {
     setIsProfileOpen(false);
     setIsMobileOpen(false);
   }, [location]);
-  console.log(user);
 
   // dropDown hide functionality
   useEffect(() => {
@@ -158,12 +157,12 @@ const Navbar = () => {
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className="flex action-dropdown items-center gap-2 p-1 pr-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition">
-                  {user?.profile?.personal?.imageUrl !== "" ? (
+                  {user?.profile?.personal?.imageUrl ? (
                     <div className="w-8 h-8 rounded-full overflow-hidden">
                       <img
                         className="w-full h-full object-cover"
                         src={user?.profile?.personal?.imageUrl}
-                        alt=""
+                        alt={`${user?.userName}'s avatar`}
                       />
                     </div>
                   ) : (
@@ -237,9 +236,19 @@ const Navbar = () => {
             {/* when user login- email and userName show */}
             {isAuthenticate && user && (
               <div className="flex items-center justify-center gap-4 bg-white/5 border border-white/10 p-4 rounded-xl mb-8">
-                <div className="w-12 h-12 rounded-full bg-linear-to-tr from-teal-500 to-lime-500 flex items-center justify-center text-lg font-bold text-white shadow-lg">
-                  {user?.userName?.[0]?.toUpperCase()}
-                </div>
+                {user?.profile?.personal?.imageUrl ? (
+                  <div className="w-8 h-8 rounded-full overflow-hidden">
+                    <img
+                      className="w-full h-full object-cover"
+                      src={user?.profile?.personal?.imageUrl}
+                      alt={`${user?.userName}'s avatar`}
+                    />
+                  </div>
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-linear-to-tr from-teal-500 to-lime-600 flex items-center justify-center text-xs font-bold text-white shadow-inner">
+                    {user?.userName?.[0]?.toUpperCase()}
+                  </div>
+                )}
                 <div className="overflow-hidden">
                   <h3 className="text-white font-bold truncate">
                     {user?.userName}

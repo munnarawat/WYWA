@@ -41,7 +41,6 @@ const userRegisterController = async (req, res) => {
       },
       password: hashPassword,
       branch: req.body.branch,
-      isLibraryMember:user.isLibraryMember,
     });
 
     // token generate

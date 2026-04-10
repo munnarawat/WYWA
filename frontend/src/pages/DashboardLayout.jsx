@@ -187,12 +187,12 @@ const DashboardLayout = ({ menuItems }) => {
             <div
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               className="flex action-dropdown relative items-center gap-3 pl-4 md:pl-6 border-l border-white/10 cursor-pointer">
-              {user?.profile?.personal?.imageUrl !== "" ? (
+              {user?.profile?.personal?.imageUrl? (
                 <div className="w-8 h-8 rounded-full overflow-hidden">
                   <img
                     className="w-full h-full object-cover"
                     src={user?.profile?.personal?.imageUrl}
-                    alt=""
+                    alt={`${user?.userName}'s avatar`}
                   />
                 </div>
               ) : (

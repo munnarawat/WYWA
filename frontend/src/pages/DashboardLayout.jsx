@@ -181,21 +181,20 @@ const DashboardLayout = ({ menuItems }) => {
             <div
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               className="flex action-dropdown relative items-center gap-3 pl-4 md:pl-6 border-l border-white/10 cursor-pointer">
-              <div className="text-right hidden md:block">
-                <p className="text-sm font-medium text-white capitalize">
-                  {user?.userName || "User"}
-                </p>
-                <p className="text-xs text-zinc-500 capitalize">
-                  {user?.role || "Member"}
-                </p>
-              </div>
-              <div className="w-9 h-9 rounded-full bg-linear-to-br from-teal-500 to-lime-500 p-0.5">
-                <img
-                  src="https://i.pravatar.cc/150"
-                  alt="Avatar"
-                  className="w-full h-full rounded-full border-2 border-zinc-950 object-cover"
-                />
-              </div>
+                  {user?.profile?.personal?.imageUrl !== "" ? (
+                    <div className="w-8 h-8 rounded-full overflow-hidden">
+                      <img
+                        className="w-full h-full object-cover"
+                        src={user?.profile?.personal?.imageUrl}
+                        alt=""
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-linear-to-tr from-teal-500 to-lime-600 flex items-center justify-center text-xs font-bold text-white shadow-inner">
+                      {user?.userName?.[0]?.toUpperCase()}
+                    </div>
+                  )}
+
               <ChevronDown
                 size={14}
                 className={`text-gray-400 transition-transform duration-300 ${isProfileOpen ? "rotate-180" : ""}`}

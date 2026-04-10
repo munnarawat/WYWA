@@ -36,7 +36,6 @@ const mapUserToFormValues = (userData = {}) => {
       bloodGroup: "",
       imageUrl: "",
       ...(userData.profile?.personal || {}),
-      dob: formattedDob,
     },
     academic: {
       studentId: "",

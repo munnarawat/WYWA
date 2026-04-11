@@ -22,6 +22,10 @@ import PublicLayout from "../components/PublicLayout";
 import DashboardLayout from "../pages/DashboardLayout";
 import ScrollTop from "../animation/ScrollTop";
 
+const ThinkTankDashboard = lazy(
+  () => import("../pages/think-tank/ThinkTankDashboard"),
+);
+
 // ─────────────────────────────────────────
 // 🚀 ASYNC IMPORTS (Lazy Loaded Pages)
 // ─────────────────────────────────────────
@@ -58,7 +62,9 @@ const ManageNoticeBoard = lazy(
 const ManageAttendance = lazy(
   () => import("../pages/admin/Attendance/ManageAttendance"),
 );
-const ManageAchievements = lazy( () => import("../pages/admin/ManageAchievements"),);
+const ManageAchievements = lazy(
+  () => import("../pages/admin/ManageAchievements"),
+);
 const ManageThinkTank = lazy(
   () => import("../pages/admin/ThinkTank/ManageThinkTank"),
 );
@@ -79,9 +85,6 @@ const StudentLibrary = lazy(
   () => import("../pages/student/library/StudentLibrary"),
 );
 const HelpDesk = lazy(() => import("../pages/student/helpdesk/HelpDesk"));
-
-// Think-Tank Pages
-const ThinkTank = lazy(() => import("../components/ThinkTank"));
 
 // ─────────────────────────────────────────
 // 💎 PREMIUM LOADER (Fallback UI)
@@ -205,7 +208,10 @@ const MainRouter = () => {
                 <DashboardLayout menuItems={thinkTankMenuItems} />
               </ProtectedRoute>
             }>
-            <Route path="/thinkTank/dashboard" element={<ThinkTank />} />
+            <Route
+              path="/thinkTank/dashboard"
+              element={<ThinkTankDashboard />}
+            />
             <Route path="/thinkTank/profile" element={<Profile />} />
           </Route>
         </Routes>

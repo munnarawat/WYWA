@@ -11,6 +11,7 @@ const dashboardRouter = require("./routes/Dashboard.routes");
 const resetPasswordRouter = require("./routes/passwordReset.route");
 const ticketRouter = require("./routes/ticket.routes");
 const notificationRouter = require("./routes/notification.routes");
+const thinkTankDashboardRouter = require("./routes/thinkTankDashboard.routes")
 const cookieParser = require("cookie-parser");
 const app = express();
 
@@ -35,6 +36,7 @@ app.use("/api/attendance", attendanceRouters)
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/password", resetPasswordRouter);
 app.use("/api/ticket", ticketRouter);
-app.use("/api/notification", notificationRouter)
+app.use("/api/notification", notificationRouter);
+app.use("/api/thinkTankDashboard", thinkTankDashboardRouter)
 
 module.exports = app;

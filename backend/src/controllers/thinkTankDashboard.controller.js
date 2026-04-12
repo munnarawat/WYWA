@@ -88,16 +88,103 @@ const getAllStudentsList = async (req, res) => {
   try {
     const branchFilter = getBranchFilter(req);
 
-    const Students = await UserModel.find({ role: "student", ...branchFilter })
-      .select(
-        "userName email fullName branch profile.academic profile.personal.imageUrl",
-      )
-      .sort({ createdAt: -1 });
+    const StudentsData = await UserModel.aggregate([
+      {
+        $match: {
+          role: "student",
+          ...branchFilter,
+        },
+      },
+      // join to Attendance model
+      {
+        $lookup: {
+          from: "attendances",
+          localField: "_id",
+          foreignField: "student",
+          as: "attendanceRecords",
+        },
+      },
+      // Calculation: Attendance Percentage
+      {
+        $addFields: {
+          totalDays: { $size: "$attendanceRecords" },
+          presentDays: {
+            $size: {
+              $filter: {
+                input: "$attendanceRecords",
+                as: "record",
+                cond: { $eq: ["$$record.status", "present"] },
+              },
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          attendancePercentage: {
+            $cond: [
+              { $gt: ["$totalDays", 0] },
+              {
+                $round: [
+                  {
+                    $multiply: [
+                      { $divide: ["$presentDays", "$totalDays"] },
+                      100,
+                    ],
+                  },
+                  0,
+                ],
+              },
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          email: 1,
+          branch: 1,
+          attendance: "$attendancePercentage", 
+
+          rawRecords: "$attendanceRecords",
+          totalD: "$totalDays",
+          presentD: "$presentDays",
+
+          fullName: {
+            $let: {
+              vars: {
+                firstName: { $ifNull: ["$fullName.firstName", ""] },
+                lastName: { $ifNull: ["$fullName.lastName", ""] },
+              },
+              in: {
+                $cond: {
+                  if: {
+                    $and: [
+                      { $eq: ["$$firstName", ""] },
+                      { $eq: ["$$lastName", ""] },
+                    ],
+                  },
+                  then: "$userName", // Fallback to userName
+                  else: {
+                    $trim: {
+                      input: { $concat: ["$$firstName", " ", "$$lastName"] },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          imageUrl: { $ifNull: ["$profile.personal.imageUrl", ""] },
+        },
+      },
+      { $sort: { createdAt: -1 } },
+    ]);
 
     return res.status(200).json({
       success: true,
-      count: Students.length,
-      data: Students,
+      count: StudentsData.length,
+      data: StudentsData,
     });
   } catch (error) {
     res

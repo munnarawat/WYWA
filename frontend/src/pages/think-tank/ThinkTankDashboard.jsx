@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import DashboardStats from "./DashboardStats";
 import ThinkTankAttendanceChart from "./ThinkTankAttendanceChart";
+import StudentListTable from "./StudentListTable";
 
 const ThinkTankDashboard = () => {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -16,6 +17,7 @@ const ThinkTankDashboard = () => {
     totalBooks: 0,
     issueBooks: 0,
   });
+  const [students, setStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const fetchDashboardStats = async () => {
     try {
@@ -35,9 +37,28 @@ const ThinkTankDashboard = () => {
       setIsLoading(false);
     }
   };
+  const fetchAllStudents = async () => {
+    try {
+      setIsLoading(true);
+      const res = await api(
+        `/thinkTankDashboard/students?branch=${selectedBranch}`,
+      );
+
+      if (res.data.success) {
+        setStudents(res.data.data);
+      }
+    } catch (error) {
+      console.error("fetch all students error", error);
+      toast.error("fetch students error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   useEffect(() => {
     fetchDashboardStats();
+    fetchAllStudents();
   }, [selectedBranch]);
+
   // today date
   const todayDate = new Date().toLocaleDateString("en-IN", {
     weekday: "long",
@@ -126,19 +147,23 @@ const ThinkTankDashboard = () => {
       </div>
       {/* stats cards */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className="w-full bg-white/10 h-36 rounded-lg animate-pulse"></div>
-          ))}
+        <div className="w-full ">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="w-full bg-white/10 h-36 rounded-lg animate-pulse"></div>
+            ))}
+          </div>
+          <div className="w-full h-80 bg-white/10 mt-10 rounded-2xl animate-pulse">
+          </div>
         </div>
       ) : (
         <>
-        <DashboardStats stats={stats} />
-        <ThinkTankAttendanceChart selectedBranch={selectedBranch}/>
+          <DashboardStats stats={stats} />
+          <ThinkTankAttendanceChart selectedBranch={selectedBranch} />
+          <StudentListTable students={students} />
         </>
-        
       )}
     </div>
   );

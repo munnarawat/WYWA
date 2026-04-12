@@ -5,6 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import DashboardStats from "./DashboardStats";
+import ThinkTankAttendanceChart from "./ThinkTankAttendanceChart";
 
 const ThinkTankDashboard = () => {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -133,7 +134,11 @@ const ThinkTankDashboard = () => {
           ))}
         </div>
       ) : (
+        <>
         <DashboardStats stats={stats} />
+        <ThinkTankAttendanceChart selectedBranch={selectedBranch}/>
+        </>
+        
       )}
     </div>
   );

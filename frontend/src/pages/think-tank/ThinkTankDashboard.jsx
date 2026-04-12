@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { Helmet } from "react-helmet-async";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
+import DashboardStats from "./DashboardStats";
 
 const ThinkTankDashboard = () => {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -29,6 +30,8 @@ const ThinkTankDashboard = () => {
       console.error("fetch stats error", error);
 
       toast.error("Error fetch stats");
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -74,8 +77,9 @@ const ThinkTankDashboard = () => {
             transition={{ delay: 0.1 }}
             className="text-[14px] text-slate-500">
             Here's what's happening in{" "}
-            <span className="text-slate-300 font-medium">All branch</span>{" "}
-            branch today.
+            <span className="text-slate-300 font-medium capitalize">
+              {selectedBranch === "all" ? "All Branches" : selectedBranch}
+            </span>
           </motion.p>
         </div>
         {/* Date tag */}
@@ -107,14 +111,30 @@ const ThinkTankDashboard = () => {
             value={selectedBranch}
             onChange={(e) => setSelectedBranch(e.target.value)}
             className="bg-zinc-800/30 w-full text-slate-200 text-sm rounded-lg px-3 py-1.5 border border-white/5 focus:outline-none focus:ring-1 focus:ring-teal-500/60 cursor-pointer">
-            <option className="bg-black" value="all">All Branches</option>
-            <option className="bg-black" value="dehradun">Dehradun Only</option>
-            <option className="bg-black" value="haldwani">Haldwani Only</option>
+            <option className="bg-black" value="all">
+              All Branches
+            </option>
+            <option className="bg-black" value="dehradun">
+              Dehradun Only
+            </option>
+            <option className="bg-black" value="haldwani">
+              Haldwani Only
+            </option>
           </select>
         </motion.div>
       </div>
       {/* stats cards */}
-      
+      {isLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="w-full bg-white/10 h-36 rounded-lg animate-pulse"></div>
+          ))}
+        </div>
+      ) : (
+        <DashboardStats stats={stats} />
+      )}
     </div>
   );
 };

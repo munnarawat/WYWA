@@ -12,6 +12,8 @@ const {
   getMyProfileController,
   updateProfile,
 } = require("../controllers/profile.controller");
+
+const {getUserProfile360} = require("../controllers/user.controller")
 const multer = require("multer");
 
 const upload = multer({storage:multer.memoryStorage()})
@@ -36,6 +38,8 @@ router.get("/profile", authMiddleware, getMyProfileController);
 // update profile
 router.put("/profile/update", authMiddleware, upload.single("image"), updateProfile);
 
+// profile 360 view
+router.get("/student/:id/profile360", authMiddleware, getUserProfile360)
 // logout user
 router.post("/logout", logoutController);
 

@@ -106,14 +106,15 @@ const MainRouter = () => {
   const adminMenuItems = [
     { name: "Overview", icon: LayoutDashboard, path: "/admin/dashboard" },
     { name: "Manage Students", icon: Users, path: "/admin/students" },
-    { name: "Library Inventory", icon: BookOpen, path: "/admin/library" },
-    { name: "Books issue", icon: BookOpen, path: "/admin/issue" },
-    { name: "ManageNoticeBoard", icon: Bell, path: "/admin/noticeboard" },
     {
       name: "Manage Attendance",
       icon: ChartNoAxesCombined,
       path: "/admin/attendance",
     },
+    { name: "Library Inventory", icon: BookOpen, path: "/admin/library" },
+    { name: "Books issue", icon: BookOpen, path: "/admin/issue" },
+    { name: "ManageNoticeBoard", icon: Bell, path: "/admin/noticeboard" },
+
     { name: "Achievements", icon: Trophy, path: "/admin/achievements" },
     { name: "ManageThinkTank", icon: UserStar, path: "/admin/thinkTank" },
     { name: "Students Issue", icon: ShieldAlert, path: "/admin/studentIssue" },

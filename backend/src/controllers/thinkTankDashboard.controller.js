@@ -200,6 +200,7 @@ const getLibraryOverview = async (req, res) => {
 
     const books = await IssuedBook.find(branchFilter)
       .populate("issuedBy", "userName fullName")
+      .populate("book", "title")
       .sort({ createdAt: -1 });
 
     return res.status(200).json({

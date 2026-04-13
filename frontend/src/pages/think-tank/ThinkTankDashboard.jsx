@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import DashboardStats from "./DashboardStats";
 import ThinkTankAttendanceChart from "./ThinkTankAttendanceChart";
 import StudentListTable from "./StudentListTable";
+import LibraryOverviewSection from "./LibraryOverviewSection";
 
 const ThinkTankDashboard = () => {
   const { user: currentUser } = useSelector((state) => state.auth);
@@ -19,6 +20,7 @@ const ThinkTankDashboard = () => {
   });
   const [students, setStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [library, setLibrary] = useState([]);
   const fetchDashboardStats = async () => {
     try {
       setIsLoading(true);
@@ -54,11 +56,28 @@ const ThinkTankDashboard = () => {
       setIsLoading(false);
     }
   };
+  const fetchLibraryOverview = async () => {
+    try {
+      setIsLoading(true);
+      const res = await api.get(
+        `/thinkTankDashboard/library?branch=${selectedBranch}`,
+      );
+      if (res.data.success) {
+        setLibrary(res.data.data);
+      }
+    } catch (error) {
+      console.error("fetch library books error", error);
+      toast.error("fetch library books error");
+    }finally{
+      setIsLoading(false);
+    }
+  };
   useEffect(() => {
     fetchDashboardStats();
     fetchAllStudents();
+    fetchLibraryOverview();
   }, [selectedBranch]);
-
+  
   // today date
   const todayDate = new Date().toLocaleDateString("en-IN", {
     weekday: "long",
@@ -155,14 +174,14 @@ const ThinkTankDashboard = () => {
                 className="w-full bg-white/10 h-36 rounded-lg animate-pulse"></div>
             ))}
           </div>
-          <div className="w-full h-80 bg-white/10 mt-10 rounded-2xl animate-pulse">
-          </div>
+          <div className="w-full h-80 bg-white/10 mt-10 rounded-2xl animate-pulse"></div>
         </div>
       ) : (
         <>
           <DashboardStats stats={stats} />
           <ThinkTankAttendanceChart selectedBranch={selectedBranch} />
           <StudentListTable students={students} />
+          <LibraryOverviewSection issuedBooks={library} isLoading={isLoading}/>
         </>
       )}
     </div>

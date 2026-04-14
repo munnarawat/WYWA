@@ -1,7 +1,7 @@
-import React from "react";
 import { motion } from "framer-motion";
-
+import { useNavigate } from "react-router-dom";
 const StudentListTable = ({ students }) => {
+  const navigate = useNavigate();
   return (
     <div className="w-full">
       {/* 🖥️ Desktop View  */}
@@ -17,7 +17,12 @@ const StudentListTable = ({ students }) => {
           </thead>
           <tbody className="divide-y divide-white/5">
             {students.map((student, i) => (
-              <tr key={i} className="hover:bg-white/2 transition-colors">
+              <tr
+                onClick={() =>
+                  navigate(`/thinkTank/user-profile/${student._id}`)
+                }
+                key={i}
+                className="hover:bg-white/2 transition-colors">
                 <td className="px-6 py-4 flex items-center gap-3">
                   {student?.imageUrl ? (
                     <div className="w-8 h-8 rounded-full overflow-hidden">

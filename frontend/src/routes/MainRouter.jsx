@@ -21,6 +21,9 @@ import ProtectedRoute from "./ProtectedRoute";
 import PublicLayout from "../components/PublicLayout";
 import DashboardLayout from "../pages/DashboardLayout";
 import ScrollTop from "../animation/ScrollTop";
+const UserProfilePage = lazy(
+  () => import("../components/user-details/UserProfilePage"),
+);
 
 const ThinkTankDashboard = lazy(
   () => import("../pages/think-tank/ThinkTankDashboard"),
@@ -184,6 +187,10 @@ const MainRouter = () => {
               element={<ManageStudentIssues />}
             />
             <Route path="/admin/profile" element={<Profile />} />
+            <Route
+              path="/admin/user-profile/:id"
+              element={<UserProfilePage />}
+            />
           </Route>
 
           {/* Student Dashboard */}
@@ -214,6 +221,10 @@ const MainRouter = () => {
               element={<ThinkTankDashboard />}
             />
             <Route path="/thinkTank/profile" element={<Profile />} />
+            <Route
+              path="/thinkTank/user-profile/:id"
+              element={<UserProfilePage />}
+            />
           </Route>
         </Routes>
       </Suspense>

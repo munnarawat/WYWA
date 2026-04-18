@@ -10,6 +10,7 @@ import {
   BlockBtn,
   PromoteDropdown,
 } from "./StudentSharedUI";
+import { useNavigate } from "react-router-dom";
 
 const StudentMobileList = ({
   users,
@@ -21,6 +22,8 @@ const StudentMobileList = ({
   handleConfirmAdmin,
   handleConfirmThinkTank,
 }) => {
+
+  const navigate = useNavigate();
   if (users.length === 0) {
     return (
       <div className="text-center py-14 text-slate-600 text-[14px] md:hidden">
@@ -71,7 +74,7 @@ const StudentMobileList = ({
                 }}
               />
 
-              <div className="flex items-start justify-between gap-3 mb-3">
+              <div onClick={()=>navigate(`/admin/user-profile/${user._id}`)} className="flex items-start justify-between gap-3 mb-3">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center text-[14px] font-extrabold shrink-0 border ${AVATAR_CLASS[user.role] || AVATAR_CLASS.student} ${!user.isActive ? "opacity-40 grayscale" : ""}`}>

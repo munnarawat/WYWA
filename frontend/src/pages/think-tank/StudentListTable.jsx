@@ -64,6 +64,7 @@ const StudentListTable = ({ students }) => {
         {students.map((student, i) => (
           <motion.div
             key={i}
+            onClick={() => navigate(`/thinkTank/user-profile/${student._id}`)}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className="p-4 rounded-[20px] bg-[#0d1117] border border-white/5 flex flex-col gap-3">

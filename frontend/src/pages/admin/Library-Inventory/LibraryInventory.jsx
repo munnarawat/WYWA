@@ -108,8 +108,6 @@ const LibraryInventory = () => {
     },
     [searchQuery], // Re-create function when search changes
   );
-  console.log(books);
-
   // Smart Search (Debouncing)
   useEffect(() => {
     const timeOutId = setTimeout(() => {

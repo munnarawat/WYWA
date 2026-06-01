@@ -97,21 +97,13 @@ const StudentListTable = ({ students }) => {
               </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 pt-3 border-t border-white/5">
-              <div>
-                <p className="text-[10px] text-slate-600 font-bold uppercase">
+            <div className="flex items-center justify-between  gap-2 pt-3 border-t border-white/5">
+                <p  className="text-[10px] text-slate-600 font-bold uppercase">
                   Attendance
                 </p>
                 <p className="text-sm text-teal-400 font-bold">
                   {student.attendance}%
                 </p>
-              </div>
-              <div className="text-right">
-                <p className="text-[10px] text-slate-600 font-bold uppercase">
-                  Recent Activity
-                </p>
-                <p className="text-sm text-slate-400 italic">2 hours ago</p>
-              </div>
             </div>
           </motion.div>
         ))}

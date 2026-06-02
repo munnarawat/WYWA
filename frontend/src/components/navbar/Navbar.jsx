@@ -64,6 +64,7 @@ const Navbar = () => {
   };
   return (
     <>
+    {/* nav-bar */}
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -89,7 +90,7 @@ const Navbar = () => {
             </Link>
           </div>
           {/* links */}
-          <div className="rounded-lg bg-linear-to-l from-white/30 via-transparent  to-white/30 p-[.5px]">
+          <div className="rounded-lg border-l-2 border-r-2 border-white/20 bg-linear-to-l from-white/10 via-transparent  to-white/10  p-[.5px]">
             <div className="hidden py-4 rounded-lg px-8 md:flex gap-10 bg-linear-to-b from-[#0000009d] to-[#0000007c] tracking-wide  lg:text-[1.12rem] text-white/70">
               {NavLinks.map((item, index) => (
                 <Link

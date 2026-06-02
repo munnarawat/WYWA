@@ -1,24 +1,46 @@
 import CountUp from "react-countup";
 import { motion } from "framer-motion";
+import api from "../utils/api";
+import { useEffect, useState } from "react";
 
 const ImpactStats = () => {
-  const stats = [
+  const [dynamicCounts, setDynamicCounts] = useState({
+    students: 0,
+    bookIssued: 0,
+    selectedStudents: 0,
+  });
+  // fetch data
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        const res = await api.get("/public/landing-stats");
+        if (res.data.success) {
+          setDynamicCounts(res.data.data);          
+        }
+      } catch (error) {
+        console.error("Failed to fetch impact stats:", error);
+      }
+    };
+    fetchStatus();
+  }, []);
+  
+    const stats = [
     {
-      number: 1200,
+      number: dynamicCounts.students > 20 ? dynamicCounts.students:1200,
       label: "Students",
       description: "Across All Branches",
       color: "text-teal-400",
       glow: "bg-teal-500/30",
     },
     {
-      number: 500,
+      number: dynamicCounts.bookIssued> 20 ? dynamicCounts.bookIssued:500,
       label: "Books Issued",
       description: "This Month",
       color: "text-lime-400",
       glow: "bg-lime-500/30",
     },
     {
-      number: 100,
+      number: dynamicCounts.selectedStudents > 20 ? dynamicCounts.selectedStudents:100,
       label: "Selected Students",
       description: "Across All Branches",
       color: "text-amber-400",
@@ -62,8 +84,7 @@ const ImpactStats = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 0.6 }}
-        className="text-4xl md:text-5xl font-semibold mb-12 text-center md:text-left"
-      >
+        className="text-4xl md:text-5xl font-semibold mb-12 text-center md:text-left">
         Our Impact
       </motion.h2>
 
@@ -72,15 +93,13 @@ const ImpactStats = () => {
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }} 
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-      >
+        viewport={{ once: true, amount: 0.2 }}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((item, index) => (
           <motion.li
             variants={itemVariants}
             key={index}
-            className="relative border border-white/10 bg-white/5 rounded-xl p-6 text-center hover:-translate-y-2 transition-transform duration-300 ease-out overflow-hidden cursor-default"
-          >
+            className="relative border border-white/10 bg-white/5 rounded-xl p-6 text-center hover:-translate-y-2 transition-transform duration-300 ease-out overflow-hidden cursor-default">
             {/* Glow */}
             <div
               aria-hidden="true"

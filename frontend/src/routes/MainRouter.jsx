@@ -21,13 +21,6 @@ import ProtectedRoute from "./ProtectedRoute";
 import PublicLayout from "../components/PublicLayout";
 import DashboardLayout from "../pages/DashboardLayout";
 import ScrollTop from "../animation/ScrollTop";
-const UserProfilePage = lazy(
-  () => import("../components/user-details/UserProfilePage"),
-);
-
-const ThinkTankDashboard = lazy(
-  () => import("../pages/think-tank/ThinkTankDashboard"),
-);
 
 // ─────────────────────────────────────────
 // 🚀 ASYNC IMPORTS (Lazy Loaded Pages)
@@ -36,6 +29,11 @@ const ThinkTankDashboard = lazy(
 const Home = lazy(() => import("../pages/Home"));
 const Register = lazy(() => import("../pages/auth/Register"));
 const Login = lazy(() => import("../pages/auth/Login"));
+const About = lazy(() => import("../components/about/About"));
+const Achievement = lazy(
+  () => import("../components/achievements/Achievement"),
+);
+const Contact = lazy(() => import("../components/contact/Contact"));
 const ForgotPassword = lazy(
   () => import("../components/profile-updates/ForgotPassword"),
 );
@@ -73,6 +71,13 @@ const ManageThinkTank = lazy(
 );
 const ManageStudentIssues = lazy(
   () => import("../pages/admin/ManageStudentIssues"),
+);
+const UserProfilePage = lazy(
+  () => import("../components/user-details/UserProfilePage"),
+);
+
+const ThinkTankDashboard = lazy(
+  () => import("../pages/think-tank/ThinkTankDashboard"),
 );
 
 // Student Pages
@@ -160,6 +165,9 @@ const MainRouter = () => {
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/achievements" element={<Achievement />} />
+            <Route path="/contact" element={<Contact />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
           </Route>

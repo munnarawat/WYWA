@@ -10,7 +10,7 @@ const Gallery = () => {
       category: "Education",
       image:
         "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=2070&auto=format&fit=crop",
-      span: "md:col-span-2 md:row-span-2", // Badi image
+      span: "md:col-span-2 md:row-span-2",
     },
     {
       id: 2,
@@ -25,7 +25,7 @@ const Gallery = () => {
       title: "Dehradun Branch Meetup",
       category: "Community",
       image:
-        "https://images.unsplash.com/photo-1529390079861-591de354faf5?q=80&w=2070&auto=format&fit=crop",
+        "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-2.jpeg?updatedAt=1772889783372",
       span: "md:col-span-1 md:row-span-1",
     },
     {

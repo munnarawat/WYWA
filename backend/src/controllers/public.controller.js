@@ -33,6 +33,23 @@ const getPublicData = async (req, res) => {
     });
   }
 };
-module.exports={
-    getPublicData
-}
+const getAllAchievements = async (req, res) => {
+  try {
+    const achievements = await Achievement.find()
+      .populate("studentName")
+      .sort({ year: -1, createdAt: -1 });
+    return res.status(200).json({
+      success: true,
+      achievements,
+    });
+  } catch (error) {
+    console.error("get public achievements error", error);
+    res.status(500).json({
+      message: "Server error while fetching public achievements",
+    });
+  }
+};
+module.exports = {
+  getPublicData,
+  getAllAchievements
+};

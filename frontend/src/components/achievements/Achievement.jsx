@@ -1,7 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { MapPin, Trophy, Calendar } from "lucide-react";
-import axios from "axios";
+import api from "../../utils/api";
+import toast from "react-hot-toast";
 
 // 🪄 Spotlight Hover Effect Component (The Magic Card)
 const SpotlightCard = ({ children, className = "" }) => {
@@ -44,74 +45,23 @@ const Achievement = () => {
   const [achievements, setAchievements] = useState([]);
 
   useEffect(() => {
-    const mockData = [
-      {
-        _id: "1",
-        studentName: "Aarav Sharma",
-        examName: "TCS Ninja / Digital",
-        year: 2025,
-        description: "Secured top rank in the national level coding hackathon and cracked the interview with flying colors.",
-        imageUrl: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=400&auto=format&fit=crop",
-        branch: "dehradun",
-      },
-      {
-        _id: "2",
-        studentName: "Neha Gupta",
-        examName: "Wipro Elite",
-        year: 2025,
-        description: "Successfully cleared all 4 rounds including the tough system design interview.",
-        imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop",
-        branch: "haldwani",
-      },
-      {
-        _id: "3",
-        studentName: "Rohan Verma",
-        examName: "Infosys DSE",
-        year: 2024,
-        description: "Specialized in backend architecture and landed the Specialist Programmer role.",
-        imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop",
-        branch: "dehradun",
-      },
-      {
-        _id: "4",
-        studentName: "Priya Singh",
-        examName: "Google Summer of Code",
-        year: 2024,
-        description: "Contributed to major open-source web3 projects and got fully funded.",
-        imageUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=400&auto=format&fit=crop",
-        branch: "haldwani",
-      },
-      {
-        _id: "5",
-        studentName: "Arjun Patel",
-        examName: "Amazon SDE Internship",
-        year: 2024,
-        description: "Secured a 6-month internship at Amazon with a focus on software development.",
-        imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop",
-        branch: "dehradun",
-      },
-      {
-        _id: "6",
-        studentName: "Sanya Kapoor",
-        examName: "Microsoft Explore Internship",
-        year: 2024,
-        description: "Landed a prestigious internship at Microsoft, working on cutting-edge AI projects.",
-        imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop",
-        branch: "haldwani",  
-      },
-      {
-        _id: "7",
-        studentName: "Karan Mehta",
-        examName: "Adobe Research Internship",
-        year: 2024,
-        description: "Secured an internship at Adobe Research, contributing to innovative projects in computer vision.",
-        imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop",
-        branch: "haldwani",
+    const fetchAchievements = async ()=>{
+      try {
+        const res = await api.get("/public/all-achievement")
+        if(res.data.success){
+          setAchievements(res.data.achievements)
+          console.log(res.data.achievements);
+          
+        }
+      } catch (error) {
+        console.error("Error fetching achievements:", error);
+        toast.error("Failed to load achievements.");
       }
-    ];
-    setAchievements(mockData);
+    }
+    fetchAchievements();
   }, []);
 
+  
   return (
     <section className="w-full py-24 px-4 md:px-8  overflow-hidden">
       <div className="max-w-7xl mx-auto">
@@ -139,7 +89,6 @@ const Achievement = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {achievements.map((item, index) => {
             const isFeatured = index === 0;
-
             return (
               <SpotlightCard 
                 key={item._id} 
@@ -157,7 +106,7 @@ const Achievement = () => {
                           className="w-full h-full object-cover lg:grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500"
                         />
                       ) : (
-                        <div className="w-full h-full bg-slate-800 flex items-center justify-center text-2xl font-bold text-slate-500">
+                        <div className="w-full h-full bg-slate-800 flex items-center justify-center uppercase text-2xl font-bold text-slate-500">
                           {item.studentName.charAt(0)}
                         </div>
                       )}
@@ -176,7 +125,7 @@ const Achievement = () => {
                   {/* Bottom Section: Details */}
                   <div className="space-y-3 grow">
                     <div>
-                      <h3 className={`${isFeatured ? 'text-3xl' : 'text-xl'} font-bold text-white mb-1 group-hover:text-teal-300 transition-colors`}>
+                      <h3 className={`${isFeatured ? 'text-3xl' : 'text-xl'} font-bold text-white mb-1 capitalize group-hover:text-teal-300 transition-colors`}>
                         {item.studentName}
                       </h3>
                       <p className="text-transparent bg-clip-text bg-linear-to-r from-amber-200 to-amber-500 font-semibold inline-flex items-center gap-2">

@@ -50,8 +50,6 @@ const Achievement = () => {
         const res = await api.get("/public/all-achievement")
         if(res.data.success){
           setAchievements(res.data.achievements)
-          console.log(res.data.achievements);
-          
         }
       } catch (error) {
         console.error("Error fetching achievements:", error);

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Calendar, User, Edit2, Trash2 } from "lucide-react";  
+import { ArrowRight, Calendar, User, Edit2, Trash2, Info } from "lucide-react";
 
 const BADGE_STYLES = {
   urgent: "bg-red-500/10 border-red-500/20 text-red-400",
@@ -16,8 +16,17 @@ const NoticeCard = ({ notice, index, isAdmin, onEdit, onDelete }) => {
   const category = notice.category?.toLowerCase() || "announcement";
   const badgeClass = BADGE_STYLES[category] || BADGE_STYLES.announcement;
 
+  const isArchived = notice.isArchived;
+
+  const opacityClass = isArchived
+    ? "opacity-60 grayscale-[50%]"
+    : "opacity-100";
+  const borderClass = isArchived
+    ? "border-slate-700"
+    : "border-white/10 hover:border-white/20";
+
   return (
-    <motion.div 
+    <motion.div
       variants={{
         hidden: { opacity: 0, y: 28 },
         show: {
@@ -32,9 +41,13 @@ const NoticeCard = ({ notice, index, isAdmin, onEdit, onDelete }) => {
       style={{
         background:
           "linear-gradient(135deg, rgba(20,184,166,0.3), rgba(255,255,255,0.05), rgba(132,204,22,0.15))",
-      }}
-    >
+      }}>
       <div className="relative bg-[#0d1117] rounded-[19px] p-6 flex flex-col justify-between min-h-[230px] overflow-hidden">
+        {isArchived && (
+          <div className="absolute top-4 right-4 bg-slate-800 text-slate-400 text-xs px-2 py-1 rounded-md font-medium border border-slate-700 flex items-center gap-1">
+            <Info size={12} /> Archived
+          </div>
+        )}
         {/* Hover glow */}
         <div
           className="absolute top-0 right-0 w-48 h-48 rounded-full -mr-16 -mt-16 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"
@@ -48,25 +61,23 @@ const NoticeCard = ({ notice, index, isAdmin, onEdit, onDelete }) => {
           {/* Top: badge + NEW tag */}
           <div className="flex justify-between items-start mb-4">
             <span
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[10px] font-bold uppercase tracking-wider ${badgeClass}`}
-            >
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-[10px] font-bold uppercase tracking-wider ${badgeClass}`}>
               <span className="w-1.5 h-1.5 rounded-full bg-current" />
               {notice.category || "Announcement"}
             </span>
             {isNew(notice.createdAt) && (
               <span
                 className="text-[9px] font-extrabold tracking-widest uppercase px-2.5 py-1 rounded-full text-[#0d1117]"
-                style={{ background: "linear-gradient(135deg, #14b8a6, #84cc16)" }}
-              >
+                style={{
+                  background: "linear-gradient(135deg, #14b8a6, #84cc16)",
+                }}>
                 New
               </span>
             )}
           </div>
 
           {/* Title */}
-          <h3
-            className="font-bold text-[17px] leading-snug text-slate-100 mb-2.5 group-hover:text-teal-400 transition-colors duration-300"
-          >
+          <h3 className="font-bold text-[17px] leading-snug text-slate-100 mb-2.5 group-hover:text-teal-400 transition-colors duration-300">
             {notice.title}
           </h3>
 
@@ -100,12 +111,11 @@ const NoticeCard = ({ notice, index, isAdmin, onEdit, onDelete }) => {
             <div className="flex items-center gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
               <button
                 onClick={(e) => {
-                  e.stopPropagation(); 
+                  e.stopPropagation();
                   onEdit(notice);
                 }}
                 className="p-2 rounded-lg bg-teal-500/10 text-teal-400 hover:bg-teal-500/20 transition"
-                title="Edit"
-              >
+                title="Edit">
                 <Edit2 size={16} />
               </button>
               <button
@@ -114,8 +124,7 @@ const NoticeCard = ({ notice, index, isAdmin, onEdit, onDelete }) => {
                   onDelete(notice._id);
                 }}
                 className="p-2 rounded-lg bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition"
-                title="Delete"
-              >
+                title="Delete">
                 <Trash2 size={16} />
               </button>
             </div>

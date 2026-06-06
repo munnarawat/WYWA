@@ -41,20 +41,42 @@ const getAllNotice = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const search = req.query.search || "";
+    const userRole = req.user.role;
 
     const query = { branch: req.user.branch };
     if (search) {
+
       query.title = { $regex: search, $options: "i" };
+    }
+
+    // the 30 - Day  logic set-Up;
+    const thirtyDayAgo = new Date();
+    thirtyDayAgo.setDate(thirtyDayAgo.getDate()-30);  
+
+    // student filter only student see 30 days notice 
+    if(userRole === "student"){
+      query.createdAt = { $gte:thirtyDayAgo};
     }
 
     const total = await noticeModel.countDocuments(query);
 
-    const notices = await noticeModel
+    let notices = await noticeModel
       .find(query)
       .populate("createdBy", " userName email")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
-      .limit(limit);
+      .limit(limit)
+      .lean();
+
+      if(userRole !== "student"){
+        notices = notices.map(notice=>{
+          const isOld = new Date(notice.createdAt) <thirtyDayAgo;
+          return {
+            ...notice,
+            isArchived:isOld
+          }
+        })
+      }
 
     return res.status(200).json({
       success: true,

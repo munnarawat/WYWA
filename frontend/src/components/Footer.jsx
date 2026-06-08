@@ -22,15 +22,13 @@ const Footer = () => {
 
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-          
           {/* Column 1: Brand & About */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="flex flex-col gap-6"
-          >
+            className="flex flex-col gap-6">
             <div>
               <h2 className="text-2xl font-bold text-white tracking-tight">
                 MY<span className="text-teal-400">WA</span>
@@ -40,17 +38,24 @@ const Footer = () => {
               </p>
             </div>
             <p className="text-sm text-zinc-400 leading-relaxed">
-              Empowering the youth through education, libraries, and community building. Shaping disciplined minds for a brighter future.
+              Empowering the youth through education, libraries, and community
+              building. Shaping disciplined minds for a brighter future.
             </p>
             {/* Social Icons */}
             <div className="flex items-center gap-4 pt-2">
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-teal-400 hover:bg-teal-500/10 hover:border-teal-500/30 transition-all">
+              <a
+                href="#"
+                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-teal-400 hover:bg-teal-500/10 hover:border-teal-500/30 transition-all">
                 <Instagram size={18} />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-teal-400 hover:bg-teal-500/10 hover:border-teal-500/30 transition-all">
+              <a
+                href="#"
+                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-teal-400 hover:bg-teal-500/10 hover:border-teal-500/30 transition-all">
                 <Linkedin size={18} />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-teal-400 hover:bg-teal-500/10 hover:border-teal-500/30 transition-all">
+              <a
+                href="#"
+                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-teal-400 hover:bg-teal-500/10 hover:border-teal-500/30 transition-all">
                 <Twitter size={18} />
               </a>
             </div>
@@ -62,21 +67,21 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="flex flex-col gap-6"
-          >
+            className="flex flex-col gap-6">
             <h3 className="text-lg font-semibold text-white">Quick Links</h3>
             <ul className="flex flex-col gap-3">
-              {["About", "Gallery", "Achievements", "Contact"].map((item, index) => (
-                <li key={index}>
-                  <Link
-                    to={`/${item.toLowerCase().replace(" ", "-")}`}
-                    className="text-sm text-zinc-400 hover:text-teal-400 transition-colors flex items-center gap-2 group"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-white/20 group-hover:bg-teal-400 transition-colors" />
-                    {item}
-                  </Link>
-                </li>
-              ))}
+              {["About", "Gallery", "Achievements", "Contact"].map(
+                (item, index) => (
+                  <li key={index}>
+                    <Link
+                      to={`/${item.toLowerCase().replace(" ", "-")}`}
+                      className="text-sm text-zinc-400 hover:text-teal-400 transition-colors flex items-center gap-2 group">
+                      <span className="w-1.5 h-1.5 rounded-full bg-white/20 group-hover:bg-teal-400 transition-colors" />
+                      {item}
+                    </Link>
+                  </li>
+                ),
+              )}
             </ul>
           </motion.div>
 
@@ -86,24 +91,31 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex flex-col gap-6"
-          >
+            className="flex flex-col gap-6">
             <h3 className="text-lg font-semibold text-white">Contact Us</h3>
             <div className="flex flex-col gap-4">
               {/* Branch 1 */}
               <div className="flex items-start gap-3">
                 <MapPin size={18} className="text-teal-400 shrink-0 mt-0.5" />
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium text-white">Dehradun Branch</span>
-                  <span className="text-xs text-zinc-400">1 Negi road near DBS(pg) college karnpur, Dehradun, UK</span>
+                  <span className="text-sm font-medium text-white">
+                    Dehradun Branch
+                  </span>
+                  <span className="text-xs text-zinc-400">
+                    1 Negi road near DBS(pg) college karnpur, Dehradun, UK
+                  </span>
                 </div>
               </div>
               {/* Branch 2 */}
               <div className="flex items-start gap-3">
                 <MapPin size={18} className="text-lime-400 shrink-0 mt-0.5" />
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium text-white">Haldwani Branch</span>
-                  <span className="text-xs text-zinc-400">456 Knowledge Park, Haldwani, UK</span>
+                  <span className="text-sm font-medium text-white">
+                    Haldwani Branch
+                  </span>
+                  <span className="text-xs text-zinc-400">
+                    456 Knowledge Park, Haldwani, UK
+                  </span>
                 </div>
               </div>
               {/* Phone & Email */}
@@ -111,10 +123,14 @@ const Footer = () => {
                 <Phone size={18} className="text-zinc-400 shrink-0" />
                 <span className="text-sm text-zinc-400">+91 98765 43210</span>
               </div>
-              <div className="flex items-center gap-3">
-                <Mail size={18} className="text-zinc-400 shrink-0" />
-                <span className="text-sm text-zinc-400">contact@mywa.org</span>
-              </div>
+              <a href="mailto:support.mywa@gmail.com" >
+                <div className="flex items-center gap-3">
+                  <Mail size={18} className="text-zinc-400 shrink-0" />
+                  <span className="text-sm text-zinc-400">
+                    support.mywa@gmail.com
+                  </span>
+                </div>
+              </a>
             </div>
           </motion.div>
 
@@ -124,13 +140,15 @@ const Footer = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col gap-6"
-          >
+            className="flex flex-col gap-6">
             <h3 className="text-lg font-semibold text-white">Stay Updated</h3>
             <p className="text-sm text-zinc-400">
-              Subscribe to our newsletter to get the latest updates on events and achievements.
+              Subscribe to our newsletter to get the latest updates on events
+              and achievements.
             </p>
-            <form className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
+            <form
+              className="flex flex-col gap-3"
+              onSubmit={(e) => e.preventDefault()}>
               <div className="relative">
                 <input
                   type="email"
@@ -139,8 +157,7 @@ const Footer = () => {
                 />
                 <button
                   type="submit"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-md bg-linear-to-r from-teal-500 to-lime-500 text-black hover:scale-105 transition-transform"
-                >
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-md bg-linear-to-r from-teal-500 to-lime-500 text-black hover:scale-105 transition-transform">
                   <ArrowRight size={16} />
                 </button>
               </div>
@@ -154,16 +171,20 @@ const Footer = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4"
-        >
+          className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-zinc-500 text-center md:text-left">
-            © {currentYear} Munsyari Youth Welfare Association. All rights reserved.
+            © {currentYear} Munsyari Youth Welfare Association. All rights
+            reserved.
           </p>
           <div className="flex items-center gap-6">
-            <a href="#" className="text-xs text-zinc-500 hover:text-white transition-colors">
+            <a
+              href="#"
+              className="text-xs text-zinc-500 hover:text-white transition-colors">
               Privacy Policy
             </a>
-            <a href="#" className="text-xs text-zinc-500 hover:text-white transition-colors">
+            <a
+              href="#"
+              className="text-xs text-zinc-500 hover:text-white transition-colors">
               Terms of Service
             </a>
           </div>

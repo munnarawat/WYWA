@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 const MotionLink = motion.create(Link);
 const Hero = () => {
   const sliderImages = [
-    "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-1.jpeg", // Replace with your actual ImageKit URLs
+    "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-1.jpeg", 
+    "https://ik.imagekit.io/fmkamttxp/MYWA/mywa%20haldwani.jpeg",
     "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-2.jpeg",
     "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-3.jpeg",
   ];

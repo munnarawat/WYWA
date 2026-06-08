@@ -9,15 +9,15 @@ const Gallery = () => {
       title: "Career Counseling 2025",
       category: "Education",
       image:
-        "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=2070&auto=format&fit=crop",
+        "https://ik.imagekit.io/fmkamttxp/MYWA/Workshop%20Dehradun.jpeg",
       span: "md:col-span-2 md:row-span-2",
     },
     {
       id: 2,
-      title: "Library Inauguration",
-      category: "Infrastructure",
+      title: "Health Checkup Camp",
+      category:"Infrastructure",
       image:
-        "https://images.unsplash.com/photo-1568667256549-094345857637?q=80&w=1915&auto=format&fit=crop",
+        "https://ik.imagekit.io/fmkamttxp/MYWA/health-checkUp.jpeg",
       span: "md:col-span-1 md:row-span-1",
     },
     {
@@ -41,7 +41,7 @@ const Gallery = () => {
       title: "Haldwani Tech Workshop",
       category: "Workshop",
       image:
-        "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop",
+        "https://ik.imagekit.io/fmkamttxp/MYWA/Workshop%20haldwani.jpeg",
       span: "md:col-span-2 md:row-span-1",
     },
   ];

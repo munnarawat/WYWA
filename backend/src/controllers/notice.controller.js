@@ -21,8 +21,9 @@ const createNotice = async (req, res) => {
     const adminBranch = req.user.branch.trim().toLowerCase();
 
     io.to(adminBranch).emit("receive_notification",{
+      // _id:notice._id,
       title:"📢 New Announcement",
-      message: `${title}: ${description}`,
+      message: `${title}: ${description}`,  
     })
     return res.status(201).json({
       success: true,

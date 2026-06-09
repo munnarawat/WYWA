@@ -46,6 +46,11 @@ const NotificationDropdown = ({ socket }) => {
       return;
     }
     dispatch(removeNotification(clickId));
+    setIsOpen(false);
+    // safety check to prevent accidental deletion of all notifications
+    if (clickId.toString().length < 20) {
+      return;
+    }
     try {
       await api.delete(`/notification/${clickId}`);
     } catch (error) {

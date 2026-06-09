@@ -23,8 +23,7 @@ const SpotlightCard = ({ children, className = "" }) => {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setOpacity(1)}
       onMouseLeave={() => setOpacity(0)}
-      className={`relative overflow-hidden rounded-3xl bg-white/5 border border-white/10 transition-all duration-500 hover:-translate-y-2 hover:border-white/20 group ${className}`}
-    >
+      className={`relative overflow-hidden rounded-3xl bg-white/5 border border-white/10 transition-all duration-500 hover:-translate-y-2 hover:border-white/20 group ${className}`}>
       {/* Spotlight Glow */}
       <div
         className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 z-0"
@@ -33,9 +32,39 @@ const SpotlightCard = ({ children, className = "" }) => {
           background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(45,212,191,0.15), transparent 40%)`,
         }}
       />
-      <div className="relative z-10 h-full">
-        {children}
-      </div>
+      <div className="relative z-10 h-full">{children}</div>
+    </div>
+  );
+};
+
+// skelton ui
+const AchievementSkelton = () => {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {[1, 2, 3, 4].map((item, index) => {
+        const isFeatured = index === 0;
+        return (
+          <div
+            key={item._id}
+            className={
+              isFeatured
+                ? "md:col-span-2 md:row-span-2 rounded-2xl "
+                : "col-span-1"
+            }>
+            <div className="p-6 h-full bg-white/5 rounded-2xl flex flex-col justify-between animate-pulse">
+              <div className="flex justify-between items-start mb-6">
+                <div className="relative overflow-hidden rounded-2xl w-20 h-20 bg-slate-800 border border-white/10 shrink-0" />
+                <div className=" rounded-3xl bg-slate-800 h-6 w-24" />
+              </div>
+              <div className="space-y-3 grow">
+                <div className="w-1/2 h-6 rounded-lg animate-pulse bg-slate-800" />
+                <div className="w-2/6 h-6 rounded-lg animate-pulse bg-slate-800" />
+                <div className="w-3/4 h-6 rounded-lg animate-pulse bg-slate-800" />
+              </div>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };
@@ -45,109 +74,117 @@ const Achievement = () => {
   const [achievements, setAchievements] = useState([]);
 
   useEffect(() => {
-    const fetchAchievements = async ()=>{
+    const fetchAchievements = async () => {
       try {
-        const res = await api.get("/public/all-achievement")
-        if(res.data.success){
-          setAchievements(res.data.achievements)
+        const res = await api.get("/public/all-achievement");
+        if (res.data.success) {
+          setAchievements(res.data.achievements);
         }
       } catch (error) {
         console.error("Error fetching achievements:", error);
         toast.error("Failed to load achievements.");
       }
-    }
+    };
     fetchAchievements();
   }, []);
 
-  
   return (
     <section className="w-full py-24 px-4 md:px-8  overflow-hidden">
       <div className="max-w-7xl mx-auto">
-        
         {/* Header */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
+          className="text-center mb-16">
           <span className="text-teal-400 font-bold tracking-widest uppercase text-sm bg-teal-500/10 px-4 py-1.5 rounded-full border border-teal-500/20 inline-flex items-center gap-2 mb-4">
             <Trophy className="w-4 h-4" /> Wall of Fame
           </span>
           <h2 className="text-4xl md:text-5xl font-extrabold text-white">
-            Our Top <span className="text-transparent bg-clip-text bg-linear-to-r from-teal-400 to-blue-500">Achievers</span>
+            Our Top{" "}
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-teal-400 to-blue-500">
+              Achievers
+            </span>
           </h2>
           <p className="mt-4 text-slate-400 max-w-2xl mx-auto text-lg">
-            Celebrating the brilliant minds who cracked top exams and placements through sheer dedication and hard work.
+            Celebrating the brilliant minds who cracked top exams and placements
+            through sheer dedication and hard work.
           </p>
         </motion.div>
 
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {achievements.map((item, index) => {
-            const isFeatured = index === 0;
-            return (
-              <SpotlightCard 
-                key={item._id} 
-                className={isFeatured ? "md:col-span-2 md:row-span-2" : "col-span-1"}
-              >
-                <div className={`p-6 h-full flex flex-col ${isFeatured ? "justify-between" : ""}`}>
-                  
-                  {/* Top Section: Photo & Badge */}
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="relative overflow-hidden rounded-2xl w-20 h-20 border border-white/10 shrink-0">
-                      {item.imageUrl ? (
-                        <img 
-                          src={item.imageUrl} 
-                          alt={item.studentName} 
-                          className="w-full h-full object-cover lg:grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-slate-800 flex items-center justify-center uppercase text-2xl font-bold text-slate-500">
-                          {item.studentName.charAt(0)}
-                        </div>
-                      )}
+        {achievements.length === 0 ? (
+          <AchievementSkelton />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {achievements.map((item, index) => {
+              const isFeatured = index === 0;
+              return (
+                <SpotlightCard
+                  key={item._id}
+                  className={
+                    isFeatured ? "md:col-span-2 md:row-span-2" : "col-span-1"
+                  }>
+                  <div
+                    className={`p-6 h-full flex flex-col ${isFeatured ? "justify-between" : ""}`}>
+                    {/* Top Section: Photo & Badge */}
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="relative overflow-hidden rounded-2xl w-20 h-20 border border-white/10 shrink-0">
+                        {item.imageUrl ? (
+                          <img
+                            src={item.imageUrl}
+                            alt={item.studentName}
+                            className="w-full h-full object-cover lg:grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-slate-800 flex items-center justify-center uppercase text-2xl font-bold text-slate-500">
+                            {item.studentName.charAt(0)}
+                          </div>
+                        )}
+                      </div>
+
+                      <div
+                        className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 border ${
+                          item.branch === "dehradun"
+                            ? "bg-teal-500/10 text-teal-400 border-teal-500/20"
+                            : "bg-blue-500/10 text-blue-400 border-blue-500/20"
+                        }`}>
+                        <MapPin className="w-3 h-3" />
+                        {item.branch.charAt(0).toUpperCase() +
+                          item.branch.slice(1)}
+                      </div>
                     </div>
 
-                    <div className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 border ${
-                      item.branch === "dehradun" 
-                        ? "bg-teal-500/10 text-teal-400 border-teal-500/20" 
-                        : "bg-blue-500/10 text-blue-400 border-blue-500/20"
-                    }`}>
-                      <MapPin className="w-3 h-3" />
-                      {item.branch.charAt(0).toUpperCase() + item.branch.slice(1)}
-                    </div>
-                  </div>
+                    {/* Bottom Section: Details */}
+                    <div className="space-y-3 grow">
+                      <div>
+                        <h3
+                          className={`${isFeatured ? "text-3xl" : "text-xl"} font-bold text-white mb-1 capitalize group-hover:text-teal-300 transition-colors`}>
+                          {item.studentName}
+                        </h3>
+                        <p className="text-transparent bg-clip-text bg-linear-to-r from-amber-200 to-amber-500 font-semibold inline-flex items-center gap-2">
+                          {item.examName}
+                          <span className="text-slate-500 text-sm flex items-center gap-1 font-normal">
+                            <Calendar className="w-3 h-3" /> {item.year}
+                          </span>
+                        </p>
+                      </div>
 
-                  {/* Bottom Section: Details */}
-                  <div className="space-y-3 grow">
-                    <div>
-                      <h3 className={`${isFeatured ? 'text-3xl' : 'text-xl'} font-bold text-white mb-1 capitalize group-hover:text-teal-300 transition-colors`}>
-                        {item.studentName}
-                      </h3>
-                      <p className="text-transparent bg-clip-text bg-linear-to-r from-amber-200 to-amber-500 font-semibold inline-flex items-center gap-2">
-                        {item.examName} 
-                        <span className="text-slate-500 text-sm flex items-center gap-1 font-normal">
-                          <Calendar className="w-3 h-3" /> {item.year}
-                        </span>
+                      <p
+                        className={`text-slate-400 ${isFeatured ? "text-base line-clamp-3" : "text-sm line-clamp-2"}`}>
+                        "{item.description}"
                       </p>
                     </div>
-                    
-                    <p className={`text-slate-400 ${isFeatured ? 'text-base line-clamp-3' : 'text-sm line-clamp-2'}`}>
-                      "{item.description}"
-                    </p>
                   </div>
-                  
-                </div>
-              </SpotlightCard>
-            );
-          })}
-        </div>
+                </SpotlightCard>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );
 };
 
 export default Achievement;
-

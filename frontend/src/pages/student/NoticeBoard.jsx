@@ -12,6 +12,8 @@ import api from "../../utils/api";
 import toast from "react-hot-toast";
 import NoticeCard from "../../components/NoticeCard";
 import { Helmet } from "react-helmet-async";
+import { useSelector } from "react-redux";
+import NonMemberView from "./NonMemberView";
 
 const NoticeSkeleton = () => {
   return (
@@ -35,6 +37,8 @@ const NoticeSkeleton = () => {
   );
 };
 const NoticeBoard = () => {
+  const { user } = useSelector((state) => state.auth);
+
   const [notices, setNotices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -70,6 +74,8 @@ const NoticeBoard = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [fetchAllNotice]);
 
+  // non Member-view
+  if(!user?.isLibraryMember) return <NonMemberView/>
   return (
     <div className="w-full min-h-screen  text-white p-4 md:p-8 overflow-y-auto pb-24 relative">
       {/* helmet */}

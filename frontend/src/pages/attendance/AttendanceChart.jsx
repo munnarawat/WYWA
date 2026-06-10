@@ -18,6 +18,7 @@ import AttendanceSkeleton from "./AttendanceSkeleton";
 import MiniStat from "./MiniStat";
 import DayDot from "./DayDot";
 import CustomTooltip from "./CustomTooltip";
+import NonMemberView from "../student/NonMemberView";
 
 const AttendanceChart = () => {
   const { user } = useSelector((state) => state.auth);
@@ -92,7 +93,6 @@ const AttendanceChart = () => {
     };
     fetchAttendance();
   }, [user?._id]);
-
   if (loading) return <AttendanceSkeleton />;
 
   if (error) {
@@ -119,7 +119,8 @@ const AttendanceChart = () => {
   const safePercentage = isNaN(summary.percentage)
     ? 0
     : Math.min(summary.percentage, 100);
-
+      // Non-member view
+  if (!user?.isLibraryMember) return <NonMemberView />;
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

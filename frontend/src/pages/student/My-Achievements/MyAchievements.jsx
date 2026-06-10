@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import api from "../../../utils/api";
 import BadgeCard from "./BadgeCard";
 import { Helmet } from "react-helmet-async";
+import NonMemberView from "../NonMemberView";
 
 const ALL_BADGES_TEMPLATE = [
   {
@@ -122,6 +123,8 @@ const MyAchievements = () => {
 
   const myRank = topRankers.findIndex((r) => r.studentId === user?._id);
 
+  // none-member view
+  if(!user?.isLibraryMember) return <NonMemberView/>
   return (
     <div className="p-4 sm:p-8 w-full max-w-6xl mx-auto">
       {/* helmet */}

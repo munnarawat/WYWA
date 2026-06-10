@@ -15,6 +15,7 @@ import StudentStats from "./StudentStats";
 import IssuedBooks from "./IssuedBooks";
 import DashboardSidebar from "./DashboardSidebar";
 import { Helmet } from "react-helmet-async";
+import NonMemberView from "./NonMemberView";
 
 // ─────────────────────────────────────────
 // SKELETON
@@ -42,78 +43,6 @@ const StudentSkeleton = () => (
     </div>
   </div>
 );
-
-// ─────────────────────────────────────────
-// NON-MEMBER MOTIVATION VIEW
-// ─────────────────────────────────────────
-const NonMemberView = () => {
-  const navigate = useNavigate();
-
-  return (
-    <div className="min-h-screen flex items-center justify-center p-6">
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 260 }}
-        className="relative w-full max-w-[580px] rounded-3xl p-px"
-        style={{
-          background:
-            "linear-gradient(135deg, rgba(20,184,166,0.35), rgba(255,255,255,0.05), rgba(132,204,22,0.2))",
-        }}>
-        <div className="bg-[#0d1117] rounded-[23px] px-10 py-12 text-center relative overflow-hidden">
-          {/* Top ambient glow */}
-          <div
-            className="absolute -top-15 left-1/2 -translate-x-1/2 w-72 h-48 pointer-events-none"
-            style={{
-              background:
-                "radial-gradient(circle, rgba(20,184,166,0.12), transparent 70%)",
-            }}
-          />
-
-          {/* Icon */}
-          <motion.div
-            initial={{ rotate: 0 }}
-            animate={{ rotate: [0, 6, -4, 6, 0] }}
-            transition={{ delay: 0.5, duration: 1.2 }}
-            className="w-20 h-20 rounded-[22px] flex items-center justify-center mx-auto mb-6 text-4xl"
-            style={{ background: "linear-gradient(135deg, #14b8a6, #84cc16)" }}>
-            📚
-          </motion.div>
-
-          <h2 className="text-3xl font-extrabold text-slate-100 mb-4 leading-tight">
-            Take Your Preparation to the{" "}
-            <span
-              className="bg-clip-text text-transparent"
-              style={{
-                backgroundImage: "linear-gradient(135deg, #14b8a6, #84cc16)",
-              }}>
-              Next Level
-            </span>
-          </h2>
-
-          <p className="text-slate-500 text-[15px] leading-relaxed mb-8 max-w-md mx-auto">
-            MYWA Library provides the perfect silent environment, high-speed
-            Wi-Fi, and a community of focused students. Stop studying in
-            distractions!
-          </p>
-
-          <motion.button
-            whileHover={{ y: -3, boxShadow: "0 0 40px rgba(255,255,255,0.3)" }}
-            whileTap={{ scale: 0.96 }}
-            onClick={() => navigate("/apply-membership")}
-            className="inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-white text-[#080c10] font-extrabold text-[14px] transition-all"
-            style={{
-              boxShadow: "0 0 24px rgba(255,255,255,0.15)",
-            }}>
-            <Rocket size={18} />
-            Apply for Library Membership
-            <ArrowRight size={18} />
-          </motion.button>
-        </div>
-      </motion.div>
-    </div>
-  );
-};
 
 // ─────────────────────────────────────────
 // RECENT ACTIVITY CARD
@@ -291,7 +220,6 @@ const StudentOverview = () => {
           }}>
           Welcome back, {firstName} 👋
         </motion.h1>
-
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

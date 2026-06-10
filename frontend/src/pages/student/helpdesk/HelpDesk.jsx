@@ -8,6 +8,8 @@ import TicketStatsGrid from "./TicketStatsGrid";
 import TicketCard from "./TicketCard";
 import RaiseTicketModal from "./RaiseTicketModal";
 import { Helmet } from "react-helmet-async";
+import { useSelector } from "react-redux";
+import NonMemberView from "../NonMemberView";
 
 // ─────────────────────────────────────────
 // SKELETON
@@ -66,6 +68,7 @@ const EmptyState = ({ onRaise }) => (
 // MAIN COMPONENT
 // ─────────────────────────────────────────
 const HelpDesk = () => {
+  const {user} = useSelector((state)=>state.auth)
   const [tickets, setTickets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -88,6 +91,8 @@ const HelpDesk = () => {
     fetchMyTickets();
   }, [fetchMyTickets]);
 
+    // Non-member view
+  if (!user?.isLibraryMember) return <NonMemberView />;
   return (
     <div className="w-full min-h-screen text-white p-4 md:p-8 pb-24 overflow-y-auto flex flex-col gap-6">
       {/* helmet */}

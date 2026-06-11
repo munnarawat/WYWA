@@ -191,7 +191,7 @@ const MyAchievements = () => {
         <div className="flex flex-col gap-5">
           {/* STREAK CARD */}
           {isLoading ? (
-            <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 h-[180px] animate-pulse" />
+            <div className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 h-45 animate-pulse" />
           ) : (
             <motion.div
               initial={{ opacity: 0, scale: 0.97 }}
@@ -204,7 +204,7 @@ const MyAchievements = () => {
               <div className="bg-[#0d1117] rounded-[19px] p-6 relative overflow-hidden">
                 {/* Glow */}
                 <div
-                  className="absolute top-[-60px] right-[-60px] w-48 h-48 rounded-full pointer-events-none"
+                  className="absolute -top-15 -right-15 w-48 h-48 rounded-full pointer-events-none"
                   style={{
                     background:
                       "radial-gradient(circle, rgba(251,113,133,0.12), transparent 70%)",

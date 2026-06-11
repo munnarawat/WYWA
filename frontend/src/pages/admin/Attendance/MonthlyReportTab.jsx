@@ -153,13 +153,13 @@ const MonthlyReportTab = ({ students = [] }) => {
             />
             <StatCard
               label="Present"
-              value={monthlyData.summary.presentDay}
+              value={monthlyData.summary.presentDays}
               gradient="linear-gradient(135deg,rgba(52,211,153,.2),rgba(255,255,255,.04))"
               color="#34d399"
             />
             <StatCard
               label="Absent"
-              value={monthlyData.summary.absentDay}
+              value={monthlyData.summary.absentDays}
               gradient="linear-gradient(135deg,rgba(251,113,133,.2),rgba(255,255,255,.04))"
               color="#fb7185"
             />

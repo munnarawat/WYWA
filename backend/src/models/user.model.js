@@ -55,6 +55,15 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false, // Default false
     },
+    isMywaFamilyMember:{
+      type:Boolean,
+      default:false,
+    },
+    mywaApplicationStatus:{
+      type:String,
+      enum:["none","pending", "approved", "rejected"],
+      default:"none",
+    },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
 

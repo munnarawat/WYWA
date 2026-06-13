@@ -80,6 +80,43 @@ const toggleLibraryAccess = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+// make a mywa family member
+
+const toggleMywaFamilyMember = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await UserModel.findById(id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "user are not found",
+      });
+    }
+    if (user.branch != req.user.branch) {
+      return res.status(403).json({
+        success: false,
+        message: "you can only library access from your branch student",
+      });
+    }
+    user.isMywaFamilyMember = !user.isMywaFamilyMember;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: user.isMywaFamilyMember
+        ? "MYWA member access granted successfully! 📚"
+        : "MYWA member access removed! 🚫",
+      user: {
+        _id: user._id,
+        isMywaFamilyMember: user.isMywaFamilyMember,
+      },
+    });
+  } catch (error) {
+    console.error("Toggle MYWA member access error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
 const toggleBlockUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -101,7 +138,7 @@ const toggleBlockUser = async (req, res) => {
     user.isActive = !user.isActive;
     await user.save();
     return res.status(200).json({
-      success:true,
+      success: true,
       message: `user ${user.isActive ? "unblocked" : "blocked"} successfully `,
       user: {
         _id: user._id,
@@ -143,7 +180,7 @@ const makeAdmin = async (req, res) => {
     await user.save();
 
     return res.status(200).json({
-      success:true,
+      success: true,
       message: "user prompt to admin successfully 🎉",
       user: {
         _id: user._id,
@@ -203,5 +240,6 @@ module.exports = {
   makeAdmin,
   makeThinkTank,
   getLibraryStudents,
-  toggleLibraryAccess
+  toggleMywaFamilyMember,
+  toggleLibraryAccess,
 };

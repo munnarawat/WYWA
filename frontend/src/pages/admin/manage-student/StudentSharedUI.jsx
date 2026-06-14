@@ -7,6 +7,7 @@ import {
   ShieldAlert,
   ShieldCheck,
   UserCog,
+  HeartHandshake,
 } from "lucide-react";
 
 // ── CONFIGS ──
@@ -65,6 +66,11 @@ export const YouBadge = () => (
     You
   </span>
 );
+export const MywaBadge = () => (
+  <span className="px-1.5 py-0.5 rounded-sm bg-lime-500/10 border border-lime-500/20 text-lime-400 text-[9px] font-bold uppercase tracking-wider flex items-center gap-1">
+    <HeartHandshake size={10} /> MYWA
+  </span>
+);
 
 // ── ACTION BUTTONS ──
 export const LibraryBtn = ({ isLibraryMember, onClick, fullWidth = false }) => (
@@ -77,7 +83,18 @@ export const LibraryBtn = ({ isLibraryMember, onClick, fullWidth = false }) => (
     {isLibraryMember ? "Remove Library" : "Grant Library"}
   </motion.button>
 );
-
+export const MywaBtn = ({ isMywaMember, onClick }) => (
+  <button
+    onClick={onClick}
+    className={`p-1.5 rounded-lg transition-colors border ${
+      isMywaMember
+        ? "bg-lime-500/10 text-lime-400 border-lime-500/20 hover:bg-lime-500/20"
+        : "bg-white/5 text-slate-500 border-white/5 hover:bg-white/10 hover:text-white"
+    }`}
+    title={isMywaMember ? "Remove from MYWA Family" : "Add to MYWA Family"}>
+    <HeartHandshake size={16} />
+  </button>
+);
 export const BlockBtn = ({ isActive, onClick, fullWidth = false }) => (
   <motion.button
     whileHover={{ y: -2 }}

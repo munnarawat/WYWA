@@ -5,9 +5,11 @@ import {
   LibraryBadge,
   YouBadge,
   RolePill,
+  MywaBadge,
   StatusPill,
   LibraryBtn,
   BlockBtn,
+  MywaBtn,
   PromoteDropdown,
 } from "./StudentSharedUI";
 import { useNavigate } from "react-router-dom";
@@ -21,9 +23,10 @@ const StudentDesktopTable = ({
   handleToggleBlock,
   handleConfirmAdmin,
   handleConfirmThinkTank,
+  handleToggleMywaMember,
 }) => {
   const navigate = useNavigate();
-  
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -80,7 +83,11 @@ const StudentDesktopTable = ({
                       animate={{ opacity: 1, x: 0 }}
                       className="border-b border-white/4 last:border-none hover:bg-white/2 transition-colors group">
                       <td className="px-5 py-3.5">
-                        <div onClick={()=>navigate(`/admin/user-profile/${user._id}`)} className="flex items-center gap-3 cursor-pointer">
+                        <div
+                          onClick={() =>
+                            navigate(`/admin/user-profile/${user._id}`)
+                          }
+                          className="flex items-center gap-3 cursor-pointer">
                           <div
                             className={`w-9 h-9 rounded-full flex items-center justify-center text-[13px] font-extrabold shrink-0 border transition-transform group-hover:scale-105 ${AVATAR_CLASS[user.role] || AVATAR_CLASS.student} ${!user.isActive ? "opacity-40 grayscale" : ""}`}>
                             {initial}
@@ -91,6 +98,7 @@ const StudentDesktopTable = ({
                                 className={`text-[13px] font-semibold capitalize ${!user.isActive ? "text-slate-500" : "text-slate-200"}`}>
                                 {displayName}
                               </span>
+                              {user.isMywaFamilyMember && <MywaBadge/>}
                               {user.isLibraryMember && <LibraryBadge />}
                               {isSelf && <YouBadge />}
                             </div>
@@ -108,6 +116,9 @@ const StudentDesktopTable = ({
                       </td>
                       <td className="px-5 py-3.5">
                         <div className="flex items-center justify-end gap-2">
+                          <MywaBtn isMywaMember={user.isMywaFamilyMember} 
+                          onClick={()=> handleToggleMywaMember(user._id)}
+                          />
                           <LibraryBtn
                             isLibraryMember={user.isLibraryMember}
                             onClick={() => handleToggleLibrary(user._id)}

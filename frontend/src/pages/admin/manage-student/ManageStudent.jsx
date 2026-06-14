@@ -141,6 +141,27 @@ const ManageStudent = () => {
     }
   }, []);
 
+  // __ toggle MYWA member
+  const handleToggleMywaMember = useCallback(async (userId) => {
+    try {
+      const res = await api.patch(`/admin/user/${userId}/toggle-member`);
+      if (res.data.success) {
+        setUsers((prev) =>
+          prev.map((u) =>
+            u._id === userId
+              ? { ...u, isMywaFamilyMember: res.data.user.isMywaFamilyMember }
+              : u,
+          ),
+        );
+        toast.success(res.data.message);
+      }
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || "Error updating Mywa member access",
+      );
+    }
+  },[]);
+
   // ── Confirm popup triggers ─────────────
   const handleConfirmAdmin = useCallback((userId, userName) => {
     setSelectedUserId(userId);
@@ -287,6 +308,7 @@ const ManageStudent = () => {
         openDropdownId={openDropdownId}
         setOpenDropdownId={setOpenDropdownId}
         handleToggleLibrary={handleToggleLibrary}
+        handleToggleMywaMember={handleToggleMywaMember}
         handleConfirmAdmin={handleConfirmAdmin}
         handleConfirmThinkTank={handleConfirmThinkTank}
         handleToggleBlock={handleToggleBlock}
@@ -300,6 +322,7 @@ const ManageStudent = () => {
         setOpenDropdownId={setOpenDropdownId}
         handleToggleLibrary={handleToggleLibrary}
         handleConfirmAdmin={handleConfirmAdmin}
+         handleToggleMywaMember={handleToggleMywaMember}
         handleConfirmThinkTank={handleConfirmThinkTank}
         handleToggleBlock={handleToggleBlock}
       />

@@ -5,9 +5,11 @@ import {
   LibraryBadge,
   YouBadge,
   RolePill,
+  MywaBadge,
   StatusPill,
   LibraryBtn,
   BlockBtn,
+  MywaBtn,
   PromoteDropdown,
 } from "./StudentSharedUI";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +23,7 @@ const StudentMobileList = ({
   handleToggleBlock,
   handleConfirmAdmin,
   handleConfirmThinkTank,
+  handleToggleMywaMember
 }) => {
 
   const navigate = useNavigate();
@@ -98,12 +101,16 @@ const StudentMobileList = ({
 
               <div className="flex items-center gap-2 flex-wrap mb-3">
                 <RolePill role={user.role} />
+                {user.isMywaFamilyMember && <MywaBadge/>}
                 {user.isLibraryMember && <LibraryBadge />}
               </div>
 
               <div className="h-px bg-white/5 mb-3" />
 
               <div className="flex items-center gap-2 flex-wrap">
+                <MywaBtn isMywaMember={user.isMywaFamilyMember}
+                onClick={()=> handleToggleMywaMember(user._id)}
+                 />
                 <LibraryBtn
                   isLibraryMember={user.isLibraryMember}
                   onClick={() => handleToggleLibrary(user._id)}

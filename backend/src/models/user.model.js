@@ -55,14 +55,14 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false, // Default false
     },
-    isMywaFamilyMember:{
-      type:Boolean,
-      default:false,
+    isMywaFamilyMember: {
+      type: Boolean,
+      default: false,
     },
-    mywaApplicationStatus:{
-      type:String,
-      enum:["none","pending", "approved", "rejected"],
-      default:"none",
+    mywaApplicationStatus: {
+      type: String,
+      enum: ["none", "pending", "approved", "rejected"],
+      default: "none",
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
@@ -92,7 +92,10 @@ const userSchema = new mongoose.Schema(
         semester: { type: String },
       },
       contact: {
-        phone: { type: String },
+        phone: {
+          type: String,
+          match: [/^\d{10}$/, "Please enter a valid 10-digit mobile number"],
+        },
         currentAddress: { type: String },
         permanentAddress: { type: String },
       },

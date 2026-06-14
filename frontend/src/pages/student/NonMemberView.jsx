@@ -1,11 +1,29 @@
 import { motion, useInView } from 'framer-motion';
 import { ArrowRight, HeartHandshake, Mountain, Users, Briefcase } from 'lucide-react';
 import React, { useRef } from 'react';
+import toast from 'react-hot-toast';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const NonMemberView = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const {user: currentUser} = useSelector((state)=>state.auth)
   const ref = useRef(null);
+  console.log(currentUser?.profile?.contact?.permanentAddress);
+  
+
+  const handleJoinFamily = async ()=>{
+    const hasPhone =currentUser?.profile?.contact?.phone;
+    const hasAddress = currentUser?.profile?.contact?.permanentAddress;
+
+    if(!hasPhone || !hasAddress){
+      toast.error("Please complete your profile (Phone & Address) first!");
+      navigate("/student/profile");
+      return;
+    }
+    
+  }
 
   const stagger = {
     hidden: {},
@@ -138,7 +156,7 @@ const NonMemberView = () => {
               <motion.button
                 whileHover={{ y: -3, boxShadow: '0 0 40px rgba(20,184,166,0.45), 0 16px 40px rgba(0,0,0,0.3)' }}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => navigate('/apply-membership')}
+                onClick={handleJoinFamily}
                 className="relative inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full font-extrabold text-[15px] text-emerald-950 w-full sm:w-auto justify-center overflow-hidden"
                 style={{
                   background: 'linear-gradient(135deg, #f0fdf4 0%, #5eead4 30%, #14b8a6 65%, #84cc16 100%)',

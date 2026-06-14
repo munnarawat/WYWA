@@ -35,6 +35,16 @@ const updateProfile = async (req, res) => {
     const parsedContact =
       typeof contact === "string" ? JSON.parse(contact) : contact;
 
+      // mobile number validation check
+      if(parsedContact && parsedContact.phone){
+        const phoneRegex = /^\d{10}$/;
+        if(!phoneRegex.test(parsedContact.phone)){
+          return res.status(400).json({
+            success:false,
+            message:"Please enter a valid mobile number"
+          })
+        }
+      }
     const firstName = parsedFullName?.firstName;
     const lastName = parsedFullName?.lastName;
 

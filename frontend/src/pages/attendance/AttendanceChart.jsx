@@ -19,6 +19,7 @@ import MiniStat from "./MiniStat";
 import DayDot from "./DayDot";
 import CustomTooltip from "./CustomTooltip";
 import NonMemberView from "../student/NonMemberView";
+import ReactivateLibraryCard from "../student/ReActivateLibrary/ReactivateLibraryCard";
 
 const AttendanceChart = () => {
   const { user } = useSelector((state) => state.auth);
@@ -120,7 +121,8 @@ const AttendanceChart = () => {
     ? 0
     : Math.min(summary.percentage, 100);
       // Non-member view
-  if (!user?.isLibraryMember) return <NonMemberView />;
+  if (!user?.isMywaFamilyMember) return <NonMemberView />;
+  if(!user?.isLibraryMember) return <ReactivateLibraryCard/>
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

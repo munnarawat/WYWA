@@ -75,7 +75,7 @@ const NoticeBoard = () => {
   }, [fetchAllNotice]);
 
   // non Member-view
-  if(!user?.isLibraryMember) return <NonMemberView/>
+  if(!user?.isMywaFamilyMember) return <NonMemberView/>
   return (
     <div className="w-full min-h-screen  text-white p-4 md:p-8 overflow-y-auto pb-24 relative">
       {/* helmet */}

@@ -92,7 +92,7 @@ const HelpDesk = () => {
   }, [fetchMyTickets]);
 
     // Non-member view
-  if (!user?.isLibraryMember) return <NonMemberView />;
+  if (!user?.isMywaFamilyMember) return <NonMemberView />;
   return (
     <div className="w-full min-h-screen text-white p-4 md:p-8 pb-24 overflow-y-auto flex flex-col gap-6">
       {/* helmet */}

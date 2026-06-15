@@ -6,6 +6,7 @@ import {
   BookOpen,
   Calendar as CalIcon,
   Clock,
+  Library,
   Rocket,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +17,7 @@ import IssuedBooks from "./IssuedBooks";
 import DashboardSidebar from "./DashboardSidebar";
 import { Helmet } from "react-helmet-async";
 import NonMemberView from "./NonMemberView";
+import ReactivateLibraryCard from "./ReActivateLibrary/ReactivateLibraryCard";
 
 // ─────────────────────────────────────────
 // SKELETON
@@ -158,7 +160,7 @@ const StudentOverview = () => {
   const [tickets, setTickets] = useState([]);
 
   useEffect(() => {
-    if (!user?.isLibraryMember) {
+    if (!user?.isMywaFamilyMember) {
       setIsLoading(false);
       return;
     }
@@ -166,21 +168,28 @@ const StudentOverview = () => {
     const fetchAll = async () => {
       try {
         setIsLoading(true);
-        const [attendanceRes, booksRes, noticeRes, achievementRes, ticketRes] =
-          await Promise.all([
-            api.get("/dashboard/student/attendance"),
-            api.get("/library/issued"),
-            api.get("/notice/"),
-            api.get("/achievements/student"),
-            api.get("/ticket/my")
-          ]);
+        const apiCalls = [
+          api.get("/notice/"),
+          api.get("/achievements/student"),
+          api.get("/ticket/my"),
+        ];
+        // if student are still library member to see this attendance and books section
+        if (user.isLibraryMember) {
+          apiCalls.push(api.get("/dashboard/student/attendance"));
+          apiCalls.push(api.get("/library/issued"));
+        }
+        const responses = await Promise.all(apiCalls);
 
-        if (attendanceRes.data.success) setStats(attendanceRes.data.stats);
-        if (booksRes.data.success) setIssuedBooks(booksRes.data.records);
-        if (noticeRes.data.success) setNotices(noticeRes.data.notices);
-        if (achievementRes.data.success)
-          setAchievements(achievementRes.data.achievements);
-        if(ticketRes.data.success) setTickets(ticketRes.data.tickets);
+        if (responses[0].data.success) setNotices(responses[0].data.notices);
+        if (responses[1].data.success)
+          setAchievements(responses[1].data.achievements);
+        if (responses[2].data.success) setTickets(responses[2].data.tickets);
+
+        if (user.isLibraryMember) {
+          if (responses[3]?.data.success) setStats(responses[3].data.stats);
+          if (responses[4]?.data.success)
+            setIssuedBooks(responses[4].data.records);
+        }
       } catch (error) {
         console.error("Dashboard fetch error:", error);
         toast.error("Failed to load dashboard data.");
@@ -190,10 +199,10 @@ const StudentOverview = () => {
     };
 
     fetchAll();
-  }, [user?._id]);
+  }, [user?._id, user?.isLibraryMember, user?.isMywaFamilyMember]);
 
   // Non-member view
-  if (!user?.isLibraryMember) return <NonMemberView />;
+  if (!user?.isMywaFamilyMember) return <NonMemberView />;
 
   const firstName = user?.fullName?.firstName || user?.userName || "Student";
 
@@ -230,9 +239,15 @@ const StudentOverview = () => {
             <span className="mx-2 text-slate-700">·</span>
             Here's your daily progress overview.
           </span>
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold">
-            ✅ Library Member
-          </span>
+          {user.isLibraryMember ? (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-bold">
+              ✅ Library Member
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-lime-500/10 border border-lime-500/20 text-lime-400 text-[11px] font-bold">
+              🤝 MYWA Family
+            </span>
+          )}
         </motion.div>
       </div>
 
@@ -241,20 +256,41 @@ const StudentOverview = () => {
         <StudentSkeleton />
       ) : (
         <div className="flex flex-col gap-5">
+          {user.isLibraryMember ? (
+            <>
+              <StudentStats stats={stats} />
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5">
+                {/* LEFT COLUMN */}
+                <div className="flex flex-col gap-5">
+                  <RecentActivity records={stats.recentAttendance} />
+                  <IssuedBooks issuedBooks={issuedBooks} />
+                </div>
+
+                {/* RIGHT COLUMN */}
+                <DashboardSidebar
+                  notices={notices}
+                  achievements={achievements}
+                  tickets={tickets}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5">
+                <div className="flex flex-col gap-5">
+                  <ReactivateLibraryCard />
+                </div>
+                <DashboardSidebar
+                  notices={notices}
+                  achievements={achievements}
+                  tickets={tickets}
+                />
+              </div>
+            </>
+          )}
           {/* Stats */}
-          <StudentStats stats={stats} />
 
           {/* Main layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5">
-            {/* LEFT COLUMN */}
-            <div className="flex flex-col gap-5">
-              <RecentActivity records={stats.recentAttendance} />
-              <IssuedBooks issuedBooks={issuedBooks} />
-            </div>
-
-            {/* RIGHT COLUMN */}
-            <DashboardSidebar notices={notices} achievements={achievements} tickets={tickets} />
-          </div>
         </div>
       )}
     </div>

@@ -13,6 +13,7 @@ import BookSkeleton from "./BookSkeleton";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Helmet } from "react-helmet-async";
 import NonMemberView from "../NonMemberView";
+import ReactivateLibraryCard from "../ReActivateLibrary/ReactivateLibraryCard";
 
 // ─────────────────────────────────────────
 // EMPTY STATE
@@ -113,8 +114,10 @@ const StudentLibrary = () => {
     );
   }, [issuedBooks, searchQuery]);
 
-    // Non-member view 
-    if(!currentUser?.isLibraryMember) return <NonMemberView/>
+  // Non-member view
+  if (!currentUser?.isMywaFamilyMember) return <NonMemberView />;
+  // library access paused view
+  if (!currentUser?.isLibraryMember) return <ReactivateLibraryCard />;
   return (
     <div
       id="scrollableDiv"

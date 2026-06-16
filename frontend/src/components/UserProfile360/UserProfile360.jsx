@@ -32,6 +32,7 @@ const ProfileSkeleton = () => (
 const UserProfile360 = ({ profileData, isLoading }) => {
   const [activeTab, setActiveTab] = useState("overview");
 
+  
   if (isLoading) return <ProfileSkeleton />;
 
   if (!profileData?.personalDetails) {

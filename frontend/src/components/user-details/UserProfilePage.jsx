@@ -35,6 +35,7 @@ const UserProfilePage = () => {
     }
   }, [id]);
   
+  
   return (
     <div className="min-h-screen bg-[#0d1117] text-white p-4 md:p-8">
       {/* 🔙 Back Button */}

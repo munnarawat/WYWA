@@ -31,7 +31,9 @@ const getUserProfile360 = async (req, res) => {
     // 2. Find Target User
     const targetUser = await UserModel.findById(targetId).lean();
     if (!targetUser) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     // 🛡️ 3. THE MASTERMIND SECURITY LOGIC 🛡️
@@ -48,7 +50,8 @@ const getUserProfile360 = async (req, res) => {
       if (branchFilter.branch && targetUser.branch !== branchFilter.branch) {
         return res.status(403).json({
           success: false,
-          message: "Access Denied: Admins can only view profiles within their own branch.",
+          message:
+            "Access Denied: Admins can only view profiles within their own branch.",
         });
       }
     }
@@ -65,8 +68,13 @@ const getUserProfile360 = async (req, res) => {
         fullName: finalName,
         email: targetUser.email,
         branch: targetUser.branch,
+        dob: targetUser.profile?.personal?.dob,
+        bloodGroup: targetUser.profile?.personal?.bloodGroup,
         imageUrl: targetUser.profile?.personal?.imageUrl || "",
         phone: targetUser.profile?.contact?.phone || "N/A",
+        currentAddress: targetUser.profile?.contact?.currentAddress,
+        course:targetUser.profile.academic?.course,
+        permanentAddress: targetUser.profile?.contact?.permanentAddress,
         joinedAt: targetUser.createdAt,
       },
     };
@@ -75,17 +83,20 @@ const getUserProfile360 = async (req, res) => {
     if (targetUser.role === "student") {
       const [attendanceRecords, libraryRecords] = await Promise.all([
         AttendanceModel.find({ student: targetId }).sort({ date: -1 }).lean(),
-        IssuedBook.find({ issuedBy: targetId }) 
+        IssuedBook.find({ issuedBy: targetId })
           .populate("book", "title")
           .sort({ createdAt: -1 })
           .lean(),
       ]);
 
       const totalDays = attendanceRecords.length;
-      const presentDays = attendanceRecords.filter((r) => r.status === "present").length;
+      const presentDays = attendanceRecords.filter(
+        (r) => r.status === "present",
+      ).length;
 
       profileData.attendanceStats = {
-        percentage: totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0,
+        percentage:
+          totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0,
         totalDays,
         presentDays,
         absentDays: totalDays - presentDays,
@@ -94,8 +105,12 @@ const getUserProfile360 = async (req, res) => {
 
       profileData.libraryStats = {
         isLibraryMember: libraryRecords.length > 0,
-        activeIssues: libraryRecords.filter((r) => r.status?.toLowerCase() !== "returned"),
-        returnHistory: libraryRecords.filter((r) => r.status?.toLowerCase() === "returned"),
+        activeIssues: libraryRecords.filter(
+          (r) => r.status?.toLowerCase() !== "returned",
+        ),
+        returnHistory: libraryRecords.filter(
+          (r) => r.status?.toLowerCase() === "returned",
+        ),
       };
     } else if (targetUser.role === "admin" || targetUser.role === "thinkTank") {
       profileData.staffStats = {
@@ -118,5 +133,5 @@ const getUserProfile360 = async (req, res) => {
 };
 
 module.exports = {
-    getUserProfile360
-}
+  getUserProfile360,
+};

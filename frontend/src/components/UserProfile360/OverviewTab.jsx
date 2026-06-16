@@ -30,40 +30,32 @@ const OverviewTab = ({ personalDetails, staffStats }) => (
       <OverviewItem
         emoji="📅"
         label="Date of Birth"
-        value={formatDate(personalDetails.profile?.personal?.dob)}
+        value={formatDate(personalDetails.dob)}
       />
       <OverviewItem
         emoji="🩸"
         label="Blood Group"
-        value={personalDetails.profile?.personal?.bloodGroup}
+        value={personalDetails.bloodGroup}
       />
-      <OverviewItem
-        emoji="🎓"
-        label="Course"
-        value={personalDetails.profile?.academic?.course}
-      />
-      <OverviewItem
-        emoji="📋"
-        label="Batch"
-        value={personalDetails.profile?.academic?.batch}
-      />
+      <OverviewItem emoji="🎓" label="Course" value={personalDetails.course} />
       <OverviewItem
         emoji="🏫"
         label="Semester"
-        value={personalDetails.profile?.academic?.semester}
+        value={personalDetails.semester}
       />
-      {staffStats?.department && (
-        <OverviewItem
-          emoji="🏢"
-          label="Department"
-          value={staffStats.department}
-        />
-      )}
-      {personalDetails.profile?.contact?.currentAddress && (
+      {personalDetails.permanentAddress && (
         <OverviewItem
           emoji="📍"
           label="Current Address"
-          value={personalDetails.profile.contact.currentAddress}
+          value={personalDetails.permanentAddress}
+          fullWidth
+        />
+      )}
+      {personalDetails.currentAddress && (
+        <OverviewItem
+          emoji="📍"
+          label="Current Address"
+          value={personalDetails.currentAddress}
           fullWidth
         />
       )}

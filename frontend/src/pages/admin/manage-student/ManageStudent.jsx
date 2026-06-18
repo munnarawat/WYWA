@@ -303,7 +303,7 @@ const ManageStudent = () => {
 
       {/* ── DESKTOP TABLE (md+ screens) ── */}
       <StudentDesktopTable
-        users={users}
+        users={filteredUsers}
         currentUser={currentUser}
         openDropdownId={openDropdownId}
         setOpenDropdownId={setOpenDropdownId}
@@ -316,7 +316,7 @@ const ManageStudent = () => {
 
       {/* ── MOBILE CARDS (below md screens) ── */}
       <StudentMobileList
-        users={users}
+        users={filteredUsers}
         currentUser={currentUser}
         openDropdownId={openDropdownId}
         setOpenDropdownId={setOpenDropdownId}

@@ -21,7 +21,6 @@ const Navbar = () => {
     { title: "Home", path: "/" },
     { title: "About", path: "/about" },
     { title: "Achievements", path: "/achievements" },
-    { title: "Contact", path: "/contact" },
   ];
   useEffect(() => {
     const handleScroll = () => {

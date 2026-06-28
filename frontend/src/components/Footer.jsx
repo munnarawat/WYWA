@@ -15,7 +15,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full relative overflow-hidden bg-zinc-950 border-t border-white/10 pt-20 pb-10 px-4 md:px-8">
+    <footer className="w-full relative overflow-hidden bg-zinc-950 border-t border-white/10 pt-20 pb-8 px-4 md:px-8">
       {/* Background Ambient Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-linear-to-r from-transparent via-teal-500/50 to-transparent" />
       <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-teal-500/10 blur-[100px] rounded-full pointer-events-none" />
@@ -96,34 +96,41 @@ const Footer = () => {
             <div className="flex flex-col gap-4">
               {/* Branch 1 */}
               <div className="flex items-start gap-3">
-                <MapPin size={18} className="text-teal-400 shrink-0 mt-0.5" />
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium text-white">
-                    Dehradun Branch
-                  </span>
-                  <span className="text-xs text-zinc-400">
-                    1 Negi road near DBS(pg) college karnpur, Dehradun, UK
-                  </span>
-                </div>
+                <a
+                  href="https://www.google.com/maps/place/Gyaan+Kumbh+Library/@30.3305422,78.0586874,19.5z/data=!4m6!3m5!1s0x390929279d99accd:0x9f148602c1a52b58!8m2!3d30.3304429!4d78.058886!16s%2Fg%2F11h97z77mb?entry=ttu&g_ep=EgoyMDI2MDYyNC4wIKXMDSoASAFQAw%3D%3D"
+                  target="_blank"
+                  className="flex items-start gap-3">
+                  <MapPin size={18} className="text-teal-400 shrink-0 mt-0.5" />
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium text-white">
+                      Dehradun Branch
+                    </span>
+                    <span className="text-xs text-zinc-400">
+                      1 Negi road near DBS(pg) college karnpur, Dehradun, UK
+                    </span>
+                  </div>
+                </a>
               </div>
               {/* Branch 2 */}
               <div className="flex items-start gap-3">
-                <MapPin size={18} className="text-lime-400 shrink-0 mt-0.5" />
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium text-white">
-                    Haldwani Branch
-                  </span>
-                  <span className="text-xs text-zinc-400">
-                    456 Knowledge Park, Haldwani, UK
-                  </span>
-                </div>
+                <a href="" className="flex items-start gap-3">
+                  <MapPin size={18} className="text-lime-400 shrink-0 mt-0.5" />
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium text-white">
+                      Haldwani Branch
+                    </span>
+                    <span className="text-xs text-zinc-400">
+                      456 Knowledge Park, Haldwani, UK
+                    </span>
+                  </div>
+                </a>
               </div>
               {/* Phone & Email */}
               <div className="flex items-center gap-3 pt-2">
                 <Phone size={18} className="text-zinc-400 shrink-0" />
                 <span className="text-sm text-zinc-400">+91 98765 43210</span>
               </div>
-              <a href="mailto:support.mywa@gmail.com" >
+              <a href="mailto:support.mywa@gmail.com">
                 <div className="flex items-center gap-3">
                   <Mail size={18} className="text-zinc-400 shrink-0" />
                   <span className="text-sm text-zinc-400">
@@ -188,6 +195,25 @@ const Footer = () => {
               Terms of Service
             </a>
           </div>
+        </motion.div>
+
+        {/* created by */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="w-full text-zinc-500 pt-8 flex items-center justify-center  ">
+          <h1 className="text-xs flex items-center gap-1">
+            website created with ❤️ by
+            <a
+              href="https://www.instagram.com/munna.rawat26"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-zinc-400 font-medium transition-colors duration-300 hover:text-teal-400 hover:underline underline-offset-4">
+              Manoj Singh Rawat
+            </a>
+          </h1>
         </motion.div>
       </div>
     </footer>

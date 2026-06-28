@@ -13,10 +13,13 @@ const {
   updateProfile,
 } = require("../controllers/profile.controller");
 
-const {getUserProfile360} = require("../controllers/user.controller")
+const {
+  getUserProfile360,
+  requestLibraryAccess,
+} = require("../controllers/user.controller");
 const multer = require("multer");
 
-const upload = multer({storage:multer.memoryStorage()})
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
@@ -36,10 +39,18 @@ router.post("/refresh", refreshController);
 router.get("/profile", authMiddleware, getMyProfileController);
 
 // update profile
-router.put("/profile/update", authMiddleware, upload.single("image"), updateProfile);
+router.put(
+  "/profile/update",
+  authMiddleware,
+  upload.single("image"),
+  updateProfile,
+);
 
 // profile 360 view
-router.get("/student/:id/profile360", authMiddleware, getUserProfile360)
+router.get("/student/:id/profile360", authMiddleware, getUserProfile360);
+
+// requestLibraryMember
+router.post("/requestLibraryMember", authMiddleware, requestLibraryAccess);
 // logout user
 router.post("/logout", logoutController);
 

@@ -63,6 +63,10 @@ const toggleLibraryAccess = async (req, res) => {
       });
     }
     user.isLibraryMember = !user.isLibraryMember;
+
+    if(user.isLibraryMember === true){
+      user.hasRequestedLibrary = false;
+    }
     await user.save();
 
     return res.status(200).json({
@@ -73,6 +77,7 @@ const toggleLibraryAccess = async (req, res) => {
       user: {
         _id: user._id,
         isLibraryMember: user.isLibraryMember,
+        hasRequestedLibrary : user.hasRequestedLibrary
       },
     });
   } catch (error) {

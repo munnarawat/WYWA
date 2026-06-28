@@ -73,7 +73,7 @@ const getUserProfile360 = async (req, res) => {
         imageUrl: targetUser.profile?.personal?.imageUrl || "",
         phone: targetUser.profile?.contact?.phone || "N/A",
         currentAddress: targetUser.profile?.contact?.currentAddress,
-        course:targetUser.profile.academic?.course,
+        course: targetUser.profile.academic?.course,
         permanentAddress: targetUser.profile?.contact?.permanentAddress,
         joinedAt: targetUser.createdAt,
       },
@@ -132,6 +132,17 @@ const getUserProfile360 = async (req, res) => {
   }
 };
 
+const requestLibraryAccess = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    await UserModel.findByIdAndUpdate(userId, { hasRequestedLibrary: true });
+    res.status(200).json({ success: true, message: "Request sent to Admin!" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
 module.exports = {
   getUserProfile360,
+  requestLibraryAccess
 };

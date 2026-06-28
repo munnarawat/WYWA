@@ -54,6 +54,7 @@ const ManageStudent = () => {
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [openDropdownId, setOpenDropdownId] = useState(null);
+  const [showPendingOnly, setShowPendingOnly] = useState(false);
 
   // Confirm popup state
   const [showAlert, setShowAlert] = useState(false);
@@ -128,7 +129,9 @@ const ManageStudent = () => {
         setUsers((prev) =>
           prev.map((u) =>
             u._id === userId
-              ? { ...u, isLibraryMember: res.data.user.isLibraryMember }
+              ? { ...u, isLibraryMember: res.data.user.isLibraryMember,
+                hasRequestedLibrary:res.data.user.hasRequestedLibrary
+               }
               : u,
           ),
         );
@@ -160,7 +163,7 @@ const ManageStudent = () => {
         err.response?.data?.message || "Error updating Mywa member access",
       );
     }
-  },[]);
+  }, []);
 
   // ── Confirm popup triggers ─────────────
   const handleConfirmAdmin = useCallback((userId, userName) => {
@@ -235,14 +238,21 @@ const ManageStudent = () => {
 
   // ── Search filter ──────────────────────
   const filteredUsers = useMemo(() => {
+    let result = users;
+
+    if (showPendingOnly) {
+      result = result.filter((u) => u.hasRequestedLibrary === true);
+    }
     const q = searchQuery.toLowerCase();
-    if (!q) return users;
-    return users.filter(
-      (u) =>
-        u.userName?.toLowerCase().includes(q) ||
-        u.email?.toLowerCase().includes(q),
-    );
-  }, [users, searchQuery]);
+    if (q) {
+      result = result.filter(
+        (u) =>
+          u.userName?.toLowerCase().includes(q) ||
+          u.email?.toLowerCase().includes(q),
+      );
+    }
+    return result
+  }, [users, searchQuery, showPendingOnly]);
 
   // ── Derived stats ──────────────────────
   const stats = useMemo(
@@ -251,6 +261,7 @@ const ManageStudent = () => {
       active: users.filter((u) => u.isActive).length,
       blocked: users.filter((u) => !u.isActive).length,
       library: users.filter((u) => u.isLibraryMember).length,
+      pending: users.filter((u) => u.hasRequestedLibrary).length,
     }),
     [users],
   );
@@ -298,6 +309,8 @@ const ManageStudent = () => {
         filteredCount={filteredUsers.length}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        showPendingOnly={showPendingOnly}
+        setShowPendingOnly={setShowPendingOnly}
         stats={stats}
       />
 
@@ -322,7 +335,7 @@ const ManageStudent = () => {
         setOpenDropdownId={setOpenDropdownId}
         handleToggleLibrary={handleToggleLibrary}
         handleConfirmAdmin={handleConfirmAdmin}
-         handleToggleMywaMember={handleToggleMywaMember}
+        handleToggleMywaMember={handleToggleMywaMember}
         handleConfirmThinkTank={handleConfirmThinkTank}
         handleToggleBlock={handleToggleBlock}
       />

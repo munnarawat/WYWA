@@ -77,7 +77,7 @@ const ImpactStats = () => {
   };
 
   return (
-    <section className="w-full py-24 px-4 overflow-hidden">
+    <section id="impact" className="w-full py-24 px-4 overflow-hidden">
       {/* Title */}
       <motion.h2
         initial={{ opacity: 0, y: -20 }}

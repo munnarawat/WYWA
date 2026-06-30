@@ -105,13 +105,13 @@ const Hero = () => {
               to="/login"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-teal-500 to-lime-500 text-black font-bold text-lg shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)] transition-shadow flex items-center justify-center gap-2">
+              className="px-8 py-3.5 rounded-xl bg-linear-to-r from-teal-500 to-lime-500 text-black font-bold text-lg shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)] transition-shadow flex items-center justify-center gap-2">
               Join Your Branch
               <ArrowRight size={20} />
             </MotionLink>
 
-            <MotionLink
-              to="/impact"
+            <motion.a
+              href="/#impact"
               whileHover={{
                 scale: 1.05,
                 backgroundColor: "rgba(255,255,255,0.1)",
@@ -119,7 +119,7 @@ const Hero = () => {
               whileTap={{ scale: 0.95 }}
               className="px-8 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white font-medium  text-lg flex items-center justify-center transition-colors">
               Explore Impact
-            </MotionLink>
+            </motion.a>
           </motion.div>
         </div>
 

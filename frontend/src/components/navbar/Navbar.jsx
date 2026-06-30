@@ -82,7 +82,7 @@ const Navbar = () => {
                 <img
                   fetchPriority="high"
                   className="w-40"
-                  src="https://ik.imagekit.io/fmkamttxp/MYWA/logo.png"
+                  src="https://ik.imagekit.io/fmkamttxp/MYWA/logo.png?updatedAt=1773060747557"
                   alt="logo"
                 />
               </div>

@@ -132,6 +132,7 @@ const About = () => {
               style={{
                 background: "linear-gradient(135deg,#14b8a6,#6366f1)",
                 WebkitBackgroundClip: "text",
+                padding:"10px",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
               }}

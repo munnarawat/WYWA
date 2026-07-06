@@ -21,6 +21,7 @@ const Navbar = () => {
     { title: "Home", path: "/" },
     { title: "About", path: "/about" },
     { title: "Achievements", path: "/achievements" },
+    {title:"ThinkTank", path:"/all-thinkTank"}
   ];
   useEffect(() => {
     const handleScroll = () => {

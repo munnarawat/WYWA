@@ -33,6 +33,9 @@ const About = lazy(() => import("../components/about/About"));
 const Achievement = lazy(
   () => import("../components/achievements/Achievement"),
 );
+const AllThinkTank = lazy(
+  () => import("../components/all-ThinkTank/AllThinkTank"),
+);
 const Contact = lazy(() => import("../components/contact/Contact"));
 const ForgotPassword = lazy(
   () => import("../components/profile-updates/ForgotPassword"),
@@ -167,6 +170,7 @@ const MainRouter = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/about" element={<About />} />
             <Route path="/achievements" element={<Achievement />} />
+            <Route path="/all-thinkTank" element={<AllThinkTank />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />

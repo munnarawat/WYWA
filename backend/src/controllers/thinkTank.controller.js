@@ -127,9 +127,24 @@ const deleteThinkTank = async (req, res) => {
     res.status(500).json({ message: "internal server error" });
   }
 };
+
+const getMainThinkTank = async (req, res) => {
+  try {
+    const mainThinkTank = await thinkTankModel.find({ isMain: true }).limit(4);
+    return res.status(200).json({
+      success: true,
+      message: "mainThinkTank member find successfully🎉",
+      mainThinkTank,
+    });
+  } catch (error) {
+    console.error("main thinkTank member error", error);
+    res.status(500).json({ success: false, message: "internal server error" });
+  }
+};
 module.exports = {
   createThinkTank,
   getAllThinkTank,
   updateThinkTank,
   deleteThinkTank,
+  getMainThinkTank
 };

@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Instagram, Twitter, Mail, Quote } from "lucide-react";
 
 const ThinkTank = () => {
+  // const [visionaries, setVisionaries] = useState([]);
+  const [loading, setLoading] = useState(true);
   const visionaries = [
     {
       id: 1,

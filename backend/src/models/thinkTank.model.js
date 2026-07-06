@@ -25,6 +25,7 @@ const thinkTankSchema = new mongoose.Schema(
       ref: "User",
       trim: true,
     },
+    isMain: { type: Boolean, default: false },
     imageUrl: {
       type: String,
       default: "",

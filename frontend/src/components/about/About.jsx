@@ -674,15 +674,95 @@ const About = () => {
               </p>
             </>
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="mt-8 rounded-2xl border border-teal-500/20 bg-teal-500/5 p-6">
-              <h1>📍 हमारी पहुँच</h1>
-              <br />
-              <h2>🏙️ देहरादून</h2>↓<h2> 🌄 हल्द्वानी</h2>↓
-              <p> 🚀 आने वाले समय में उत्तराखण्ड के अन्य शहर...</p>
+              transition={{ duration: 0.7 }}
+              className="mt-10 rounded-3xl border border-teal-500/20 bg-gradient-to-br from-teal-500/5 to-indigo-500/5 p-8 relative overflow-hidden">
+              {/* Glow */}
+              <div
+                className="absolute -top-20 -right-20 w-48 h-48 rounded-full blur-3xl opacity-20"
+                style={{
+                  background:
+                    "radial-gradient(circle, rgba(20,184,166,0.4), transparent 70%)",
+                }}
+              />
+
+              {/* Heading */}
+              <div className="relative z-10 flex items-center gap-3 mb-8">
+                <div className="w-11 h-11 rounded-full bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-xl">
+                  📍
+                </div>
+
+                <div>
+                  <h3 className="text-2xl font-bold text-white">हमारी पहुँच</h3>
+
+                  <p className="text-slate-400 text-sm">
+                    एक शहर से पूरे उत्तराखण्ड तक की यात्रा
+                  </p>
+                </div>
+              </div>
+
+              {/* Timeline */}
+
+              <div className="relative z-10 flex flex-col items-center">
+                {/* Dehradun */}
+                <div className="flex flex-col items-center">
+                  <div className="w-14 h-14 rounded-full bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-2xl">
+                    🏙️
+                  </div>
+
+                  <h4 className="mt-3 text-xl font-semibold text-white">
+                    देहरादून
+                  </h4>
+
+                  <p className="text-slate-400 text-center max-w-sm mt-2">
+                    जहाँ MYWA की शुरुआत हुई और युवाओं को एक परिवार के रूप में
+                    जोड़ने की यात्रा प्रारम्भ हुई।
+                  </p>
+                </div>
+
+                {/* Line */}
+                <div className="h-12 w-0.5 bg-linear-to-b from-teal-400 to-indigo-500 my-4" />
+
+                {/* Haldwani */}
+
+                <div className="flex flex-col items-center">
+                  <div className="w-14 h-14 rounded-full bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-2xl">
+                    🌄
+                  </div>
+
+                  <h4 className="mt-3 text-xl font-semibold text-white">
+                    हल्द्वानी
+                  </h4>
+
+                  <p className="text-slate-400 text-center max-w-sm mt-2">
+                    देहरादून की सफलता और विश्वास को आगे बढ़ाते हुए MYWA का
+                    विस्तार कुमाऊँ क्षेत्र तक हुआ।
+                  </p>
+                </div>
+
+                {/* Line */}
+                <div className="h-12 w-0.5 bg-linear-to-b from-indigo-500 to-teal-400 my-4" />
+
+                {/* Future */}
+
+                <div className="flex flex-col items-center">
+                  <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-2xl">
+                    🚀
+                  </div>
+
+                  <h4 className="mt-3 text-xl font-semibold text-white">
+                    भविष्य की ओर...
+                  </h4>
+
+                  <p className="text-slate-400 text-center max-w-md mt-2 leading-7">
+                    हमारा लक्ष्य उत्तराखण्ड के अधिक से अधिक शहरों तक पहुँचकर हर
+                    युवा को शिक्षा, मार्गदर्शन और सहयोग का एक मजबूत मंच उपलब्ध
+                    कराना है।
+                  </p>
+                </div>
+              </div>
             </motion.div>
           </ParagraphBlock>
 
@@ -824,7 +904,7 @@ const About = () => {
 
           <div className="relative z-10 mt-10">
             <Link
-             to="/login"
+              to="/login"
               className="inline-flex items-center gap-3 rounded-full border border-teal-500/30 bg-teal-500/10 hover:bg-teal-500/20 transition-all duration-300 px-7 py-3 text-teal-300 font-medium">
               🤝 हमारे परिवार से जुड़ें
             </Link>

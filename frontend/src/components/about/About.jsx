@@ -1,5 +1,20 @@
+import {
+  IconBook,
+  IconBriefcase,
+  IconHeart,
+  IconHome,
+  IconLibrary,
+  IconMapPin,
+  IconMessage,
+  IconMovie,
+  IconSchool,
+  IconSparkle,
+  IconTargetArrow,
+  IconTrophy,
+  IconUsers,
+} from "@tabler/icons-react";
 import { motion } from "framer-motion";
-
+import { Link } from "react-router-dom";
 // ── Reusable sub-components ───────
 
 const TlDot = ({ special = false }) => (
@@ -66,7 +81,7 @@ const StatItem = ({ num, label }) => (
 
 const Pillar = ({ icon, label }) => (
   <div className="flex flex-col items-start gap-1.5 p-3.5 bg-white/[0.02] border border-white/6 rounded-xl">
-    <i className={`ti ti-${icon} text-teal-400 text-lg`} aria-hidden="true" />
+    <div className="text-teal-400">{icon}</div>
     <span className="text-[13px] font-semibold text-slate-200">{label}</span>
   </div>
 );
@@ -357,23 +372,32 @@ const About = () => {
               </p>
             </>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-8">
-              <Pillar icon="school" label="कॉलेज एडमिशन" />
+              <Pillar icon={<IconSchool size={22} />} label="कॉलेज एडमिशन" />
 
-              <Pillar icon="book" label="पुस्तकालय" />
+              <Pillar icon={<IconBook size={22} />} label="पुस्तकालय" />
 
-              <Pillar icon="home" label="पीजी / आवास" />
+              <Pillar icon={<IconHome size={22} />} label="पीजी / आवास" />
 
-              <Pillar icon="heart" label="रक्तदान सहायता" />
+              <Pillar icon={<IconHeart size={22} />} label="रक्तदान सहायता" />
 
-              <Pillar icon="briefcase" label="करियर मार्गदर्शन" />
+              <Pillar
+                icon={<IconBriefcase size={22} />}
+                label="करियर मार्गदर्शन"
+              />
 
-              <Pillar icon="users" label="युवा सहयोग" />
+              <Pillar icon={<IconUsers size={22} />} label="युवा सहयोग" />
 
-              <Pillar icon="target-arrow" label="प्रतियोगी परीक्षाएँ" />
+              <Pillar
+                icon={<IconTargetArrow size={22} />}
+                label="प्रतियोगी परीक्षाएँ"
+              />
 
-              <Pillar icon="sparkles" label="व्यक्तित्व विकास" />
+              <Pillar
+                icon={<IconSparkle size={22} />}
+                label="व्यक्तित्व विकास"
+              />
 
-              <Pillar icon="messages" label="आपसी समन्वय" />
+              <Pillar icon={<IconMessage size={22} />} label="आपसी समन्वय" />
             </div>
           </ParagraphBlock>
 
@@ -519,37 +543,191 @@ const About = () => {
               </p>
             </>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">
-              <Pillar icon="library" label="पुस्तकालय सुविधा" />
+              <Pillar
+                icon={<IconLibrary size={22} />}
+                label="पुस्तकालय सुविधा"
+              />
 
-              <Pillar icon="movie" label="मोटिवेशनल फिल्म" />
+              <Pillar icon={<IconMovie size={22} />} label="मोटिवेशनल फिल्म" />
 
-              <Pillar icon="trophy" label="प्रतियोगिताएँ" />
+              <Pillar icon={<IconTrophy size={22} />} label="प्रतियोगिताएँ" />
 
-              <Pillar icon="users-group" label="करियर मार्गदर्शन" />
+              <Pillar icon={<IconUsers size={22} />} label="करियर मार्गदर्शन" />
 
-              <Pillar icon="map-pin" label="पिकनिक एवं भ्रमण" />
+              <Pillar
+                icon={<IconMapPin size={22} />}
+                label="पिकनिक एवं भ्रमण"
+              />
 
-              <Pillar icon="heart-handshake" label="सामाजिक सहयोग" />
+              <Pillar icon={<IconHeart size={22} />} label="सामाजिक सहयोग" />
             </div>
           </ParagraphBlock>
 
-          {/* 6 — Haldwani */}
-          <ParagraphBlock tag="विस्तार · हल्द्वानी" tagIndigo delay={0.1}>
-            MYWA के निरंतर प्रयासों को देखते हुए इसका विस्तार{" "}
-            <span className="text-teal-400 font-semibold">हल्द्वानी</span> तक
-            किया गया — ताकि कुमाऊँ क्षेत्र के और अधिक युवा इस परिवार का हिस्सा
-            बन सकें।
+          {/* Achievements */}
+          <ParagraphBlock tag="Achievements" tagIndigo delay={0.1}>
+            <>
+              <p>
+                किसी भी संस्था की वास्तविक सफलता उसकी इमारतों, संसाधनों या
+                कार्यक्रमों से नहीं मापी जाती, बल्कि उन लोगों से मापी जाती है
+                जिनके जीवन में वह सकारात्मक परिवर्तन ला सके। MYWA के लिए भी उसकी
+                सबसे बड़ी उपलब्धि वे युवा हैं जिन्होंने इस परिवार से जुड़कर अपने
+                सपनों को नई दिशा दी और अपने लक्ष्य को प्राप्त किया।
+              </p>
+
+              <br />
+
+              <p>
+                पिछले वर्षों में MYWA के मार्गदर्शन, सहयोग और सकारात्मक वातावरण
+                का लाभ उठाते हुए अनेक युवाओं ने विभिन्न राजकीय सेवाओं में अपनी
+                पहचान बनाई। यह केवल व्यक्तिगत सफलता नहीं, बल्कि पूरे संगठन और
+                समाज के लिए गर्व का विषय है। प्रत्येक चयनित युवा आने वाली
+                पीढ़ियों के लिए प्रेरणा का स्रोत बनकर यह संदेश देता है कि सही
+                मार्गदर्शन, निरंतर परिश्रम और सामूहिक सहयोग से हर सपना साकार
+                किया जा सकता है।
+              </p>
+
+              <br />
+
+              <p>
+                MYWA का विश्वास हमेशा से रहा है कि जब एक युवा सफल होता है, तो
+                उसके साथ केवल उसका परिवार ही नहीं, बल्कि पूरा समाज आगे बढ़ता है।
+                यही सोच संगठन को निरंतर युवाओं के लिए नए अवसर, बेहतर मार्गदर्शन
+                और सकारात्मक वातावरण उपलब्ध कराने के लिए प्रेरित करती है।
+              </p>
+            </>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="mt-10 rounded-2xl border border-emerald-500/15 bg-emerald-500/5 p-7">
+              राजकीय सेवाओं में चयनित युवा
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+                {[
+                  {
+                    name: "श्री राहुल जोशी",
+                    selection: "राजकीय सेवा",
+                  },
+                  {
+                    name: "श्री गणेश गोस्वामी",
+                    selection: "राजकीय सेवा",
+                  },
+                  {
+                    name: "श्री त्रिभुवन नितवाल",
+                    selection: "राजकीय सेवा",
+                  },
+                  {
+                    name: "श्री धर्मेन्द्र मर्तोलिया",
+                    selection: "CRPF (SI)",
+                  },
+                  {
+                    name: "कु० मनीषा  रावत",
+                    selection: "राजकीय सेवा",
+                  },
+                ].map((s) => (
+                  <div
+                    key={s.name}
+                    className="rounded-xl border border-white/5 bg-white/2 p-4">
+                    <div className="text-lg font-semibold text-white">
+                      {s.name}
+                    </div>
+                    <div className="text-sm text-slate-400 mt-1">
+                      {s.selection}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
           </ParagraphBlock>
 
-          {/* 7 — Today */}
-          <ParagraphBlock tag="Today" delay={0.1}>
-            आज MYWA केवल एक संस्था नहीं, बल्कि{" "}
-            <span className="text-teal-400 font-semibold">
-              हजारों युवाओं का विश्वास
-            </span>{" "}
-            है। अनेक युवाओं का विभिन्न राजकीय सेवाओं में चयन इस बात का प्रमाण है
-            कि सही मार्गदर्शन और सहयोग किसी भी सपने को वास्तविकता में बदल सकता
-            है।
+          {/* 6 — Haldwani */}
+          <ParagraphBlock tag="Expansion" tagIndigo delay={0.1}>
+            <>
+              <p>
+                किसी भी संस्था के लिए सबसे बड़ी उपलब्धि तब होती है जब उसके
+                कार्यों पर लोगों का विश्वास बढ़ने लगता है। MYWA के साथ भी कुछ
+                ऐसा ही हुआ। देहरादून में युवाओं के लिए किए गए निरंतर प्रयासों,
+                सहयोग और सकारात्मक कार्यों को देखते हुए संगठन का विस्तार कुमाऊँ
+                क्षेत्र के दूसरे प्रमुख शहर{" "}
+                <span className="text-teal-400 font-semibold">हल्द्वानी</span>
+                तक किया गया।
+              </p>
+
+              <br />
+
+              <p>
+                इस विस्तार का उद्देश्य केवल एक नई शाखा खोलना नहीं था, बल्कि अधिक
+                से अधिक युवाओं तक MYWA के सहयोग, मार्गदर्शन और अवसरों को
+                पहुँचाना था। संगठन का विश्वास है कि चाहे कोई भी युवा किसी भी शहर
+                में शिक्षा या प्रतियोगी परीक्षाओं की तैयारी के लिए जाए, उसे एक
+                ऐसे परिवार का साथ अवश्य मिले जो हर परिस्थिति में उसके साथ खड़ा
+                रहे।
+              </p>
+
+              <br />
+
+              <p>
+                आज MYWA का यह विस्तार इस बात का प्रतीक है कि सेवा, सहयोग और
+                विश्वास की भावना सीमाओं में नहीं बंधती। जहाँ भी युवाओं को
+                मार्गदर्शन और सहयोग की आवश्यकता होगी, वहाँ MYWA उनके साथ खड़े
+                रहने का निरंतर प्रयास करता रहेगा।
+              </p>
+            </>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="mt-8 rounded-2xl border border-teal-500/20 bg-teal-500/5 p-6">
+              <h1>📍 हमारी पहुँच</h1>
+              <br />
+              <h2>🏙️ देहरादून</h2>↓<h2> 🌄 हल्द्वानी</h2>↓
+              <p> 🚀 आने वाले समय में उत्तराखण्ड के अन्य शहर...</p>
+            </motion.div>
+          </ParagraphBlock>
+
+          {/* 7 — future vision */}
+          <ParagraphBlock tag="Future Vision" delay={0.1}>
+            <>
+              <p>
+                MYWA की यात्रा अभी समाप्त नहीं हुई है, बल्कि यह एक ऐसे भविष्य की
+                ओर बढ़ रही है जहाँ प्रत्येक युवा को शिक्षा, मार्गदर्शन, अवसर और
+                सहयोग समान रूप से उपलब्ध हो। संगठन का विश्वास है कि समाज का
+                वास्तविक विकास तभी संभव है जब युवाओं को सही दिशा, उचित संसाधन और
+                आत्मविश्वास के साथ आगे बढ़ने का अवसर मिले।
+              </p>
+
+              <br />
+
+              <p>
+                आने वाले वर्षों में MYWA का लक्ष्य अधिक से अधिक विद्यार्थियों तक
+                अपनी सेवाओं का विस्तार करना, पुस्तकालय एवं अध्ययन सुविधाओं को और
+                सशक्त बनाना, करियर मार्गदर्शन, कौशल विकास, व्यक्तित्व विकास तथा
+                प्रतियोगी परीक्षाओं की तैयारी के लिए बेहतर मंच तैयार करना है।
+                साथ ही आधुनिक तकनीक और अनुभवी मार्गदर्शकों के सहयोग से युवाओं को
+                बदलते समय के अनुरूप नए अवसरों से जोड़ना भी संगठन की प्राथमिकताओं
+                में शामिल है।
+              </p>
+
+              <br />
+
+              <p>
+                MYWA केवल एक संस्था नहीं, बल्कि एक ऐसा परिवार है जो हर उस युवा
+                के साथ खड़ा है जो अपने सपनों को साकार करने का साहस रखता है।
+                हमारा विश्वास है कि आज जिन युवाओं को सहयोग और मार्गदर्शन मिलेगा,
+                वही कल समाज का नेतृत्व करेंगे और आने वाली पीढ़ियों के लिए
+                प्रेरणा बनेंगे।
+              </p>
+
+              <br />
+
+              <p>
+                हम एक ऐसे भविष्य की कल्पना करते हैं जहाँ कोई भी युवा अवसरों की
+                कमी, मार्गदर्शन के अभाव या संसाधनों की सीमाओं के कारण अपने सपनों
+                से समझौता न करे। यही सोच हमारी यात्रा की सबसे बड़ी प्रेरणा है और
+                यही MYWA के भविष्य का आधार भी है।
+              </p>
+            </>
           </ParagraphBlock>
         </div>
 
@@ -580,35 +758,89 @@ const About = () => {
 
         {/* ── Closing Quote ── */}
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="relative p-10 text-center border border-indigo-500/20 rounded-[20px] overflow-hidden"
+          transition={{ duration: 0.8 }}
+          className="relative mt-24 overflow-hidden rounded-3xl border border-white/10 p-10 md:p-14 text-center"
           style={{
             background:
-              "linear-gradient(135deg,rgba(99,102,241,0.06) 0%,rgba(20,184,166,0.04) 100%)",
+              "linear-gradient(135deg,rgba(99,102,241,0.08) 0%,rgba(20,184,166,0.05) 100%)",
           }}>
-          {/* Subtle inner glow */}
+          {/* Glow */}
           <div
-            className="absolute inset-0 rounded-[20px] pointer-events-none"
+            className="absolute -top-28 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full blur-3xl opacity-20"
             style={{
-              background:
-                "linear-gradient(135deg,rgba(99,102,241,0.04),transparent 60%,rgba(20,184,166,0.04))",
+              background: "radial-gradient(circle,#14b8a6 0%,transparent 70%)",
             }}
           />
+
+          {/* Top Quote Icon */}
+
+          <div className="relative z-10 flex justify-center mb-8">
+            <div className="w-16 h-16 rounded-full border border-teal-500/30 bg-teal-500/10 flex items-center justify-center text-4xl text-teal-400">
+              ❝
+            </div>
+          </div>
+
+          {/* Quote */}
+
           <h3
-            className="relative z-10 text-[clamp(18px,3vw,28px)] font-bold text-slate-100 leading-[1.8] tracking-tight"
+            className="relative z-10 text-[clamp(22px,3vw,34px)] font-bold leading-[1.8] text-white"
             style={{ fontFamily: "'Tiro Devanagari Hindi', serif" }}>
-            "जब एक युवा आगे बढ़ता है,
+            जब एक युवा आगे बढ़ता है,
             <br />
-            तो केवल उसका भविष्य नहीं,
+            <span className="text-teal-400">तो केवल उसका भविष्य नहीं,</span>
             <br />
-            पूरा समाज आगे बढ़ता है।"
+            पूरा समाज आगे बढ़ता है।
           </h3>
-          <p className="relative z-10 mt-5 font-mono text-[13px] text-slate-600 tracking-[0.06em]">
-            — MYWA परिवार
+
+          {/* Divider */}
+
+          <div className="relative z-10 w-24 h-0.5 bg-linear-to-r from-teal-400 to-indigo-500 mx-auto my-8 rounded-full" />
+
+          {/* Description */}
+
+          <p
+            className="relative z-10 max-w-3xl mx-auto text-slate-300 text-[16px] md:text-[18px] leading-9"
+            style={{ fontFamily: "'Tiro Devanagari Hindi', serif" }}>
+            MYWA केवल एक संगठन नहीं, बल्कि{" "}
+            <span className="text-teal-300 font-semibold">सपनों</span>,
+            <span className="text-indigo-300 font-semibold"> सहयोग</span> और
+            <span className="text-teal-300 font-semibold"> विश्वास</span> से बना
+            एक ऐसा परिवार है जहाँ हर युवा की सफलता हम सभी की सफलता मानी जाती है।
           </p>
+
+          {/* Bottom Line */}
+
+          <p
+            className="relative z-10 mt-8 text-slate-400 italic text-lg"
+            style={{ fontFamily: "'Tiro Devanagari Hindi', serif" }}>
+            "आइए, मिलकर ऐसा भविष्य बनाएं जहाँ कोई भी युवा अपने सपनों की राह में
+            अकेला न रहे।"
+          </p>
+
+          {/* CTA */}
+
+          <div className="relative z-10 mt-10">
+            <Link
+             to="/login"
+              className="inline-flex items-center gap-3 rounded-full border border-teal-500/30 bg-teal-500/10 hover:bg-teal-500/20 transition-all duration-300 px-7 py-3 text-teal-300 font-medium">
+              🤝 हमारे परिवार से जुड़ें
+            </Link>
+          </div>
+
+          {/* Footer */}
+
+          <div className="relative z-10 mt-10 flex justify-center items-center gap-3">
+            <div className="h-px w-14 bg-linear-to-r from-transparent to-teal-400" />
+
+            <span className="font-mono tracking-[0.25em] text-sm text-slate-500 uppercase">
+              MYWA FAMILY
+            </span>
+
+            <div className="h-px w-14 bg-linear-to-l from-transparent to-indigo-400" />
+          </div>
         </motion.div>
       </div>
     </section>

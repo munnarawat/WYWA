@@ -80,7 +80,7 @@ const StatItem = ({ num, label }) => (
 );
 
 const Pillar = ({ icon, label }) => (
-  <div className="flex flex-col items-start gap-1.5 p-3.5 bg-white/[0.02] border border-white/6 rounded-xl">
+  <div className="flex flex-col items-start hover:scale-105 duration-300 gap-1.5 p-3.5 bg-white/[0.02] border border-white/6 rounded-xl">
     <div className="text-teal-400">{icon}</div>
     <span className="text-[13px] font-semibold text-slate-200">{label}</span>
   </div>
@@ -292,7 +292,7 @@ const About = () => {
               संस्थापक सदस्य
               <div className="flex-1 h-px bg-indigo-500/20 ml-1" />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {[
                 {
                   name: "श्री नरेन्द्र सिंह जंगपांगी",
@@ -314,7 +314,7 @@ const About = () => {
               ].map((f) => (
                 <div
                   key={f.name}
-                  className="px-4 py-3 bg-indigo-500/6 border border-indigo-500/10 rounded-xl">
+                  className="px-4 py-3 hover:scale-105 duration-300 bg-indigo-500/6 border border-indigo-500/10 rounded-xl">
                   <div
                     className="text-[15px] font-semibold text-indigo-200"
                     style={{ fontFamily: "'Tiro Devanagari Hindi', serif" }}>

@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Instagram, Twitter, Mail, Quote } from "lucide-react";
 import { Link } from "react-router-dom";
-
+import api from "../utils/api";
+import toast from "react-hot-toast";
 const ThinkTank = () => {
   // const [visionaries, setVisionaries] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,6 +39,19 @@ const ThinkTank = () => {
       glow: "bg-amber-500/20",
     },
   ];
+
+  const fetchVisionaries = async ()=>{
+    try{
+      const res = await api.get("/thinkTank/main")
+      if(res.data.success){
+        
+      }
+    }catch(error){
+      console.error(error);
+    }finally{
+      setLoading(false)
+    }
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },

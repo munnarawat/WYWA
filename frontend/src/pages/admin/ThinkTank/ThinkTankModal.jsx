@@ -181,7 +181,7 @@ const ThinkTankModal = ({ isOpen, onClose, onSubmitForm, editingMember }) => {
                       />
                       <input
                         type="text"
-                        placeholder="LinkedIn or Email"
+                        placeholder="Insta or Email"
                         {...register("contact")}
                         className="w-full bg-[#131920] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-[14px] text-slate-200 placeholder:text-slate-600 outline-none transition-all focus:bg-teal-500/5 focus:border-teal-500/50"
                       />

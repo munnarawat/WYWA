@@ -12,7 +12,7 @@ function uploadFile(file, folderName = "MYWA") {
   return new Promise((res, rej) => {
     try {
       if (!file) {
-        return rej(new (Error("No file Provided for upload"))());
+        return rej(new Error("No file Provided for upload"));
       }
       const ext = path.extname(file.originalname);
       const cleanFileName = `${uuidv4()}${ext}`;

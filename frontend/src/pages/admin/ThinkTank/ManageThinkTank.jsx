@@ -51,6 +51,7 @@ const ManageThinkTank = () => {
 
       if (data.imageUrl && data.imageUrl.length > 0) {
         formData.append("image", data.imageUrl[0]);
+        
       }
       if (id) {
         await api.put(`/thinkTank/${id}`, formData, {

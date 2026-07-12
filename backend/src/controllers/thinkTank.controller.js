@@ -71,17 +71,17 @@ const updateThinkTank = async (req, res) => {
     }
     // image upload
     if (req.file) {
-      if (thinkTankModel(imageUrl)) {
+      if (member.imageId) {
         try {
           await deleteFile(member.imageId);
         } catch (error) {
           console.error("Old Image Delete Error:", err);
         }
       }
+      const resultUpload = await uploadFile(req.file, "MYWA_ThinkThank");
+      member.imageUrl = resultUpload.url;
+      member.imageId = resultUpload.fileId;
     }
-    const resultUpload = await uploadFile(req.file, "MYWA_ThinkThank");
-    member.imageUrl = resultUpload.url;
-    member.imageId = resultUpload.fileId;
 
     if (name) member.name = name;
     if (roleOrContribution) member.roleOrContribution = roleOrContribution;
@@ -146,5 +146,5 @@ module.exports = {
   getAllThinkTank,
   updateThinkTank,
   deleteThinkTank,
-  getMainThinkTank
+  getMainThinkTank,
 };

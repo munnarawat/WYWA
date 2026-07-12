@@ -1,58 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Instagram, Twitter, Mail, Quote } from "lucide-react";
+import { ExternalLink, Instagram, Quote } from "lucide-react";
 import { Link } from "react-router-dom";
 import api from "../utils/api";
 import toast from "react-hot-toast";
 const ThinkTank = () => {
-  // const [visionaries, setVisionaries] = useState([]);
+  const [visionaries, setVisionaries] = useState([]);
   const [loading, setLoading] = useState(true);
-  const visionaries = [
-    {
-      id: 1,
-      name: "Dr. Ramesh Singh",
-      role: "Chief Mentor & Founder",
-      image:
-        "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=256&auto=format&fit=crop",
-      bio: "The guiding light behind MYWA. His vision for accessible education in Munsyari laid the foundation for our organization.",
-      accent: "from-teal-500 to-teal-700",
-      glow: "bg-teal-500/20",
-    },
-    {
-      id: 2,
-      name: "Priya Rawat",
-      role: "Strategy & Operations",
-      image:
-        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=256&auto=format&fit=crop",
-      bio: "Instrumental in scaling our libraries across Dehradun and Haldwani. She turns our community ideas into ground reality.",
-      accent: "from-lime-500 to-green-700",
-      glow: "bg-lime-500/20",
-    },
-    {
-      id: 3,
-      name: "Amit Kumar",
-      role: "Community Leader",
-      image:
-        "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=256&auto=format&fit=crop",
-      bio: "A relentless force connecting the youth. Amit ensures that every student gets the right guidance and mentorship.",
-      accent: "from-amber-500 to-orange-700",
-      glow: "bg-amber-500/20",
-    },
-  ];
 
-  const fetchVisionaries = async ()=>{
-    try{
-      const res = await api.get("/thinkTank/main")
-      if(res.data.success){
-        
+  useEffect(() => {
+    const fetchVisionaries = async () => {
+      try {
+        const res = await api.get("/thinkTank/main");
+        if (res.data.success) {
+          setVisionaries(res.data.mainThinkTank);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
-    }catch(error){
-      console.error(error);
-    }finally{
-      setLoading(false)
-    }
-  }
-
+    };
+    fetchVisionaries();
+  }, []);
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -104,27 +74,31 @@ const ThinkTank = () => {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {visionaries.map((person) => (
             <motion.div
-              key={person.id}
+              key={person._id}
               variants={cardVariants}
               whileHover={{ y: -10 }}
               className="relative group rounded-2xl border border-white/10 bg-white/5 p-8 overflow-hidden transition-all duration-300 hover:border-white/20 hover:bg-white/10 flex flex-col ease-out items-center text-center">
               {/* Ambient Hover Glow behind card */}
-              <div
-                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${person.glow} -z-10`}
-              />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-teal-500/20 -z-10" />
 
               {/* Profile Image with Gradient Ring */}
               <div className="relative mb-6">
                 <div
-                  className={`absolute -inset-1.5 bg-linear-to-br ${person.accent} rounded-full blur-sm opacity-50 group-hover:opacity-100 transition-opacity duration-500`}
+                  className={`absolute -inset-1.5 bg-linear-to-br from-teal-500 to-teal-700 rounded-full blur-sm opacity-50 group-hover:opacity-100  transition-opacity duration-500`}
                 />
-                <div className="relative w-32 h-32 rounded-full border-2 border-zinc-900 overflow-hidden bg-zinc-800">
-                  <img
-                    src={person.image}
-                    alt={person.name}
-                    loading="lazy"
-                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                  />
+                <div className="relative w-32 h-32 rounded-full border-2 border-zinc-900 overflow-hidden bg-zinc-800  group-hover:border-teal-400 group-hover:shadow-[0_0_20px_rgba(20,184,166,0.3)] transition-all duration-300 ">
+                  {person.imageUrl ? (
+                    <img
+                      src={person.imageUrl}
+                      alt={person.name}
+                      loading="lazy"
+                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full rounded-full bg-linear-to-br from-teal-900/50 to-zinc-900 flex items-center justify-center text-teal-400 text-2xl font-bold">
+                      {person.name.charAt(0)}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -133,30 +107,28 @@ const ThinkTank = () => {
                 {person.name}
               </h3>
               <p className="text-sm font-mono tracking-wide text-teal-400 mb-5">
-                {person.role}
+                {person.roleOrContribution}
               </p>
 
               <p className="text-zinc-400 text-sm leading-relaxed mb-8 flex-grow">
-                "{person.bio}"
+                "{person.description}"
               </p>
 
               {/* Social Links */}
               <div className="flex items-center gap-4 mt-auto">
-                <a
-                  href="#"
-                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all">
-                  <Instagram size={18} />
-                </a>
-                <a
-                  href="#"
-                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all">
-                  <Twitter size={18} />
-                </a>
-                <a
-                  href="#"
-                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all">
-                  <Mail size={18} />
-                </a>
+                {person.contact && (
+                  <a
+                    href={
+                      person.contact.startsWith("http")
+                        ? person.contact
+                        : `mailto:${person.contact}`
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all">
+                    <ExternalLink size={18} />
+                  </a>
+                )}
               </div>
             </motion.div>
           ))}

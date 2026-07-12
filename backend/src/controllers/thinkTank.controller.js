@@ -45,6 +45,7 @@ const getAllThinkTank = async (req, res) => {
       .sort({ createdAt: -1 });
 
     return res.status(200).json({
+      success:true,
       message: "fetched all ThinkTank members 🎉 ",
       members,
     });

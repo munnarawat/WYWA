@@ -21,6 +21,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import PublicLayout from "../components/PublicLayout";
 import DashboardLayout from "../pages/DashboardLayout";
 import ScrollTop from "../animation/ScrollTop";
+import PageNotFound from "../components/notFound/PageNotFound";
 
 // ─────────────────────────────────────────
 // 🚀 ASYNC IMPORTS (Lazy Loaded Pages)
@@ -174,8 +175,10 @@ const MainRouter = () => {
             <Route path="/contact" element={<Contact />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
+            
           </Route>
-
+          {/* 404 Not Found */}
+          <Route path="*" element={<PageNotFound/>} />
           {/* Admin Dashboard */}
           <Route
             element={

@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Trophy, Calendar } from "lucide-react";
+import { MapPin, Trophy, Calendar, ExternalLink } from "lucide-react";
 import api from "../../utils/api";
 import toast from "react-hot-toast";
 
@@ -44,7 +44,7 @@ const ThinkTankSkelton = () => {
         const isFeatured = index === 0;
         return (
           <div
-            key={item._id}
+            key={index}
             className={
               isFeatured
                 ? "md:col-span-2 md:row-span-2 rounded-2xl "
@@ -85,8 +85,6 @@ const AllThinkTank = () => {
     };
     fetchAllThinkTank();
   }, []);
-  console.log(AllThinkTank);
-
   return (
     <section className="w-full py-24 px-4 md:px-8  overflow-hidden">
       <div className="max-w-7xl mx-auto">
@@ -103,8 +101,8 @@ const AllThinkTank = () => {
           </span>
           <h2 className="text-4xl md:text-5xl font-extrabold text-white">
             Our
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-teal-400 to-blue-500">
-              Our Think Tank
+            <span className="text-transparent pl-2 bg-clip-text bg-linear-to-r from-teal-400 to-blue-500">
+              ThinkTank
             </span>
           </h2>
           <p className="mt-4 text-slate-400 max-w-2xl mx-auto text-lg">
@@ -158,9 +156,25 @@ const AllThinkTank = () => {
                       </div>
 
                       <p
-                        className={`text-slate-400 ${isFeatured ? "text-base line-clamp-3" : "text-sm line-clamp-2"}`}>
+                        className={`text-slate-400 ${isFeatured ? "text-base line-clamp-3" : "text-sm line-clamp-4"}`}>
                         "{item.description}"
                       </p>
+                    </div>
+                    {/* Social Links */}
+                    <div className="flex items-center gap-4 pt-4">
+                      {item.contact && (
+                        <a
+                          href={
+                            item.contact.startsWith("http")
+                              ? item.contact
+                              : `mailto:${item.contact}`
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all">
+                          <ExternalLink size={18} />
+                        </a>
+                      )}
                     </div>
                   </div>
                 </SpotlightCard>

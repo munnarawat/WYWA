@@ -172,7 +172,7 @@ const Achievement = () => {
                       </div>
 
                       <p
-                        className={`text-slate-400 ${isFeatured ? "text-base line-clamp-3" : "text-sm line-clamp-2"}`}>
+                        className={`text-slate-400 ${isFeatured ? "text-base line-clamp-3" : "text-sm line-clamp-4"}`}>
                         "{item.description}"
                       </p>
                     </div>

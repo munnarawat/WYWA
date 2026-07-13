@@ -622,7 +622,7 @@ const About = () => {
                   },
                   {
                     name: "कु० मनीषा  रावत",
-                    selection: "राजकीय सेवा",
+                    selection: "कनिष्ठ सहायक",
                   },
                 ].map((s) => (
                   <div

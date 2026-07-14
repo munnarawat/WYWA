@@ -1,6 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Trophy, Calendar, ExternalLink } from "lucide-react";
+import {
+  MapPin,
+  Trophy,
+  Calendar,
+  ExternalLink,
+  Quote,
+  ArrowRight,
+} from "lucide-react";
 import api from "../../utils/api";
 import toast from "react-hot-toast";
 
@@ -22,7 +29,7 @@ const SpotlightCard = ({ children, className = "" }) => {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setOpacity(1)}
       onMouseLeave={() => setOpacity(0)}
-      className={`relative overflow-hidden rounded-3xl bg-white/5 border border-white/10 transition-all duration-500 hover:-translate-y-2 hover:border-white/20 group ${className}`}>
+      className={`relative overflow-hidden rounded-3xl bg-white/5 border border-white/10 transition-all duration-500 hover:-translate-y-2 hover:border-teal-500/30 hover:shadow-[0_20px_60px_rgba(20,184,166,0.12)] group ${className}`}>
       {/* Spotlight Glow */}
       <div
         className="pointer-events-none absolute -inset-px opacity-0 transition duration-300 z-0"
@@ -115,25 +122,19 @@ const AllThinkTank = () => {
         {AllThinkTank.length === 0 ? (
           <ThinkTankSkelton />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-8">
             {AllThinkTank.map((item, index) => {
-              const isFeatured = index === 0;
               return (
-                <SpotlightCard
-                  key={item._id}
-                  className={
-                    isFeatured ? "md:col-span-2 md:row-span-2" : "col-span-1"
-                  }>
-                  <div
-                    className={`p-6 h-full flex flex-col ${isFeatured ? "justify-between" : ""}`}>
+                <SpotlightCard key={item._id} className=" col-span-1   ">
+                  <div className="p-7 h-full flex flex-col justify-between  ">
                     {/* Top Section: Photo & Badge */}
                     <div className="flex justify-between items-start mb-6">
-                      <div className="relative overflow-hidden rounded-2xl w-20 h-20 border border-white/10 shrink-0">
+                      <div className="relative overflow-hidden rounded-2xl w-24 h-24 border border-teal-500/30 shrink-0">
                         {item.imageUrl ? (
                           <img
                             src={item.imageUrl}
                             alt={item.name}
-                            className="w-full h-full object-cover lg:grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500"
+                            className="w-full h-full object-cover lg:grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110  group-hover:rotate-1 transition-all duration-500"
                           />
                         ) : (
                           <div className="w-full h-full bg-slate-800 flex items-center justify-center uppercase text-2xl font-bold text-slate-500">
@@ -146,19 +147,22 @@ const AllThinkTank = () => {
                     {/* Bottom Section: Details */}
                     <div className="space-y-3 grow">
                       <div>
-                        <h3
-                          className={`${isFeatured ? "text-3xl" : "text-xl"} font-bold text-white mb-1 capitalize group-hover:text-teal-300 transition-colors`}>
+                        <span className="inline-flex items-center rounded-full border border-teal-500/20 bg-teal-500/10 px-3 py-1 text-xs font-medium mb-4 text-teal-300">
+                          {item.roleOrContribution}
+                        </span>
+                        <h3 className="text-3xl font-bold text-white mb-1 capitalize group-hover:text-teal-300 transition-colors">
                           {item.name}
                         </h3>
-                        <p className="text-transparent bg-clip-text bg-linear-to-r from-amber-200 to-amber-500 font-semibold inline-flex items-center gap-2">
-                          {item.roleOrContribution}
-                        </p>
+                        <div className="mt-3 mb-4 h-px w-32 bg-linear-to-r from-teal-400 to-transparent" />
                       </div>
 
-                      <p
-                        className={`text-slate-400 ${isFeatured ? "text-base line-clamp-3" : "text-sm line-clamp-4"}`}>
-                        "{item.description}"
-                      </p>
+                      <div className="relative mt-6 rounded-xl border border-white/5 bg-white/3 p-4">
+                        <Quote className="absolute -top-1 left-2 h-5 w-5 text-teal-400" />
+
+                        <p className="italic text-slate-400 leading-7">
+                          {item.description}
+                        </p>
+                      </div>
                     </div>
                     {/* Social Links */}
                     <div className="flex items-center gap-4 pt-4">
@@ -171,11 +175,27 @@ const AllThinkTank = () => {
                           }
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all">
+                          className="w-10 h-10 mb-1 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all">
                           <ExternalLink size={18} />
                         </a>
                       )}
                     </div>
+                    <div className="mt-auto pt-5 border-t border-white/5 flex items-center justify-between">
+                      <span className="text-xs  font-black uppercase tracking-[0.2em] text-slate-500">
+                        MYWA
+                      </span>
+
+                      <ArrowRight className="w-4 h-4 text-teal-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    {/* Background Pattern */}
+                    <div
+                      className="absolute inset-0 opacity-[0.03] pointer-events-none"
+                      style={{
+                        backgroundImage:
+                          "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+                        backgroundSize: "18px 18px",
+                      }}
+                    />
                   </div>
                 </SpotlightCard>
               );

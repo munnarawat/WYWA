@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const MotionLink = motion.create(Link);
 const Hero = () => {
   const sliderImages = [
-    "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-1.jpeg", 
+    "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-1.jpeg",
     "https://ik.imagekit.io/fmkamttxp/MYWA/mywa%20haldwani.jpeg",
     "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-2.jpeg",
     "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-3.jpeg",
@@ -58,7 +58,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative w-full overflow-hidden py-8">
+    <section className="relative w-full overflow-hidden  min-h-[85vh]">
       <motion.div
         variants={container}
         initial="hidden"
@@ -69,34 +69,33 @@ const Hero = () => {
           {/* Badge */}
           <motion.div
             variants={item}
-            className="w-fit flex items-center gap-2 border border-white/10 bg-white/5 backdrop-blur-sm rounded-full px-4 py-2">
-            <Book size={18} className="text-teal-400" />
-            <span className="text-sm text-zinc-300 tracking-wide">
-              Empowering Education
+            className="inline-flex items-center gap-2 rounded-full border border-teal-500/20 bg-teal-500/10 px-4 py-2 backdrop-blur-xl">
+            <Book size={16} className="text-teal-400" />
+            <span className="text-sm font-medium text-teal-200">
+              Since 2022 • Empowering the Youth of Munsyari
             </span>
           </motion.div>
 
           {/* Heading */}
           <motion.h1
             variants={container}
-            className="text-4xl md:text-6xl font-bold leading-tight tracking-tight">
+            className="text-[clamp(42px,6vw,72px)] font-extrabold leading-[1.05] tracking-tight">
             <motion.span variants={item} className="text-white block">
               Munsyari Youth
             </motion.span>
 
             <motion.span
               variants={item}
-              className="bg-linear-to-r from-teal-400 to-lime-400 bg-clip-text text-transparent block">
+              className="block bg-linear-to-r from-teal-400 via-cyan-300 to-lime-400 bg-clip-text text-transparent">
               Welfare Association
             </motion.span>
           </motion.h1>
-
           {/* Subheading */}
           <motion.p
             variants={item}
-            className="text-lg md:text-xl text-zinc-300 md:w-4/5">
-            Building disciplined minds and empowering futures through education,
-            leadership, and community excellence.
+            className="max-w-xl text-lg leading-8 text-slate-300">
+            Connecting students with opportunities, guidance, libraries and a
+            strong community where no young dream is left behind.
           </motion.p>
 
           {/* Buttons */}
@@ -105,21 +104,18 @@ const Hero = () => {
               to="/login"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-3.5 rounded-xl bg-linear-to-r from-teal-500 to-lime-500 text-black font-bold text-lg shadow-[0_0_20px_rgba(45,212,191,0.3)] hover:shadow-[0_0_30px_rgba(45,212,191,0.5)] transition-shadow flex items-center justify-center gap-2">
-              Join Your Branch
+              className="rounded-xl px-8 py-4 font-semibold bg-linear-to-r from-teal-500 to-cyan-500 text-lg hover:scale-[1.03] transition-all flex items-center gap-2">
+              Join MYWA
               <ArrowRight size={20} />
             </MotionLink>
 
-            <motion.a
-              href="/#impact"
-              whileHover={{
-                scale: 1.05,
-                backgroundColor: "rgba(255,255,255,0.1)",
-              }}
+            <MotionLink
+              to="/about"
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white font-medium  text-lg flex items-center justify-center transition-colors">
-              Explore Impact
-            </motion.a>
+              className="px-8 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white font-medium  hover:border-teal-500/30 hover:bg-white/10 text-lg flex items-center justify-center transition-colors">
+              Our Journey
+            </MotionLink>
           </motion.div>
         </div>
 
@@ -128,14 +124,23 @@ const Hero = () => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="w-full md:w-1/2 relative group h-80 md:h-[500px]">
+          className="w-full md:w-1/2 relative group h-80 md:h-125">
           {/* Ambient Glow */}
           <div className="absolute -inset-4 bg-linear-to-r from-teal-500/20 to-lime-500/20 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10" />
-
-          <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl shadow-black border border-white/10 bg-black/70">
+          <div className="absolute top-5 left-5 z-20 rounded-full border border-white/10 bg-black/40 backdrop-blur-xl px-4 py-2">
+            <p className="text-xs uppercase tracking-[0.2em] text-white/80">
+              Since 2022
+            </p>
+          </div>
+          <div className="relative w-full h-full rounded-4xl overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,.45)] shadow-black border border-white/15 bg-black/70">
             {/* Overlay for dark theme text readability */}
-            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent z-10 pointer-events-none" />
-
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent z-10" />
+            {/* Image Counter */}
+            <div className="absolute top-5 right-5 z-20 rounded-full bg-black/40 backdrop-blur-xl px-3 py-1">
+              <span className="text-white text-sm">
+                {currentIndex + 1} / {sliderImages.length}
+              </span>
+            </div>
             {/* AnimatePresence for Smooth Cross fade */}
             <AnimatePresence mode="wait">
               <motion.img
@@ -146,7 +151,7 @@ const Hero = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.8, ease: "easeInOut" }}
-                className="absolute inset-0 w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </AnimatePresence>
 
@@ -155,10 +160,10 @@ const Hero = () => {
                 <button
                   key={index}
                   onClick={() => setCurrentIndex(index)}
-                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
                     currentIndex === index
-                      ? "bg-teal-400 w-6"
-                      : "bg-white/40 hover:bg-white/80"
+                      ? "bg-teal-400 w-8"
+                      : "bg-white/30 hover:bg-white/80"
                   }`}
                 />
               ))}

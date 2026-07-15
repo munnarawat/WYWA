@@ -78,10 +78,6 @@ const ThinkTank = () => {
               variants={cardVariants}
               whileHover={{ y: -12, scale: 1.02 }}
               className="relative group rounded-[28px] border border-white/10 bg-white/5 p-8 overflow-hidden transition-all duration-300 hover:border-teal-500/30 hover:bg-white/10 flex flex-col ease-out items-center text-center">
-              <div
-                className="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity"
-                style={{background:"linear-gradient(180deg, rgba(20,184,166,.03) transparent)"}}
-              />
               {/* Ambient Hover Glow behind card */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-teal-500/20 -z-10" />
 

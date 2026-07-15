@@ -8,21 +8,19 @@ const Gallery = () => {
       id: 1,
       title: "Career Counseling 2025",
       category: "Education",
-      image:
-        "https://ik.imagekit.io/fmkamttxp/MYWA/Workshop%20Dehradun.jpeg",
+      image: "https://ik.imagekit.io/fmkamttxp/MYWA/Workshop%20Dehradun.jpeg",
       span: "md:col-span-2 md:row-span-2",
     },
     {
       id: 2,
       title: "Health Checkup Camp",
-      category:"Infrastructure",
-      image:
-        "https://ik.imagekit.io/fmkamttxp/MYWA/health-checkUp.jpeg",
+      category: "Infrastructure",
+      image: "https://ik.imagekit.io/fmkamttxp/MYWA/health-checkUp.jpeg",
       span: "md:col-span-1 md:row-span-1",
     },
     {
       id: 3,
-      title: "Dehradun Branch Meetup",
+      title: "Dehradun Branch celebrate holi 2024 ",
       category: "Community",
       image:
         "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-2.jpeg?updatedAt=1772889783372",
@@ -38,10 +36,9 @@ const Gallery = () => {
     },
     {
       id: 5,
-      title: "Haldwani Tech Workshop",
+      title: "Haldwani  Workshop",
       category: "Workshop",
-      image:
-        "https://ik.imagekit.io/fmkamttxp/MYWA/Workshop%20haldwani.jpeg",
+      image: "https://ik.imagekit.io/fmkamttxp/MYWA/Workshop%20haldwani.jpeg",
       span: "md:col-span-2 md:row-span-1",
     },
   ];
@@ -139,15 +136,15 @@ const Gallery = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}>
-            <span className="text-lime-400 font-mono text-sm tracking-wider uppercase mb-3 block">
-              Our Memories
+            <span className="text-lime-400 font-mono text-sm  tracking-wider uppercase mb-3 block">
+              Gallery
             </span>
             <h2 className="text-4xl md:text-5xl font-semibold text-white mb-6">
-              Moments of Impact
+              Capturing the Journey
             </h2>
             <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
-              Glimpses of our journey, events, and the community we are building
-              together across different branches.
+              Every photograph tells the story of a community growing together
+              through education, service and leadership.
             </p>
           </motion.div>
         </div>
@@ -167,8 +164,8 @@ const Gallery = () => {
               }}
               className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeFilter === filter
-                  ? "bg-linear-to-r from-teal-500 to-lime-500 text-black shadow-lg shadow-teal-500/25"
-                  : "bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10"
+                  ? "bg-linear-to-r from-teal-500 to-lime-500 text-black shadow-lg shadow-teal-500/20"
+                  : "bg-white/5 border border-white/10   text-zinc-400 hover:text-white hover:bg-white/10 hover:scale-105  "
               }`}>
               {filter}
             </button>
@@ -235,7 +232,7 @@ const Gallery = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closeModal}
-            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-12 bg-black/90 backdrop-blur-sm cursor-zoom-out">
+            className="fixed inset-0 z-9999 flex items-center justify-center p-4 md:p-12 bg-black/90 backdrop-blur-sm cursor-zoom-out">
             {/* Top Bar with Counter & Close Button */}
             <div className="absolute top-0 left-0 w-full p-6 flex items-center justify-between z-50">
               <div className="text-zinc-400 font-mono text-sm tracking-wider">
@@ -251,7 +248,7 @@ const Gallery = () => {
             {/* Previous Button */}
             <button
               onClick={handlePrev}
-              className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white backdrop-blur-md transition-all hover:scale-110 z-50">
+              className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-teal-500 flex items-center justify-center text-white backdrop-blur-md transition-all hover:scale-110 z-50">
               <ChevronLeft size={28} />
             </button>
 
@@ -287,7 +284,7 @@ const Gallery = () => {
             {/* Next Button */}
             <button
               onClick={handleNext}
-              className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white backdrop-blur-md transition-all hover:scale-110 z-50">
+              className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-teal-500 flex items-center justify-center text-white backdrop-blur-md transition-all hover:scale-110 z-50">
               <ChevronRight size={28} />
             </button>
           </motion.div>

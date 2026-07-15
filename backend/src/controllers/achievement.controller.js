@@ -49,6 +49,7 @@ const getAllAchievement = async (req, res) => {
       .sort({ year: -1, createdAt: -1 });
 
     return res.status(200).json({
+      success:true,
       message: "getAll achievement fetched successfully 🎉",
       achievement,
     });

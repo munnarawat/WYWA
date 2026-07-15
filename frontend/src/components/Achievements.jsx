@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Award, Briefcase, GraduationCap } from "lucide-react";
 import { Link } from "react-router-dom";
 import ReactParallaxTilt from "react-parallax-tilt";
+import api from "../utils/api";
 
 const Achievements = () => {
+  // const [students, setStudents] = useState([]);
   const students = [
     {
       name: "Rahul Kumar",
@@ -44,6 +46,22 @@ const Achievements = () => {
     },
   ];
 
+  useEffect(() => {
+    const fetchAchievement = async () => {
+      try {
+        const res = await api.get("/achievements/all");
+        if(res.data.success){
+           let student = res.data.achievement.slice(0,4);
+           setStudents(student);
+        }
+      } catch (error) {
+        console.error("Error fetching achievements:", error);
+
+      }
+    };
+    // fetchAchievement();
+  }, []);
+  
   // Framer Motion Variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -82,8 +100,8 @@ const Achievements = () => {
             Selected Students
           </h2>
           <p className="text-zinc-400 text-lg">
-            Meet the bright minds from our library who have achieved their
-            dreams and are making us proud in top organizations.
+            Celebrating the brilliant minds who cracked top exams and placements
+            through sheer dedication and hard work.
           </p>
         </motion.div>
       </div>
@@ -96,7 +114,11 @@ const Achievements = () => {
         viewport={{ once: true, amount: 0.2 }}
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6  max-w-7xl mx-auto">
         {students.map((student, index) => (
-          <ReactParallaxTilt tiltMaxAngleX={10} tiltMaxAngleY={10}  scale={1.02} key={index}>
+          <ReactParallaxTilt
+            tiltMaxAngleX={10}
+            tiltMaxAngleY={10}
+            scale={1.02}
+            key={index}>
             <motion.div
               variants={cardVariants}
               whileHover={{ y: -8 }}

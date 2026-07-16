@@ -3,7 +3,7 @@ const { uploadFile, deleteFile } = require("../service/storage.service");
 // createAchievement (admin only);
 const createAchievement = async (req, res) => {
   try {
-    const { studentName, examName, year, description } = req.body;
+    const { studentName, examName, year } = req.body;
     let imageUrl = "";
     let imageId = "";
     if (!studentName || !examName || !year) {
@@ -22,7 +22,6 @@ const createAchievement = async (req, res) => {
       studentName,
       examName,
       year,
-      description,
       imageUrl,
       imageId,
       createdBy: req.user._id,
@@ -93,7 +92,7 @@ const deleteAchievement = async (req, res) => {
 const updateAchievement = async (req, res) => {
   try {
     const { id } = req.params;
-    const { studentName, examName, year, description } = req.body;
+    const { studentName, examName, year } = req.body;
 
     const achievement = await achievementModel.findById(id);
     if (!achievement) {
@@ -122,7 +121,6 @@ const updateAchievement = async (req, res) => {
     if (studentName) achievement.studentName = studentName;
     if (examName) achievement.examName = examName;
     if (year) achievement.year = year;
-    if (description) achievement.description = description;
 
     await achievement.save();
     return res.status(200).json({

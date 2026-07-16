@@ -48,15 +48,10 @@ const ThinkTankSkelton = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {[1, 2, 3, 4].map((item, index) => {
-        const isFeatured = index === 0;
         return (
           <div
             key={index}
-            className={
-              isFeatured
-                ? "md:col-span-2 md:row-span-2 rounded-2xl "
-                : "col-span-1"
-            }>
+            className= "relative overflow-hidden rounded-3xl bg-white/5 border border-white/10 transition-all duration-500 group">
             <div className="p-6 h-full bg-white/5 rounded-2xl flex flex-col justify-between animate-pulse">
               <div className="flex justify-between items-start mb-6">
                 <div className="relative overflow-hidden rounded-2xl w-20 h-20 bg-slate-800 border border-white/10 shrink-0" />

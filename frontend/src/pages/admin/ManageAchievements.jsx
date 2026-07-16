@@ -359,27 +359,6 @@ const ManageAchievements = () => {
                       />
                     </div>
                   </div>
-
-                  {/* Description */}
-                  <div>
-                    <label className="block text-[11px] font-bold tracking-widest uppercase text-slate-500 mb-2">
-                      Short Description <span className="text-rose-500">*</span>
-                    </label>
-                    <textarea
-                      rows="3"
-                      placeholder="e.g. Secured AIR 500 and got placed as SDE."
-                      {...register("description", {
-                        required: "Description is required",
-                      })}
-                      className={`w-full bg-[#131920] border rounded-xl py-3 px-4 text-[14px] text-slate-200 placeholder:text-slate-600 outline-none transition-all focus:bg-teal-500/5 resize-none ${errors.description ? "border-rose-500/50" : "border-white/10 focus:border-teal-500/50"}`}
-                    />
-                    {errors.description && (
-                      <p className="text-rose-400 text-[11px] mt-1.5">
-                        {errors.description.message}
-                      </p>
-                    )}
-                  </div>
-
                   {/* Form Actions */}
                   <div className="pt-4 flex items-center justify-end gap-3 border-t border-white/5 mt-6">
                     <button
@@ -565,11 +544,6 @@ const ManageAchievements = () => {
                     <Star size={12} className="fill-teal-400/50" />{" "}
                     {ach.examName}
                   </div>
-
-                  <p className="text-slate-400 text-[13px] line-clamp-3 leading-relaxed mb-4 relative z-10">
-                    "{ach.description}"
-                  </p>
-
                   {/* Footer Controls (Edit/Delete) */}
                   <div className="mt-auto pt-3 border-t border-white/5 flex items-center justify-end gap-2 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity relative z-10">
                     <button

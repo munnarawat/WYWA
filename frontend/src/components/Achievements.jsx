@@ -6,45 +6,46 @@ import ReactParallaxTilt from "react-parallax-tilt";
 import api from "../utils/api";
 
 const Achievements = () => {
-  // const [students, setStudents] = useState([]);
-  const students = [
-    {
-      name: "Rahul Kumar",
-      achievement: "Software Engineer",
-      organization: "TCS Digital",
-      image: "https://i.pravatar.cc/150?img=11",
-      icon: Briefcase,
-      color: "text-teal-400",
-      bgGlow: "bg-teal-500/20",
-    },
-    {
-      name: "Priya Sharma",
-      achievement: "Cleared SSC CGL",
-      organization: "Income Tax Dept.",
-      image: "https://i.pravatar.cc/150?img=5",
-      icon: Award,
-      color: "text-amber-400",
-      bgGlow: "bg-amber-500/20",
-    },
-    {
-      name: "Amit Patel",
-      achievement: "M.Tech CSE",
-      organization: "IIT Bombay",
-      image: "https://i.pravatar.cc/150?img=12",
-      icon: GraduationCap,
-      color: "text-cyan-400",
-      bgGlow: "bg-cyan-500/20",
-    },
-    {
-      name: "Neha Singh",
-      achievement: "Data Analyst",
-      organization: "Wipro",
-      image: "https://i.pravatar.cc/150?img=9",
-      icon: Briefcase,
-      color: "text-lime-400",
-      bgGlow: "bg-lime-500/20",
-    },
-  ];
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  // const students = [
+  //   {
+  //     name: "Rahul Kumar",
+  //     achievement: "Software Engineer",
+  //     organization: "TCS Digital",
+  //     image: "https://i.pravatar.cc/150?img=11",
+  //     icon: Briefcase,
+  //     color: "text-teal-400",
+  //     bgGlow: "bg-teal-500/20",
+  //   },
+  //   {
+  //     name: "Priya Sharma",
+  //     achievement: "Cleared SSC CGL",
+  //     organization: "Income Tax Dept.",
+  //     image: "https://i.pravatar.cc/150?img=5",
+  //     icon: Award,
+  //     color: "text-amber-400",
+  //     bgGlow: "bg-amber-500/20",
+  //   },
+  //   {
+  //     name: "Amit Patel",
+  //     achievement: "M.Tech CSE",
+  //     organization: "IIT Bombay",
+  //     image: "https://i.pravatar.cc/150?img=12",
+  //     icon: GraduationCap,
+  //     color: "text-cyan-400",
+  //     bgGlow: "bg-cyan-500/20",
+  //   },
+  //   {
+  //     name: "Neha Singh",
+  //     achievement: "Data Analyst",
+  //     organization: "Wipro",
+  //     image: "https://i.pravatar.cc/150?img=9",
+  //     icon: Briefcase,
+  //     color: "text-lime-400",
+  //     bgGlow: "bg-lime-500/20",
+  //   },
+  // ];
 
   useEffect(() => {
     const fetchAchievement = async () => {
@@ -56,11 +57,13 @@ const Achievements = () => {
         }
       } catch (error) {
         console.error("Error fetching achievements:", error);
-
+      }finally{
+        setLoading(false);
       }
     };
-    // fetchAchievement();
+    fetchAchievement();
   }, []);
+  console.log(students);
   
   // Framer Motion Variants
   const containerVariants = {
@@ -122,40 +125,37 @@ const Achievements = () => {
             <motion.div
               variants={cardVariants}
               whileHover={{ y: -8 }}
-              className="group relative border  border-white/10 bg-white/5 rounded-2xl p-6 text-center overflow-hidden flex flex-col items-center justify-center transition-all duration-300 ease-out hover:bg-white/10 hover:shadow-xl hover:shadow-teal-500/10">
+              className="group relative border min-h-75 border-white/10 bg-white/5 rounded-2xl p-6 text-center overflow-hidden flex flex-col items-center justify-center transition-all duration-300 ease-out hover:bg-white/10 hover:shadow-xl hover:shadow-teal-500/10">
               {/* Subtle Glow Behind Image */}
               <div
-                className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${student.bgGlow} -z-10`}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-cyan-500/20 -z-10"
               />
 
               {/* Profile Image with Border/Glow on hover */}
               <div className="relative mb-5">
                 <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-white/10 group-hover:border-white/30 transition-colors duration-300 relative z-10">
                   <img
-                    src={student.image}
-                    alt={`${student.name} achievement`}
+                    src={student.imageUrl}
+                    alt={student.studentName}
                     loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
                 {/* Floating Icon Indicator */}
                 <div
-                  className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-zinc-900 border border-white/20 flex items-center justify-center z-20 ${student.color}`}>
-                  <student.icon size={16} />
+                  className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-zinc-900 border border-white/20 flex items-center justify-center z-20 text-teal-400">
+                  <Award size={16} />
                 </div>
               </div>
 
               {/* Content */}
               <h3 className="text-xl font-semibold text-white mb-1 z-10">
-                {student.name}
+                {student.studentName}
               </h3>
 
               <div className="flex flex-col items-center mt-2 z-10">
-                <span className={`text-sm font-medium ${student.color} mb-1`}>
-                  {student.achievement}
-                </span>
-                <span className="text-xs text-zinc-400 uppercase tracking-wider font-mono bg-white/5 px-3 py-1 rounded-full border border-white/10">
-                  {student.organization}
+                <span className="text-xs text-teal-400 uppercase tracking-wider font-mono bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                  {student.examName}
                 </span>
               </div>
             </motion.div>

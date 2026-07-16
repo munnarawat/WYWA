@@ -1,6 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { MapPin, Trophy, Calendar, ArrowRight, Quote } from "lucide-react";
+import {
+  MapPin,
+  Trophy,
+  Calendar,
+  ArrowRight,
+  Quote,
+  CalendarDays,
+} from "lucide-react";
 import api from "../../utils/api";
 import toast from "react-hot-toast";
 
@@ -42,15 +49,10 @@ const AchievementSkelton = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {[1, 2, 3, 4].map((item, index) => {
-        const isFeatured = index === 0;
         return (
           <div
             key={index}
-            className={
-              isFeatured
-                ? "md:col-span-2 md:row-span-2 rounded-2xl "
-                : "col-span-1"
-            }>
+            className="relative overflow-hidden rounded-3xl bg-white/5 border border-white/10 transition-all duration-500 group">
             <div className="p-6 h-full bg-white/5 rounded-2xl flex flex-col justify-between animate-pulse">
               <div className="flex justify-between items-start mb-6">
                 <div className="relative overflow-hidden rounded-2xl w-20 h-20 bg-slate-800 border border-white/10 shrink-0" />
@@ -102,7 +104,7 @@ const Achievement = () => {
             <Trophy className="w-4 h-4" /> Wall of Fame
           </span>
           <h2 className="text-4xl md:text-5xl font-extrabold text-white">
-            Our Top{" "}
+            Our Top
             <span className="text-transparent bg-clip-text bg-linear-to-r from-teal-400 to-blue-500">
               Achievers
             </span>
@@ -121,15 +123,15 @@ const Achievement = () => {
             {achievements.map((item, index) => {
               return (
                 <SpotlightCard key={item._id} className=" col-span-1">
-                  <div className="p-6 h-full flex flex-col justify-between">
+                  <div className="p-6 min-h-85 flex relative flex-col justify-between">
                     {/* Top Section: Photo & Badge */}
-                    <div className="flex justify-between items-start mb-6">
-                      <div className="relative overflow-hidden rounded-2xl w-24 h-24 border border-white/10 group-hover:border-teal-500/30  shrink-0">
+                    <div className="flex relative justify-between items-start mb-6">
+                      <div className="relative overflow-hidden rounded-2xl w-24 h-24 border border-white/10 group-hover:border-teal-500/30 group-hover:shadow-[0_0_20px_rgba(20,184,166,.2)]  shrink-0">
                         {item.imageUrl ? (
                           <img
                             src={item.imageUrl}
                             alt={item.studentName}
-                            className="w-full h-full object-cover lg:grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 group-hover:rotate-1 transition-all duration-500"
+                            className="w-full h-full object-cover lg:grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 group-hover:rotate-1  transition-all duration-500"
                           />
                         ) : (
                           <div className="w-full h-full bg-slate-800 flex items-center justify-center uppercase text-2xl font-bold text-slate-500">
@@ -137,7 +139,12 @@ const Achievement = () => {
                           </div>
                         )}
                       </div>
-
+                      {/* year */}
+                      <div className=" w-fit bg-black/5 backdrop-blur-md px-6 py-1.5 rounded-full border border-white/10 flex items-center gap-1.5 text-[13px] font-bold text-slate-200">
+                        <CalendarDays size={12} className="text-teal-400" />
+                        {item.year}
+                      </div>
+                      {/* 
                       <div
                         className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 border ${
                           item.branch === "dehradun"
@@ -147,35 +154,24 @@ const Achievement = () => {
                         <MapPin className="w-3 h-3" />
                         {item.branch.charAt(0).toUpperCase() +
                           item.branch.slice(1)}
-                      </div>
+                      </div> */}
                     </div>
-
                     {/* Bottom Section: Details */}
                     <div className="space-y-3 grow">
                       <div>
-                        <p className="inline-flex gap-4 items-center rounded-full border border-teal-500/20 bg-teal-500/10 px-3 py-1 text-sm font-medium mb-4 text-teal-300">
+                        <p className="inline-flex gap-4 items-center rounded-full border line-clamp-2 leading-none border-teal-500/20 bg-teal-500/10 px-3 py-1 text-sm font-medium mb-4 text-teal-300">
                           {item.examName}
-                          <span className="text-slate-500 text-sm flex items-center gap-1 font-black">
-                            <Calendar className="w-3 h-3" /> {item.year}
-                          </span>
                         </p>
-                        <h3 className="text-3xl font-bold text-white mb-1 capitalize group-hover:text-teal-300 transition-colors">
+                        <h3 className="text-2xl font-bold text-white mb-1 capitalize leading-tight group-hover:text-teal-300 transition-colors">
                           {item.studentName}
                         </h3>
-                      </div>
-                      {/* description */}
-                      <div className="relative mb-2 mt-6 rounded-xl border border-white/5 bg-white/3 p-4">
-                        <Quote className="absolute -top-1 left-2 h-5 w-5 text-teal-400" />
-
-                        <p className="italic text-slate-400 leading-7">
-                          {item.description}
-                        </p>
+                        <div className="mt-3 mb-4 h-px w-32 bg-linear-to-r from-teal-400 to-transparent" />
                       </div>
                     </div>
                     {/* Footer */}
                     <div className="mt-auto pt-5  border-t border-white/5 flex items-center justify-between">
                       <span className="text-xs  font-black uppercase tracking-[0.2em] text-slate-500">
-                        MYWA
+                        🏆 Achievement
                       </span>
 
                       <ArrowRight className="w-4 h-4 text-teal-400 group-hover:translate-x-1 transition-transform" />

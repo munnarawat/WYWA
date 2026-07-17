@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Award, Briefcase, GraduationCap } from "lucide-react";
+import { Award, Briefcase, Calendar, GraduationCap } from "lucide-react";
 import { Link } from "react-router-dom";
 import ReactParallaxTilt from "react-parallax-tilt";
 import api from "../utils/api";
@@ -8,44 +8,6 @@ import api from "../utils/api";
 const Achievements = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
-  // const students = [
-  //   {
-  //     name: "Rahul Kumar",
-  //     achievement: "Software Engineer",
-  //     organization: "TCS Digital",
-  //     image: "https://i.pravatar.cc/150?img=11",
-  //     icon: Briefcase,
-  //     color: "text-teal-400",
-  //     bgGlow: "bg-teal-500/20",
-  //   },
-  //   {
-  //     name: "Priya Sharma",
-  //     achievement: "Cleared SSC CGL",
-  //     organization: "Income Tax Dept.",
-  //     image: "https://i.pravatar.cc/150?img=5",
-  //     icon: Award,
-  //     color: "text-amber-400",
-  //     bgGlow: "bg-amber-500/20",
-  //   },
-  //   {
-  //     name: "Amit Patel",
-  //     achievement: "M.Tech CSE",
-  //     organization: "IIT Bombay",
-  //     image: "https://i.pravatar.cc/150?img=12",
-  //     icon: GraduationCap,
-  //     color: "text-cyan-400",
-  //     bgGlow: "bg-cyan-500/20",
-  //   },
-  //   {
-  //     name: "Neha Singh",
-  //     achievement: "Data Analyst",
-  //     organization: "Wipro",
-  //     image: "https://i.pravatar.cc/150?img=9",
-  //     icon: Briefcase,
-  //     color: "text-lime-400",
-  //     bgGlow: "bg-lime-500/20",
-  //   },
-  // ];
 
   useEffect(() => {
     const fetchAchievement = async () => {
@@ -63,7 +25,6 @@ const Achievements = () => {
     };
     fetchAchievement();
   }, []);
-  console.log(students);
   
   // Framer Motion Variants
   const containerVariants = {
@@ -125,7 +86,7 @@ const Achievements = () => {
             <motion.div
               variants={cardVariants}
               whileHover={{ y: -8 }}
-              className="group relative border min-h-75 border-white/10 bg-white/5 rounded-2xl p-6 text-center overflow-hidden flex flex-col items-center justify-center transition-all duration-300 ease-out hover:bg-white/10 hover:shadow-xl hover:shadow-teal-500/10">
+              className="group relative border min-h-80 border-white/10 bg-white/5 rounded-2xl p-6 text-center overflow-hidden flex flex-col items-center justify-center transition-all duration-300 ease-out hover:bg-white/10 hover:shadow-xl hover:shadow-teal-500/10">
               {/* Subtle Glow Behind Image */}
               <div
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-cyan-500/20 -z-10"
@@ -157,6 +118,10 @@ const Achievements = () => {
                 <span className="text-xs text-teal-400 uppercase tracking-wider font-mono bg-white/5 px-3 py-1 rounded-full border border-white/10">
                   {student.examName}
                 </span>
+              </div>
+              <div className="mt-2 flex px-6 py-1.5 bg-white/5 border border-white/5  rounded-full items-center group-hover:border-teal-400/30 justify-center gap-2">
+                <Calendar size={16} className="text-teal-400" />
+                <h2 className="text-sm text-slate-300">{student.year}</h2>
               </div>
             </motion.div>
           </ReactParallaxTilt>

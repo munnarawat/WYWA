@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
 import MainRouter from "./routes/MainRouter";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import api from "./utils/api";
-import { clearUser, setUser } from "./store/slice/authSlice";
+import { clearUser, setUser, updateMywaAccess } from "./store/slice/authSlice";
 import { Loader } from "lucide-react";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
+import { io } from "socket.io-client";
+const socket = io("http://localhost:3000", {
+  withCredentials: true,
+});
 
 const App = () => {
   const dispatch = useDispatch();
+  const { user: currentUser } = useSelector((state) => state.auth);
   const [isAuthChecking, setIsAuthChecking] = useState(true);
   useEffect(() => {
     const checkAuth = async () => {
@@ -22,6 +27,33 @@ const App = () => {
     };
     checkAuth();
   }, [dispatch]);
+  // socket io
+  useEffect(() => {
+    if (currentUser?._id) {
+      console.log("Socket ID:", socket.id);
+
+      socket.emit("join_user_room", currentUser._id.toString());
+      console.log("Room join request sent for ID:", currentUser._id);
+
+      // wait for admin update
+      socket.on("role_updated", (data) => {
+        console.log("real time updated ", data);
+
+        if (data.isMywaFamilyMember) {
+          toast.success(data.message || "Welcome to MYWA family❤️");
+        } else {
+          toast.error(
+            data.message || "You are no longer a member of MYWA family",
+          );
+        }
+        dispatch(updateMywaAccess(data.isMywaFamilyMember));
+      });
+    }
+    return () => {
+      socket.off("role_updated");
+    };
+  }, [currentUser, dispatch]);
+
   if (isAuthChecking) {
     return (
       <div className="w-full min-h-screen bg-black flex items-center justify-center text-white">
@@ -39,10 +71,9 @@ const App = () => {
             color: "#fff",
             backdropFilter: "blur(10px)",
             borderRadius: "10px",
-            borderRightWidth:"3px",
-            borderLeftWidth:"3px",
-            borderColor:"oklch(77.7% 0.152 181.912)"
-            
+            borderRightWidth: "3px",
+            borderLeftWidth: "3px",
+            borderColor: "oklch(77.7% 0.152 181.912)",
           },
           success: {
             iconTheme: {

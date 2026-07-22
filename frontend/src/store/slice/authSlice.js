@@ -20,10 +20,18 @@ const authSlice = createSlice({
         },
         setLoading:(state,action)=>{
             state.isLoading = action.payload;
+        },
+        updateMywaAccess:(state,action)=>{
+            if(state.user){
+                state.user = {
+                    ...state.user,
+                   isMywaFamilyMember:action.payload
+                }
+            }
         }
     }
 });
 
-export const {setUser, clearUser, setLoading} = authSlice.actions;
+export const {setUser, clearUser, setLoading , updateMywaAccess} = authSlice.actions;
 
 export default authSlice.reducer;

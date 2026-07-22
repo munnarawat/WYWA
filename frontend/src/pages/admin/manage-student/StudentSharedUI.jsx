@@ -127,7 +127,7 @@ export const PromoteDropdown = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -8 }}
           transition={{ type: "spring", stiffness: 320, damping: 24 }}
-          className="absolute right-0 -top-25 md:right-0 mt-2 w-52 rounded-[14px]  overflow-hidden z-50 bg-[#0d1117] border border-white/8 shadow-[0_16px_40px_rgba(0,0,0,0.6)]">
+          className="absolute right-0 z-99999 -top-25 md:right-0 mt-2 w-52 rounded-[14px]  overflow-hidden  bg-[#0d1117] border border-white/8 shadow-[0_16px_40px_rgba(0,0,0,0.6)]">
           <button
             onClick={onConfirmAdmin}
             className="w-full flex items-center gap-2.5 px-4 py-3 text-[12px] text-slate-400 hover:bg-teal-500/10 hover:text-teal-400 transition-colors border-b border-white/5">

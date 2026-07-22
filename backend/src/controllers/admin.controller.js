@@ -64,7 +64,7 @@ const toggleLibraryAccess = async (req, res) => {
     }
     user.isLibraryMember = !user.isLibraryMember;
 
-    if(user.isLibraryMember === true){
+    if (user.isLibraryMember === true) {
       user.hasRequestedLibrary = false;
     }
     await user.save();
@@ -77,7 +77,7 @@ const toggleLibraryAccess = async (req, res) => {
       user: {
         _id: user._id,
         isLibraryMember: user.isLibraryMember,
-        hasRequestedLibrary : user.hasRequestedLibrary
+        hasRequestedLibrary: user.hasRequestedLibrary,
       },
     });
   } catch (error) {
@@ -106,7 +106,17 @@ const toggleMywaFamilyMember = async (req, res) => {
     }
     user.isMywaFamilyMember = !user.isMywaFamilyMember;
     await user.save();
+    const io = req.app.get("io");
 
+    if (io) {
+      io.to(id.toString()).emit("role_updated", {
+        type: "MYWA_MEMBER",
+        isMywaFamilyMember: user.isMywaFamilyMember,
+        message: user.isMywaFamilyMember
+          ? "Congratulations! You are now a MYWA Family Member. "
+          : "Your MYWA Family access has been removed.",
+      });
+    }
     return res.status(200).json({
       success: true,
       message: user.isMywaFamilyMember

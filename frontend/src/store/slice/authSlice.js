@@ -28,10 +28,18 @@ const authSlice = createSlice({
                    isMywaFamilyMember:action.payload
                 }
             }
+        },
+        updateLibraryAccess:(state,action)=>{
+            if(state.user){
+            state.user ={
+                ...state.user,
+                isLibraryMember:action.payload
+            }
+            }
         }
     }
 });
 
-export const {setUser, clearUser, setLoading , updateMywaAccess} = authSlice.actions;
+export const {setUser, clearUser, setLoading , updateMywaAccess,updateLibraryAccess} = authSlice.actions;
 
 export default authSlice.reducer;

@@ -69,6 +69,18 @@ const toggleLibraryAccess = async (req, res) => {
     }
     await user.save();
 
+    const io = req.app.get("io");
+
+    if (io) {
+      io.to(id.toString()).emit("library_role_updated", {
+        type: "LIBRARY_MEMBER",
+        isLibraryMember: user.isLibraryMember,
+        message: user.isLibraryMember
+          ? "Congratulations! You are now a Library Member.✅ "
+          : "Your Library access has been removed.❌",
+      });
+    }
+
     return res.status(200).json({
       success: true,
       message: user.isLibraryMember

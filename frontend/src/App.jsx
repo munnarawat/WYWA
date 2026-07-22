@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import MainRouter from "./routes/MainRouter";
 import { useDispatch, useSelector } from "react-redux";
 import api from "./utils/api";
-import { clearUser, setUser, updateMywaAccess } from "./store/slice/authSlice";
+import { clearUser, setUser, updateLibraryAccess, updateMywaAccess } from "./store/slice/authSlice";
 import { Loader } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import { io } from "socket.io-client";
@@ -35,7 +35,7 @@ const App = () => {
       socket.emit("join_user_room", currentUser._id.toString());
       console.log("Room join request sent for ID:", currentUser._id);
 
-      // wait for admin update
+      // mywaFamilyMember role update
       socket.on("role_updated", (data) => {
         console.log("real time updated ", data);
 
@@ -48,9 +48,24 @@ const App = () => {
         }
         dispatch(updateMywaAccess(data.isMywaFamilyMember));
       });
+
+      // libraryMember role update
+      socket.on("library_role_updated",(data)=>{
+        console.log("real time updated ", data);
+
+        if (data.isLibraryMember) {
+          toast.success(data.message || "Welcome to Library family❤️");
+        } else {
+          toast.error(
+            data.message || "You are no longer a member of Library family",
+          );
+        }
+        dispatch(updateLibraryAccess(data.isLibraryMember));
+      });
     }
     return () => {
       socket.off("role_updated");
+      socket.off("library_role_updated");
     };
   }, [currentUser, dispatch]);
 

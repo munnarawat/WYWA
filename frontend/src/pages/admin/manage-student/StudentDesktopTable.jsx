@@ -98,7 +98,7 @@ const StudentDesktopTable = ({
                                 className={`text-[13px] font-semibold capitalize ${!user.isActive ? "text-slate-500" : "text-slate-200"}`}>
                                 {displayName}
                               </span>
-                              {user.isMywaFamilyMember && <MywaBadge/>}
+                              {user.isMywaFamilyMember && <MywaBadge />}
                               {user.isLibraryMember && <LibraryBadge />}
                               {isSelf && <YouBadge />}
                             </div>
@@ -116,8 +116,10 @@ const StudentDesktopTable = ({
                       </td>
                       <td className="px-5 py-3.5">
                         <div className="flex items-center justify-end gap-2">
-                          <MywaBtn isMywaMember={user.isMywaFamilyMember} 
-                          onClick={()=> handleToggleMywaMember(user._id)}
+                          <MywaBtn
+                            isMywaMember={user.isMywaFamilyMember}
+                            isPending={user.hasRequestedMywaFamily}
+                            onClick={() => handleToggleMywaMember(user._id)}
                           />
                           <LibraryBtn
                             isLibraryMember={user.isLibraryMember}

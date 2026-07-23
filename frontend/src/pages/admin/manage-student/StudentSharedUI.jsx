@@ -83,15 +83,26 @@ export const LibraryBtn = ({ isLibraryMember, onClick, fullWidth = false }) => (
     {isLibraryMember ? "Remove Library" : "Grant Library"}
   </motion.button>
 );
-export const MywaBtn = ({ isMywaMember, onClick }) => (
+export const MywaBtn = ({ isMywaMember, isPending, onClick }) => (
   <button
     onClick={onClick}
     className={`p-1.5 rounded-lg transition-colors border ${
       isMywaMember
         ? "bg-lime-500/10 text-lime-400 border-lime-500/20 hover:bg-lime-500/20"
         : "bg-white/5 text-slate-500 border-white/5 hover:bg-white/10 hover:text-white"
+    }${
+      isPending && !isMywaMember
+        ? "border-amber-500/50 shadow-[0_0_10px_rgba(245,158,11,0.2)] bg-amber-500/5"
+        : ""
     }`}
     title={isMywaMember ? "Remove from MYWA Family" : "Add to MYWA Family"}>
+    {/* 🚀 PENDING NOTIFICATION DOT (Pinging Animation) */}
+    {isPending && !isMywaMember && (
+      <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+      </span>
+    )}
     <HeartHandshake size={16} />
   </button>
 );

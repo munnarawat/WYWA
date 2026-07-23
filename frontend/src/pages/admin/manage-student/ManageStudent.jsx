@@ -129,9 +129,11 @@ const ManageStudent = () => {
         setUsers((prev) =>
           prev.map((u) =>
             u._id === userId
-              ? { ...u, isLibraryMember: res.data.user.isLibraryMember,
-                hasRequestedLibrary:res.data.user.hasRequestedLibrary
-               }
+              ? {
+                  ...u,
+                  isLibraryMember: res.data.user.isLibraryMember,
+                  hasRequestedLibrary: res.data.user.hasRequestedLibrary,
+                }
               : u,
           ),
         );
@@ -241,7 +243,9 @@ const ManageStudent = () => {
     let result = users;
 
     if (showPendingOnly) {
-      result = result.filter((u) => u.hasRequestedLibrary === true);
+      result = result.filter(
+        (u) => u.hasRequestedLibrary || u.hasRequestedMywaFamily,
+      );
     }
     const q = searchQuery.toLowerCase();
     if (q) {
@@ -251,7 +255,7 @@ const ManageStudent = () => {
           u.email?.toLowerCase().includes(q),
       );
     }
-    return result
+    return result;
   }, [users, searchQuery, showPendingOnly]);
 
   // ── Derived stats ──────────────────────
@@ -261,7 +265,9 @@ const ManageStudent = () => {
       active: users.filter((u) => u.isActive).length,
       blocked: users.filter((u) => !u.isActive).length,
       library: users.filter((u) => u.isLibraryMember).length,
-      pending: users.filter((u) => u.hasRequestedLibrary).length,
+      pending: users.filter(
+        (u) => u.hasRequestedLibrary || u.hasRequestedMywaFamily,
+      ).length,
     }),
     [users],
   );

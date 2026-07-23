@@ -117,6 +117,9 @@ const toggleMywaFamilyMember = async (req, res) => {
       });
     }
     user.isMywaFamilyMember = !user.isMywaFamilyMember;
+    if(user.isMywaFamilyMember === true){
+      user.hasRequestedMywaFamily = false;
+    }
     await user.save();
     const io = req.app.get("io");
 

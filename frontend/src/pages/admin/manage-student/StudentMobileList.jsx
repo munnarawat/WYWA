@@ -23,9 +23,8 @@ const StudentMobileList = ({
   handleToggleBlock,
   handleConfirmAdmin,
   handleConfirmThinkTank,
-  handleToggleMywaMember
+  handleToggleMywaMember,
 }) => {
-
   const navigate = useNavigate();
   if (users.length === 0) {
     return (
@@ -77,7 +76,9 @@ const StudentMobileList = ({
                 }}
               />
 
-              <div onClick={()=>navigate(`/admin/user-profile/${user._id}`)} className="flex items-start justify-between gap-3 mb-3">
+              <div
+                onClick={() => navigate(`/admin/user-profile/${user._id}`)}
+                className="flex items-start justify-between gap-3 mb-3">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center text-[14px] font-extrabold shrink-0 border ${AVATAR_CLASS[user.role] || AVATAR_CLASS.student} ${!user.isActive ? "opacity-40 grayscale" : ""}`}>
@@ -101,16 +102,18 @@ const StudentMobileList = ({
 
               <div className="flex items-center gap-2 flex-wrap mb-3">
                 <RolePill role={user.role} />
-                {user.isMywaFamilyMember && <MywaBadge/>}
+                {user.isMywaFamilyMember && <MywaBadge />}
                 {user.isLibraryMember && <LibraryBadge />}
               </div>
 
               <div className="h-px bg-white/5 mb-3" />
 
               <div className="flex items-center gap-2 flex-wrap">
-                <MywaBtn isMywaMember={user.isMywaFamilyMember}
-                onClick={()=> handleToggleMywaMember(user._id)}
-                 />
+                <MywaBtn
+                  isMywaMember={user.isMywaFamilyMember}
+                  isPending={user.hasRequestedMywaFamily}
+                  onClick={() => handleToggleMywaMember(user._id)}
+                />
                 <LibraryBtn
                   isLibraryMember={user.isLibraryMember}
                   onClick={() => handleToggleLibrary(user._id)}

@@ -16,6 +16,7 @@ const {
 const {
   getUserProfile360,
   requestLibraryAccess,
+  requestMywaAccess
 } = require("../controllers/user.controller");
 const multer = require("multer");
 
@@ -51,6 +52,10 @@ router.get("/student/:id/profile360", authMiddleware, getUserProfile360);
 
 // requestLibraryMember
 router.post("/requestLibraryMember", authMiddleware, requestLibraryAccess);
+
+// mywa family member router
+router.post("/request-mywa",authMiddleware, requestMywaAccess );
+
 // logout user
 router.post("/logout", logoutController);
 

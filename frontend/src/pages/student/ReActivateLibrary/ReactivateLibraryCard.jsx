@@ -16,6 +16,7 @@ const ReactivateLibraryCard = () => {
   const [requested, setRequested] = useState(
     currentUser?.hasRequestedLibrary || false,
   );
+console.log(currentUser);
 
   const handleRequestAccess = async () => {
     try {
@@ -226,7 +227,7 @@ const ReactivateLibraryCard = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 3 }}
                 transition={{ duration: 0.28 }}
-                className="hidden lg:flex relative z-10 mx-8 mb-7 items-center justify-center gap-2 bg-teal-500/[0.08] border border-teal-500/20 rounded-xl px-4 py-2.5 text-teal-400 text-[13.5px] font-medium">
+                className="hidden lg:flex relative z-10 mx-8 mb-7 items-center justify-center gap-2 bg-teal-500/8 border border-teal-500/20 rounded-xl px-4 py-2.5 text-teal-400 text-[13.5px] font-medium">
                 <CircleCheck size={16} className="shrink-0" />
                 Request sent! Admin will review within 24 hrs."
               </motion.div>

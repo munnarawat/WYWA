@@ -142,7 +142,37 @@ const requestLibraryAccess = async (req, res) => {
   }
 };
 
+const requestMywaAccess = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    if (user.isMywaFamilyMember) {
+      return res.status(400).json({
+        success: false,
+        message: "You are already MYWA member!",
+      });
+    }
+    user.hasRequestedMywaFamily = true;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Request sent to Admin successfully! ⏳",
+      isMywaFamilyMember: true,
+    });
+  } catch (error) {
+    console.error("Request MYWA access error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
 module.exports = {
   getUserProfile360,
-  requestLibraryAccess
+  requestLibraryAccess,
+  requestMywaAccess
 };

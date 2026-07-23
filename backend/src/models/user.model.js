@@ -66,7 +66,11 @@ const userSchema = new mongoose.Schema(
     },
     hasRequestedLibrary: {
       type: Boolean,
-      default: false, 
+      default: false,
+    },
+    hasRequestedMywaFamily: {
+      type: Boolean,
+      default: false,
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,

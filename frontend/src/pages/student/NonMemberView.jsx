@@ -6,19 +6,24 @@ import {
   Users,
   Briefcase,
 } from "lucide-react";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import api from "../../utils/api";
-
+import { updateMywaAccess, updateMywaRequestStatus } from "../../store/slice/authSlice";
 
 const NonMemberView = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user: currentUser } = useSelector((state) => state.auth);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const isRequestPending = currentUser?.hasRequestedMywaFamily;
   const ref = useRef(null);
 
+  console.log(currentUser);
+  
   const handleJoinFamily = async () => {
     const hasPhone = currentUser?.profile?.contact?.phone;
     const hasAddress = currentUser?.profile?.contact?.permanentAddress;
@@ -28,7 +33,22 @@ const NonMemberView = () => {
       navigate("/student/profile");
       return;
     }
-    toast.success("Request sent to Admin! Please wait for approval.");
+    try {
+      setIsSubmitting(true);
+
+      const response = await api.post("/auth/request-mywa");
+      if (response.data.success) {
+        toast.success(
+          response.data.message ||
+            "Request sent to Admin! Please wait for approval.",
+        );
+        dispatch(updateMywaRequestStatus(true));
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong!");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const stagger = {
@@ -160,7 +180,7 @@ const NonMemberView = () => {
             {/* Body */}
             <motion.p
               variants={item}
-              className="text-slate-500 text-[15px] leading-relaxed mb-5 max-w-[400px] mx-auto">
+              className="text-slate-500 text-[15px] leading-relaxed mb-5 max-w-100 mx-auto">
               Leaving Munsyari to chase your dreams doesn't mean doing it alone.
               <span className="text-slate-300 font-semibold block mt-2">
                 MYWA is not just an association — it's your family.
@@ -223,38 +243,53 @@ const NonMemberView = () => {
             {/* CTA */}
             <motion.div variants={item}>
               <motion.button
-                whileHover={{
-                  y: -3,
-                  boxShadow:
-                    "0 0 40px rgba(20,184,166,0.45), 0 16px 40px rgba(0,0,0,0.3)",
-                }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={
+                  !isRequestPending && {
+                    y: -3,
+                    boxShadow:
+                      "0 0 40px rgba(20,184,166,0.45), 0 16px 40px rgba(0,0,0,0.3)",
+                  }
+                }
+                whileTap={!isRequestPending && { scale: 0.97 }}
                 onClick={handleJoinFamily}
-                className="relative inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full font-extrabold text-[15px] text-emerald-950 w-full sm:w-auto justify-center overflow-hidden"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #f0fdf4 0%, #5eead4 30%, #14b8a6 65%, #84cc16 100%)",
-                  letterSpacing: "-0.01em",
-                }}>
-                {/* Shimmer */}
-                <motion.span
-                  className="absolute inset-0 pointer-events-none"
-                  style={{
-                    background:
-                      "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
-                  }}
-                  animate={{ x: ["-100%", "200%"] }}
-                  transition={{
-                    duration: 2.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    repeatDelay: 1,
-                  }}
-                />
-                Join the MYWA Family
-                <span className="w-7 h-7 rounded-full bg-emerald-900/20 flex items-center justify-center">
-                  <ArrowRight size={15} />
-                </span>
+                disabled={isRequestPending || isSubmitting} // Disable condition
+                className={`relative inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full font-extrabold text-[15px] w-full sm:w-auto justify-center overflow-hidden transition-all duration-300 ${
+                  isRequestPending
+                    ? "bg-slate-800 text-slate-400 cursor-not-allowed border border-slate-700" // Pending Style
+                    : "text-emerald-950" // Normal Style
+                }`}
+                style={
+                  !isRequestPending
+                    ? {
+                        background:
+                          "linear-gradient(135deg, #f0fdf4 0%, #5eead4 30%, #14b8a6 65%, #84cc16 100%)",
+                        letterSpacing: "-0.01em",
+                      }
+                    : {}
+                }>
+                {/* Shimmer (sirf tab dikhao jab pending na ho) */}
+                {!isRequestPending && (
+                  <motion.span
+                    className="absolute inset-0 pointer-events-none"
+                    // ... (tera shimmer animation wala code)
+                  />
+                )}
+
+                {/* Dynamic Text and Icon */}
+                {isSubmitting ? (
+                  "Sending Request..."
+                ) : isRequestPending ? (
+                  <>
+                    Request Pending <span className="text-xl">⏳</span>
+                  </>
+                ) : (
+                  <>
+                    Join the MYWA Family
+                    <span className="w-7 h-7 rounded-full bg-emerald-900/20 flex items-center justify-center">
+                      <ArrowRight size={15} />
+                    </span>
+                  </>
+                )}
               </motion.button>
             </motion.div>
           </motion.div>

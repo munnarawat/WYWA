@@ -37,7 +37,6 @@ const App = () => {
 
       // mywaFamilyMember role update
       socket.on("role_updated", (data) => {
-        console.log("real time updated ", data);
 
         if (data.isMywaFamilyMember) {
           toast.success(data.message || "Welcome to MYWA family❤️");
@@ -51,7 +50,6 @@ const App = () => {
 
       // libraryMember role update
       socket.on("library_role_updated",(data)=>{
-        console.log("real time updated ", data);
 
         if (data.isLibraryMember) {
           toast.success(data.message || "Welcome to Library family❤️");

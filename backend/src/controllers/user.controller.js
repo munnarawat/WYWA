@@ -136,7 +136,7 @@ const requestLibraryAccess = async (req, res) => {
   try {
     const userId = req.user._id;
     await UserModel.findByIdAndUpdate(userId, { hasRequestedLibrary: true });
-    res.status(200).json({ success: true, message: "Request sent to Admin!" });
+    res.status(200).json({ success: true, message: "Request sent to MYWA  successfully! ⏳" });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server Error" });
   }
@@ -163,7 +163,7 @@ const requestMywaAccess = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Request sent to Admin successfully! ⏳",
+      message: "Request sent to MYWA  successfully! ⏳",
       isMywaFamilyMember: true,
     });
   } catch (error) {
@@ -174,5 +174,5 @@ const requestMywaAccess = async (req, res) => {
 module.exports = {
   getUserProfile360,
   requestLibraryAccess,
-  requestMywaAccess
+  requestMywaAccess,
 };

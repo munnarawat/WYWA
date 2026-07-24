@@ -154,7 +154,9 @@ const ManageStudent = () => {
         setUsers((prev) =>
           prev.map((u) =>
             u._id === userId
-              ? { ...u, isMywaFamilyMember: res.data.user.isMywaFamilyMember }
+              ? { ...u, isMywaFamilyMember: res.data.user.isMywaFamilyMember ,
+                hasRequestedMywaFamily:res.data.user.hasRequestedMywaFamily
+              }
               : u,
           ),
         );

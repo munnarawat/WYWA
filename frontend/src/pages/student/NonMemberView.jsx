@@ -40,7 +40,7 @@ const NonMemberView = () => {
       if (response.data.success) {
         toast.success(
           response.data.message ||
-            "Request sent to Admin! Please wait for approval.",
+            "Request sent to MYWA team! Please wait for approval.",
         );
         dispatch(updateMywaRequestStatus(true));
       }

@@ -140,6 +140,7 @@ const toggleMywaFamilyMember = async (req, res) => {
       user: {
         _id: user._id,
         isMywaFamilyMember: user.isMywaFamilyMember,
+        hasRequestedMywaFamily: user.hasRequestedMywaFamily,
       },
     });
   } catch (error) {

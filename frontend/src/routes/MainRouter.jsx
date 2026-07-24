@@ -22,6 +22,7 @@ import PublicLayout from "../components/PublicLayout";
 import DashboardLayout from "../pages/DashboardLayout";
 import ScrollTop from "../animation/ScrollTop";
 import PageNotFound from "../components/notFound/PageNotFound";
+const MywaLoader = lazy(()=>import("../components/loader/MywaLoader")) ;
 
 // ─────────────────────────────────────────
 // 🚀 ASYNC IMPORTS (Lazy Loaded Pages)
@@ -101,14 +102,6 @@ const HelpDesk = lazy(() => import("../pages/student/helpdesk/HelpDesk"));
 // ─────────────────────────────────────────
 // 💎 PREMIUM LOADER (Fallback UI)
 // ─────────────────────────────────────────
-const PageLoader = () => (
-  <div className="min-h-screen bg-black w-full flex flex-col items-center justify-center ">
-    <div className="w-10 h-10 border-4 border-white/5 border-t-teal-500 rounded-full animate-spin"></div>
-    <p className="mt-4 text-[11px] font-bold tracking-widest text-slate-500 uppercase animate-pulse">
-      Loading Workspace...
-    </p>
-  </div>
-);
 
 // ─────────────────────────────────────────
 // MAIN ROUTER
@@ -162,7 +155,7 @@ const MainRouter = () => {
     <>
       <ScrollTop />
       {/* 🟢 SUSPENSE WRAPPER ADDED HERE */}
-      <Suspense fallback={<PageLoader />}>
+      <Suspense fallback={<MywaLoader />}>
         <Routes>
           {/* Public Routes */}
           <Route element={<PublicLayout />}>

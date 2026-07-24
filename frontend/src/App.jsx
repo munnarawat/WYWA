@@ -2,10 +2,17 @@ import React, { useEffect, useState } from "react";
 import MainRouter from "./routes/MainRouter";
 import { useDispatch, useSelector } from "react-redux";
 import api from "./utils/api";
-import { clearUser, setUser, updateLibraryAccess, updateMywaAccess, updateMywaRequestStatus } from "./store/slice/authSlice";
+import {
+  clearUser,
+  setUser,
+  updateLibraryAccess,
+  updateMywaAccess,
+  updateMywaRequestStatus,
+} from "./store/slice/authSlice";
 import { Loader } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import { io } from "socket.io-client";
+import MywaLoader from "./components/loader/MywaLoader";
 const socket = io("http://localhost:3000", {
   withCredentials: true,
 });
@@ -37,7 +44,6 @@ const App = () => {
 
       // mywaFamilyMember role update
       socket.on("role_updated", (data) => {
-
         if (data.isMywaFamilyMember) {
           toast.success(data.message || "Welcome to MYWA family❤️");
         } else {
@@ -47,14 +53,13 @@ const App = () => {
         }
         dispatch(updateMywaAccess(data.isMywaFamilyMember));
 
-        if(data.hasRequestedMywaFamily !== undefined){
-          dispatch(updateMywaRequestStatus(data.hasRequestedMywaFamily))
+        if (data.hasRequestedMywaFamily !== undefined) {
+          dispatch(updateMywaRequestStatus(data.hasRequestedMywaFamily));
         }
       });
 
       // libraryMember role update
-      socket.on("library_role_updated",(data)=>{
-
+      socket.on("library_role_updated", (data) => {
         if (data.isLibraryMember) {
           toast.success(data.message || "Welcome to Library family❤️");
         } else {
@@ -73,9 +78,7 @@ const App = () => {
 
   if (isAuthChecking) {
     return (
-      <div className="w-full min-h-screen bg-black flex items-center justify-center text-white">
-        <Loader size={48} className="text-teal-400 animate-spin" />
-      </div>
+      <MywaLoader/>
     );
   }
   return (

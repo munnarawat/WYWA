@@ -21,6 +21,8 @@ const App = () => {
   const dispatch = useDispatch();
   const { user: currentUser } = useSelector((state) => state.auth);
   const [isAuthChecking, setIsAuthChecking] = useState(true);
+  const [showLoader, setShowLoader] = useState(true);
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -76,9 +78,14 @@ const App = () => {
     };
   }, [currentUser, dispatch]);
 
+  if (showLoader) {
+    return <MywaLoader onComplete={() => setShowLoader(false)} />;
+  }
   if (isAuthChecking) {
     return (
-      <MywaLoader/>
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader className="animate-spin" />
+      </div>
     );
   }
   return (

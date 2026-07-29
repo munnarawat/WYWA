@@ -11,7 +11,7 @@ const Hero = () => {
     "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-3.jpeg",
   ];
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  const [imageLoaded, setImageLoaded] = useState(false);
   //  2 Second Auto-Slide Logic
   useEffect(() => {
     const timer = setInterval(() => {
@@ -22,6 +22,12 @@ const Hero = () => {
     return () => clearInterval(timer);
   }, [sliderImages.length]);
 
+  useEffect(() => {
+    sliderImages.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
   // text-animation
   const container = {
     hidden: { opacity: 0 },
@@ -146,6 +152,7 @@ const Hero = () => {
               <motion.img
                 key={currentIndex}
                 src={sliderImages[currentIndex]}
+                onLoad={() => setImageLoaded(true)}
                 alt={`Munsyari Slide ${currentIndex + 1}`}
                 initial={{ opacity: 0, scale: 1.05 }} //fade in
                 animate={{ opacity: 1, scale: 1 }}

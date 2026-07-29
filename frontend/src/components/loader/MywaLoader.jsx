@@ -35,6 +35,10 @@ const MywaLoader = ({ onComplete }) => {
             filter: "blur(12px)",
             ease: "power2.out",
             onComplete: () => {
+              gsap.set(loaderRef.current, {
+                visibility: "hidden",
+                pointerEvents: "none",
+              });
               onComplete?.();
             },
           });
@@ -118,13 +122,13 @@ const MywaLoader = ({ onComplete }) => {
       // Hold before exit
       tl.to({}, { duration: 0.7 });
     },
-    { scope: loaderRef, revertOnUpdate: true, },
+    { scope: loaderRef, revertOnUpdate: true },
   );
 
   return (
     <div
       ref={loaderRef}
-      className="fixed inset-0 z-9999 flex items-center justify-center bg-[#05080D] overflow-hidden px-6">
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#05080D] overflow-hidden px-6">
       {/* Ambient glow */}
       <div
         ref={glowRef}

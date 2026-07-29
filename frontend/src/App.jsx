@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MainRouter from "./routes/MainRouter";
 import { useDispatch, useSelector } from "react-redux";
 import api from "./utils/api";
@@ -20,8 +20,8 @@ const socket = io("http://localhost:3000", {
 const App = () => {
   const dispatch = useDispatch();
   const { user: currentUser } = useSelector((state) => state.auth);
-  const [isAuthChecking, setIsAuthChecking] = useState(true);
-  const [showLoader, setShowLoader] = useState(true);
+  const [loaderDone, setLoaderDone] = useState(false);
+  const [authDone, setAuthDone] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -31,7 +31,7 @@ const App = () => {
       } catch (error) {
         dispatch(clearUser());
       } finally {
-        setIsAuthChecking(false);
+        setAuthDone(true);
       }
     };
     checkAuth();
@@ -78,16 +78,7 @@ const App = () => {
     };
   }, [currentUser, dispatch]);
 
-  if (showLoader) {
-    return <MywaLoader onComplete={() => setShowLoader(false)} />;
-  }
-  if (isAuthChecking) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader className="animate-spin" />
-      </div>
-    );
-  }
+  const appReady = loaderDone && authDone;
   return (
     <>
       <Toaster
@@ -116,7 +107,8 @@ const App = () => {
           },
         }}
       />
-      <MainRouter />
+      <MainRouter/>
+      {!appReady && <MywaLoader onComplete={() => setLoaderDone(true)} />}
     </>
   );
 };

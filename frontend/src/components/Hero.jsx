@@ -158,6 +158,7 @@ const Hero = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.8, ease: "easeInOut" }}
+                loading={currentIndex === 0 ? "eager" : "lazy"}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </AnimatePresence>

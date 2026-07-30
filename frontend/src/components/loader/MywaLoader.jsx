@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 
@@ -122,7 +122,7 @@ const MywaLoader = ({ onComplete }) => {
       // Hold before exit
       tl.to({}, { duration: 0.7 });
     },
-    { scope: loaderRef, revertOnUpdate: true },
+    { scope: loaderRef, revertOnUpdate: true, dependencies: [] },
   );
 
   return (
@@ -231,4 +231,4 @@ const MywaLoader = ({ onComplete }) => {
   );
 };
 
-export default MywaLoader;
+export default React.memo(MywaLoader);

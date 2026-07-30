@@ -20,7 +20,10 @@ const socket = io("http://localhost:3000", {
 const App = () => {
   const dispatch = useDispatch();
   const { user: currentUser } = useSelector((state) => state.auth);
-  const [loaderDone, setLoaderDone] = useState(false);
+  const [showLoader] = useState(
+    () => sessionStorage.getItem("mywa-loader") !== "true",
+  );
+  const [loaderFinished, setLoaderFinished] = useState(!showLoader);
   const [authDone, setAuthDone] = useState(false);
 
   useEffect(() => {
@@ -77,8 +80,7 @@ const App = () => {
       socket.off("library_role_updated");
     };
   }, [currentUser, dispatch]);
-
-  const appReady = loaderDone && authDone;
+const appReady = authDone && (!showLoader || loaderFinished);
   return (
     <>
       <Toaster
@@ -107,8 +109,15 @@ const App = () => {
           },
         }}
       />
-      <MainRouter/>
-      {!appReady && <MywaLoader onComplete={() => setLoaderDone(true)} />}
+      {appReady && <MainRouter />}
+      {showLoader && !loaderFinished && (
+        <MywaLoader
+          onComplete={() => {
+            sessionStorage.setItem("mywa-loader", "true");
+            setLoaderFinished(true);
+          }}
+        />
+      )}
     </>
   );
 };

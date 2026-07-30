@@ -5,10 +5,10 @@ import { Link } from "react-router-dom";
 const MotionLink = motion.create(Link);
 const Hero = () => {
   const sliderImages = [
-    "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-1.jpeg",
-    "https://ik.imagekit.io/fmkamttxp/MYWA/mywa%20haldwani.jpeg",
-    "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-2.jpeg",
-    "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-3.jpeg",
+    "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-1.jpeg?tr=w-800,q-75,f-webp",
+    "https://ik.imagekit.io/fmkamttxp/MYWA/mywa%20haldwani.jpeg?tr=w-800,q-75,f-webp",
+    "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-2.jpeg?tr=w-800,q-75,f-webp",
+    "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-3.jpeg?tr=w-800,q-75,f-webp",
   ];
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageLoaded, setImageLoaded] = useState(false);

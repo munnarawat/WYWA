@@ -18,6 +18,7 @@ import { io } from "socket.io-client";
 import toast from "react-hot-toast";
 import NotificationDropdown from "./notification/NotificationDropdown";
 import { Helmet } from "react-helmet-async";
+import api from "../utils/api";
 const socket = io("http://localhost:3000", {
   withCredentials: true,
 });
@@ -69,9 +70,17 @@ const DashboardLayout = ({ menuItems }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  const handleLogout = () => {
-    dispatch(clearUser());
-    navigate("/login");
+  const handleLogOut = async () => {
+    try {
+      await api.post("/auth/logout");
+      toast.success("logout successful");
+    } catch (error) {
+      console.error("logout failed", error);
+    } finally {
+      dispatch(clearUser());
+      navigate("/login", { replace: true });
+      setIsProfileOpen(false);
+    }
   };
 
   return (
@@ -152,7 +161,7 @@ const DashboardLayout = ({ menuItems }) => {
 
         <div className="p-4 border-t border-white/10">
           <button
-            onClick={handleLogout}
+            onClick={()=>handleLogOut()}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-400 hover:bg-rose-500/10 hover:text-rose-400 transition-colors group">
             <LogOut size={20} className="group-hover:text-rose-400" />
             <span className="font-medium">Logout</span>
@@ -238,7 +247,7 @@ const DashboardLayout = ({ menuItems }) => {
                         My Profile
                       </Link>
                       <button
-                        onClick={handleLogout}
+                        onClick={()=>handleLogOut()}
                         className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition text-left">
                         <LogOut size={16} /> Logout
                       </button>

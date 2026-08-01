@@ -175,7 +175,7 @@ const loginController = async (req, res) => {
         fullName: user.fullName,
         role: user.role,
         branch: user.branch,
-        isLibraryMember:user.isLibraryMember
+        isLibraryMember: user.isLibraryMember,
       },
     });
   } catch (error) {
@@ -193,23 +193,27 @@ const getCurrentUser = async (req, res) => {
 };
 const logoutController = async (req, res) => {
   try {
+    const user = await UserModel.findByIdAndUpdate(req.user._id, {
+      $unset: {
+        refreshToken: 1,
+      },
+    });
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      path: "/",
     });
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      path: "/",
     });
-    const user = await UserModel.findById(req.user.id);
-    if (user) {
-      user.refreshToken = null;
-      await user.save();
-    }
+
     return res.status(200).json({ message: "logout successfully🎉" });
   } catch (error) {
+    console.error("logout error", error);
     res.status(500).json({ message: "internal server error in user logout" });
   }
 };

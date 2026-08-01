@@ -57,6 +57,6 @@ router.post("/requestLibraryMember", authMiddleware, requestLibraryAccess);
 router.post("/request-mywa",authMiddleware, requestMywaAccess );
 
 // logout user
-router.post("/logout", logoutController);
+router.post("/logout", authMiddleware, logoutController);
 
 module.exports = router;

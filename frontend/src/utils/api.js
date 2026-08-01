@@ -50,7 +50,7 @@ api.interceptors.response.use(
           isRefreshing = false;
           processQueue(refreshError);
           if (window.location.pathname !== "/") {
-            window.location.href = "/";
+            // window.location.href = "/";
           }
           
           return Promise.reject(refreshError);

@@ -176,6 +176,7 @@ const loginController = async (req, res) => {
         role: user.role,
         branch: user.branch,
         isLibraryMember: user.isLibraryMember,
+        isMywaFamilyMember: user.isMywaFamilyMember,
       },
     });
   } catch (error) {

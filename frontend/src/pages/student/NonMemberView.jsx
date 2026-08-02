@@ -21,9 +21,6 @@ const NonMemberView = () => {
 
   const isRequestPending = currentUser?.hasRequestedMywaFamily;
   const ref = useRef(null);
-
-  console.log(currentUser);
-  
   const handleJoinFamily = async () => {
     const hasPhone = currentUser?.profile?.contact?.phone;
     const hasAddress = currentUser?.profile?.contact?.permanentAddress;

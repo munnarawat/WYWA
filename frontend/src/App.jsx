@@ -13,16 +13,11 @@ import { Loader } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import { io } from "socket.io-client";
 import MywaLoader from "./components/loader/MywaLoader";
-const socket = io("http://localhost:3000", {
-  withCredentials: true,
-});
 
 const App = () => {
   const dispatch = useDispatch();
   const { user: currentUser } = useSelector((state) => state.auth);
-  const [showLoader] = useState(
-    () => sessionStorage.getItem("mywa-loader") !== "true",
-  );
+  const showLoader =  sessionStorage.getItem("mywa-loader") !== "true",
   const [loaderFinished, setLoaderFinished] = useState(!showLoader);
   const [authDone, setAuthDone] = useState(false);
 
@@ -41,6 +36,10 @@ const App = () => {
   }, [dispatch]);
   // socket io
   useEffect(() => {
+    if (!currentUser) return;
+    const socket = io(import.meta.env.VITE_MYWA_API_URL,{
+      withCredentials: true,
+    });
     if (currentUser?._id) {
       // console.log("Socket ID:", socket.id);
 
@@ -79,8 +78,8 @@ const App = () => {
       socket.off("role_updated");
       socket.off("library_role_updated");
     };
-  }, [currentUser, dispatch]);
-const appReady = authDone && (!showLoader || loaderFinished);
+  }, [currentUser?._id, dispatch]);
+  const appReady = authDone && (!showLoader || loaderFinished);
   return (
     <>
       <Toaster
@@ -109,7 +108,7 @@ const appReady = authDone && (!showLoader || loaderFinished);
           },
         }}
       />
-      {appReady && <MainRouter />}
+      {appReady &&  <MainRouter />}
       {showLoader && !loaderFinished && (
         <MywaLoader
           onComplete={() => {

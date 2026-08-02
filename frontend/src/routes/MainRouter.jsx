@@ -17,17 +17,18 @@ import {
 // ─────────────────────────────────────────
 //  SYNC IMPORTS (Layouts & Core Components - Do NOT lazy load these)
 // ─────────────────────────────────────────
+import Home from "../pages/Home";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicLayout from "../components/PublicLayout";
-import DashboardLayout from "../pages/DashboardLayout";
+
 import ScrollTop from "../animation/ScrollTop";
-import PageNotFound from "../components/notFound/PageNotFound";
+
 
 // ─────────────────────────────────────────
 // 🚀 ASYNC IMPORTS (Lazy Loaded Pages)
 // ─────────────────────────────────────────
 // Public Pages
-import Home from "../pages/Home";
+
 const Register = lazy(() => import("../pages/auth/Register"));
 const Login = lazy(() => import("../pages/auth/Login"));
 const About = lazy(() => import("../components/about/About"));
@@ -37,7 +38,9 @@ const Achievement = lazy(
 const AllThinkTank = lazy(
   () => import("../components/all-ThinkTank/AllThinkTank"),
 );
+const PageNotFound = lazy(() => import("../components/notFound/PageNotFound"));
 const Contact = lazy(() => import("../components/contact/Contact"));
+const DashboardLayout = lazy(() => import("../pages/DashboardLayout"));
 const ForgotPassword = lazy(
   () => import("../components/profile-updates/ForgotPassword"),
 );
@@ -161,7 +164,7 @@ const MainRouter = () => {
     <>
       <ScrollTop />
       {/* 🟢 SUSPENSE WRAPPER ADDED HERE */}
-      <Suspense fallback={<PageLoader/>}>
+      <Suspense fallback={<PageLoader />}>
         <Routes>
           {/* Public Routes */}
           <Route element={<PublicLayout />}>
@@ -174,10 +177,9 @@ const MainRouter = () => {
             <Route path="/contact" element={<Contact />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
-            
           </Route>
           {/* 404 Not Found */}
-          <Route path="*" element={<PageNotFound/>} />
+          <Route path="*" element={<PageNotFound />} />
           {/* Admin Dashboard */}
           <Route
             element={

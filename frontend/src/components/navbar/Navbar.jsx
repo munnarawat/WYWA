@@ -6,6 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import api from "../../utils/api";
 import { clearUser } from "../../store/slice/authSlice";
 import toast from "react-hot-toast";
+
+const NavLinks = [
+  { title: "Home", path: "/" },
+  { title: "About", path: "/about" },
+  { title: "Achievements", path: "/achievements" },
+  { title: "ThinkTank", path: "/all-thinkTank" },
+];
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -14,23 +21,27 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const path = location.pathname;
   const { isAuthenticate, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  // public navLink
-  const NavLinks = [
-    { title: "Home", path: "/" },
-    { title: "About", path: "/about" },
-    { title: "Achievements", path: "/achievements" },
-    {title:"ThinkTank", path:"/all-thinkTank"}
-  ];
+  
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
-    window.addEventListener("scroll", handleScroll);
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
   //  close menu on routes change
   useEffect(() => {
     setIsProfileOpen(false);
@@ -64,14 +75,14 @@ const Navbar = () => {
   };
   return (
     <>
-    {/* nav-bar */}
+      {/* nav-bar */}
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
         className={`fixed w-full left-0 z-99 text-white top-0    transition-all duration-300 ${
           isScrolled
-            ? "bg-[rgba(255, 255, 255, 0.24)]  backdrop-blur-sm border-b border-white/10 shadow-lg py-3"
+            ? "bg-[rgba(255, 255, 255, 0.24)] backdrop-blur-sm border-b border-white/10 shadow-lg py-3"
             : "bg-transparent py-4 md:py-6"
         }`}>
         {/* desktop nav-bar*/}
@@ -82,6 +93,9 @@ const Navbar = () => {
               <div className=" transition-all">
                 <img
                   fetchPriority="high"
+                  decoding="async"
+                  width="160"
+                  height="55"
                   className="w-40"
                   src="https://ik.imagekit.io/fmkamttxp/MYWA/logo.png?updatedAt=1773060747557"
                   alt="logo"
@@ -96,18 +110,16 @@ const Navbar = () => {
                 <Link
                   to={item.path}
                   key={index}
-                  className={`relative group h-5 text-sm font-medium overflow-hidden text-gray-300/80 hover:text-white transition-colors ${location.pathname == item.path ? "text-white" : "text-gray-300/80"}`}>
+                  className={`relative group h-5 text-sm font-medium overflow-hidden text-gray-300/80 hover:text-white transition-colors ${path == item.path ? "text-white" : "text-gray-300/80"}`}>
                   <motion.div
                     className="flex flex-col"
                     initial={{ y: 0 }}
                     whileHover={{ y: "-50%" }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}>
-                    <motion.h2 className=" flex items-center">
+                    <h2 className=" flex items-center">{item.title}</h2>
+                    <h2 className=" text-emerald-500 flex items-center">
                       {item.title}
-                    </motion.h2>
-                    <motion.h2 className=" text-emerald-500 flex items-center">
-                      {item.title}
-                    </motion.h2>
+                    </h2>
                   </motion.div>
                 </Link>
               ))}
@@ -120,18 +132,16 @@ const Navbar = () => {
                         ? "/thinkTank/dashboard"
                         : "/student/dashboard"
                   }
-                  className={`relative group h-5 text-sm font-medium overflow-hidden text-gray-300/80 hover:text-white transition-colors ${location.pathname.includes("dashboard") ? "text-white" : "text-gray-300/80"}`}>
+                  className={`relative group h-5 text-sm font-medium overflow-hidden text-gray-300/80 hover:text-white transition-colors ${path.includes("dashboard") ? "text-white" : "text-gray-300/80"}`}>
                   <motion.div
                     className="flex flex-col"
                     initial={{ y: 0 }}
                     whileHover={{ y: "-50%" }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}>
-                    <motion.h2 className=" flex items-center">
+                    <h2 className=" flex items-center">Dashboard</h2>
+                    <h2 className=" text-emerald-500 flex items-center">
                       Dashboard
-                    </motion.h2>
-                    <motion.h2 className=" text-emerald-500 flex items-center">
-                      Dashboard
-                    </motion.h2>
+                    </h2>
                   </motion.div>
                 </Link>
               )}
@@ -267,7 +277,7 @@ const Navbar = () => {
                 <Link
                   key={index}
                   to={item.path}
-                  className={`relative text-3xl h-8  group  font-medium overflow-hidden text-gray-300/80 hover:text-white transition-colors ${location.pathname == item.path ? "text-white" : "text-gray-300/80"}`}>
+                  className={`relative text-3xl h-8  group  font-medium overflow-hidden text-gray-300/80 hover:text-white transition-colors ${path == item.path ? "text-white" : "text-gray-300/80"}`}>
                   <motion.div
                     initial={{ y: 0 }}
                     whileHover={{ y: "-50%" }}
@@ -286,7 +296,7 @@ const Navbar = () => {
                       ? "/admin/dashboard"
                       : "/student/dashboard"
                   }
-                  className={`relative text-3xl h-8  group  font-medium overflow-hidden text-gray-300/80 hover:text-white transition-colors ${location.pathname.includes("dashboard") ? "text-white" : "text-gray-300/80"}`}>
+                  className={`relative text-3xl h-8  group  font-medium overflow-hidden text-gray-300/80 hover:text-white transition-colors ${path.includes("dashboard") ? "text-white" : "text-gray-300/80"}`}>
                   <motion.div
                     initial={{ y: 0 }}
                     whileHover={{ y: "-50%" }}

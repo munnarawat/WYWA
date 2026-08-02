@@ -17,7 +17,7 @@ import MywaLoader from "./components/loader/MywaLoader";
 const App = () => {
   const dispatch = useDispatch();
   const { user: currentUser } = useSelector((state) => state.auth);
-  const showLoader =  sessionStorage.getItem("mywa-loader") !== "true",
+  const showLoader =  sessionStorage.getItem("mywa-loader") !== "true";
   const [loaderFinished, setLoaderFinished] = useState(!showLoader);
   const [authDone, setAuthDone] = useState(false);
 

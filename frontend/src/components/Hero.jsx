@@ -3,15 +3,14 @@ import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Link } from "react-router-dom";
 const MotionLink = motion.create(Link);
+const sliderImages = [
+  "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-1.jpeg?tr=w-800,q-75,f-webp",
+  "https://ik.imagekit.io/fmkamttxp/MYWA/mywa%20haldwani.jpeg?tr=w-800,q-75,f-webp",
+  "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-2.jpeg?tr=w-800,q-75,f-webp",
+  "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-3.jpeg?tr=w-800,q-75,f-webp",
+];
 const Hero = () => {
-  const sliderImages = [
-    "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-1.jpeg?tr=w-800,q-75,f-webp",
-    "https://ik.imagekit.io/fmkamttxp/MYWA/mywa%20haldwani.jpeg?tr=w-800,q-75,f-webp",
-    "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-2.jpeg?tr=w-800,q-75,f-webp",
-    "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-3.jpeg?tr=w-800,q-75,f-webp",
-  ];
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [imageLoaded, setImageLoaded] = useState(false);
   //  2 Second Auto-Slide Logic
   useEffect(() => {
     const timer = setInterval(() => {
@@ -23,11 +22,10 @@ const Hero = () => {
   }, [sliderImages.length]);
 
   useEffect(() => {
-    sliderImages.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-    });
-  }, []);
+    const next = (currentIndex + 1) % sliderImages.length;
+    const img = new Image();
+    img.src = sliderImages[next];
+  }, [currentIndex]);
   // text-animation
   const container = {
     hidden: { opacity: 0 },
@@ -108,7 +106,7 @@ const Hero = () => {
           <motion.div variants={item} className="flex flex-wrap gap-4 pt-2">
             <MotionLink
               to="/login"
-              whileHover={{ scale: 1.05 }}
+              whileHover={window.innerWidth>768 ? {scale:1.05} : undefined}
               whileTap={{ scale: 0.95 }}
               className="rounded-xl px-8 py-4 font-semibold bg-linear-to-r from-teal-500 to-cyan-500 text-lg hover:scale-[1.03] transition-all flex items-center gap-2">
               Join MYWA
@@ -117,7 +115,7 @@ const Hero = () => {
 
             <MotionLink
               to="/about"
-              whileHover={{ scale: 1.05 }}
+              whileHover={window.innerWidth>768 ? {scale:1.05} : undefined}
               whileTap={{ scale: 0.95 }}
               className="px-8 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white font-medium  hover:border-teal-500/30 hover:bg-white/10 text-lg flex items-center justify-center transition-colors">
               Our Journey
@@ -132,13 +130,13 @@ const Hero = () => {
           transition={{ duration: 1, ease: "easeOut" }}
           className="w-full md:w-1/2 relative group h-80 md:h-125">
           {/* Ambient Glow */}
-          <div className="absolute -inset-4 bg-linear-to-r from-teal-500/20 to-lime-500/20 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10" />
+          <div className="absolute -inset-4 bg-linear-to-r from-teal-500/20 to-lime-500/20 rounded-3xl blur-2xl opacity-0 md:group-hover:opacity-100 transition-opacity duration-700 -z-10" />
           <div className="absolute top-5 left-5 z-20 rounded-full border border-white/10 bg-black/40 backdrop-blur-xl px-4 py-2">
             <p className="text-xs uppercase tracking-[0.2em] text-white/80">
               Since 2022
             </p>
           </div>
-          <div className="relative w-full h-full rounded-4xl overflow-hidden shadow-[0_30px_80px_rgba(0,0,0,.45)] shadow-black border border-white/15 bg-black/70">
+          <div className="relative w-full h-full rounded-4xl overflow-hidden shadow-xl shadow-black border border-white/15 bg-black/70">
             {/* Overlay for dark theme text readability */}
             <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent z-10" />
             {/* Image Counter */}
@@ -152,14 +150,17 @@ const Hero = () => {
               <motion.img
                 key={currentIndex}
                 src={sliderImages[currentIndex]}
-                onLoad={() => setImageLoaded(true)}
                 alt={`Munsyari Slide ${currentIndex + 1}`}
                 initial={{ opacity: 0, scale: 1.05 }} //fade in
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.8, ease: "easeInOut" }}
+                transition={{ duration: 0.45, ease: "easeInOut" }}
                 loading={currentIndex === 0 ? "eager" : "lazy"}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                fetchPriority="high"
+                decoding="async"
+                width="800"
+                height="1000"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 md:group-hover:scale-105"
               />
             </AnimatePresence>
 
@@ -171,7 +172,7 @@ const Hero = () => {
                   className={`w-3 h-3 rounded-full transition-all duration-300 ${
                     currentIndex === index
                       ? "bg-teal-400 w-8"
-                      : "bg-white/30 hover:bg-white/80"
+                      : "bg-white/30 md:hover:bg-white/80"
                   }`}
                 />
               ))}

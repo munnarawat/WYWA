@@ -9,6 +9,30 @@ const sliderImages = [
   "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-2.jpeg?tr=w-800,q-75,f-webp",
   "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-3.jpeg?tr=w-800,q-75,f-webp",
 ];
+
+// text-animation
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0, y: 30 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+};
+
 const Hero = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   //  2 Second Auto-Slide Logic
@@ -26,40 +50,6 @@ const Hero = () => {
     const img = new Image();
     img.src = sliderImages[next];
   }, [currentIndex]);
-  // text-animation
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-      },
-    },
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 30 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: [0.16, 1, 0.3, 1],
-      },
-    },
-  };
-
-  const imageAnimation = {
-    hidden: { opacity: 0, scale: 0.9 },
-    show: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut",
-      },
-    },
-  };
 
   return (
     <section className="relative w-full overflow-hidden  min-h-[85vh]">
@@ -106,18 +96,18 @@ const Hero = () => {
           <motion.div variants={item} className="flex flex-wrap gap-4 pt-2">
             <MotionLink
               to="/login"
-              whileHover={window.innerWidth>768 ? {scale:1.05} : undefined}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="rounded-xl px-8 py-4 font-semibold bg-linear-to-r from-teal-500 to-cyan-500 text-lg hover:scale-[1.03] transition-all flex items-center gap-2">
+              className="rounded-xl px-8 py-4 font-semibold bg-linear-to-r from-teal-500 to-cyan-500 text-lg md:hover:scale-[1.03] transition-all flex items-center gap-2">
               Join MYWA
               <ArrowRight size={20} />
             </MotionLink>
 
             <MotionLink
               to="/about"
-              whileHover={window.innerWidth>768 ? {scale:1.05} : undefined}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white font-medium  hover:border-teal-500/30 hover:bg-white/10 text-lg flex items-center justify-center transition-colors">
+              className="px-8 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white font-medium  md:hover:border-teal-500/30 md:hover:bg-white/10 text-lg flex items-center justify-center transition-colors">
               Our Journey
             </MotionLink>
           </motion.div>

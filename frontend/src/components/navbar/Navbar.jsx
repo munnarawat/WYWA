@@ -24,7 +24,7 @@ const Navbar = () => {
   const path = location.pathname;
   const { isAuthenticate, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     let ticking = false;
 
@@ -92,7 +92,7 @@ const Navbar = () => {
             <Link to="/" className="flex items-center gap-2 z-50">
               <div className=" transition-all">
                 <img
-                  fetchPriority="high"
+                  loading="eager"
                   decoding="async"
                   width="160"
                   height="55"

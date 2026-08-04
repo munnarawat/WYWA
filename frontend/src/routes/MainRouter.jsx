@@ -23,7 +23,6 @@ import PublicLayout from "../components/PublicLayout";
 
 import ScrollTop from "../animation/ScrollTop";
 
-
 // ─────────────────────────────────────────
 // 🚀 ASYNC IMPORTS (Lazy Loaded Pages)
 // ─────────────────────────────────────────
@@ -115,51 +114,51 @@ const PageLoader = () => (
 // ─────────────────────────────────────────
 // MAIN ROUTER
 // ─────────────────────────────────────────
+
+// Admin Sidebar
+const adminMenuItems = [
+  { name: "Overview", icon: LayoutDashboard, path: "/admin/dashboard" },
+  { name: "Manage Students", icon: Users, path: "/admin/students" },
+  {
+    name: "Manage Attendance",
+    icon: ChartNoAxesCombined,
+    path: "/admin/attendance",
+  },
+  { name: "Library Inventory", icon: BookOpen, path: "/admin/library" },
+  { name: "Books issue", icon: BookOpen, path: "/admin/issue" },
+  { name: "ManageNoticeBoard", icon: Bell, path: "/admin/noticeboard" },
+
+  { name: "Achievements", icon: Trophy, path: "/admin/achievements" },
+  { name: "ManageThinkTank", icon: UserStar, path: "/admin/thinkTank" },
+  { name: "Students Issue", icon: ShieldAlert, path: "/admin/studentIssue" },
+  { name: "Profile", icon: Settings, path: "/admin/profile" },
+];
+
+// Student Sidebar
+const studentMenuItems = [
+  { name: "My Dashboard", icon: LayoutDashboard, path: "/student/dashboard" },
+  {
+    name: "My Attendance-Chart",
+    icon: ChartColumnIncreasing,
+    path: "/student/attendance",
+  },
+  { name: "My Achievement", icon: Trophy, path: "/student/achievement" },
+  { name: "Notice Board", icon: NotebookIcon, path: "/student/noticeboard" },
+  { name: "Library", icon: BookOpen, path: "/student/library" },
+  { name: "HelpDesk", icon: ShieldAlert, path: "/student/helpdesk" },
+  { name: "Profile", icon: Settings, path: "/student/profile" },
+];
+
+// Think-Tank Sidebar
+const thinkTankMenuItems = [
+  {
+    name: "My Dashboard",
+    icon: LayoutDashboard,
+    path: "/thinkTank/dashboard",
+  },
+  { name: "Profile", icon: Settings, path: "/thinkTank/profile" },
+];
 const MainRouter = () => {
-  // Admin Sidebar
-  const adminMenuItems = [
-    { name: "Overview", icon: LayoutDashboard, path: "/admin/dashboard" },
-    { name: "Manage Students", icon: Users, path: "/admin/students" },
-    {
-      name: "Manage Attendance",
-      icon: ChartNoAxesCombined,
-      path: "/admin/attendance",
-    },
-    { name: "Library Inventory", icon: BookOpen, path: "/admin/library" },
-    { name: "Books issue", icon: BookOpen, path: "/admin/issue" },
-    { name: "ManageNoticeBoard", icon: Bell, path: "/admin/noticeboard" },
-
-    { name: "Achievements", icon: Trophy, path: "/admin/achievements" },
-    { name: "ManageThinkTank", icon: UserStar, path: "/admin/thinkTank" },
-    { name: "Students Issue", icon: ShieldAlert, path: "/admin/studentIssue" },
-    { name: "Profile", icon: Settings, path: "/admin/profile" },
-  ];
-
-  // Student Sidebar
-  const studentMenuItems = [
-    { name: "My Dashboard", icon: LayoutDashboard, path: "/student/dashboard" },
-    {
-      name: "My Attendance-Chart",
-      icon: ChartColumnIncreasing,
-      path: "/student/attendance",
-    },
-    { name: "My Achievement", icon: Trophy, path: "/student/achievement" },
-    { name: "Notice Board", icon: NotebookIcon, path: "/student/noticeboard" },
-    { name: "Library", icon: BookOpen, path: "/student/library" },
-    { name: "HelpDesk", icon: ShieldAlert, path: "/student/helpdesk" },
-    { name: "Profile", icon: Settings, path: "/student/profile" },
-  ];
-
-  // Think-Tank Sidebar
-  const thinkTankMenuItems = [
-    {
-      name: "My Dashboard",
-      icon: LayoutDashboard,
-      path: "/thinkTank/dashboard",
-    },
-    { name: "Profile", icon: Settings, path: "/thinkTank/profile" },
-  ];
-
   return (
     <>
       <ScrollTop />

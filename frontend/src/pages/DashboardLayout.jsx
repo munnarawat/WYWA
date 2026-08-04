@@ -161,7 +161,7 @@ const DashboardLayout = ({ menuItems }) => {
 
         <div className="p-4 border-t border-white/10">
           <button
-            onClick={()=>handleLogOut()}
+            onClick={() => handleLogOut()}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-400 hover:bg-rose-500/10 hover:text-rose-400 transition-colors group">
             <LogOut size={20} className="group-hover:text-rose-400" />
             <span className="font-medium">Logout</span>
@@ -196,7 +196,7 @@ const DashboardLayout = ({ menuItems }) => {
             <div
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               className="flex action-dropdown relative items-center gap-3 pl-4 md:pl-6 border-l border-white/10 cursor-pointer">
-              {user?.profile?.personal?.imageUrl? (
+              {user?.profile?.personal?.imageUrl ? (
                 <div className="w-8 h-8 rounded-full overflow-hidden">
                   <img
                     className="w-full h-full object-cover"
@@ -247,7 +247,7 @@ const DashboardLayout = ({ menuItems }) => {
                         My Profile
                       </Link>
                       <button
-                        onClick={()=>handleLogOut()}
+                        onClick={() => handleLogOut()}
                         className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-lg transition text-left">
                         <LogOut size={16} /> Logout
                       </button>

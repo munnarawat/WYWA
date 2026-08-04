@@ -37,13 +37,14 @@ const App = () => {
   // socket io
   useEffect(() => {
     if (!currentUser) return;
-    const socket = io(import.meta.env.VITE_MYWA_API_URL,{
+    const socket = io("http://localhost:3000",{
       withCredentials: true,
     });
     if (currentUser?._id) {
-      // console.log("Socket ID:", socket.id);
-
-      socket.emit("join_user_room", currentUser._id.toString());
+      socket.on("connect",()=>{
+        // console.log("Socket ID:", socket.id);
+        socket.emit("join_user_room", currentUser._id.toString());
+      })
       // console.log("Room join request sent for ID:", currentUser._id);
 
       // mywaFamilyMember role update
@@ -77,6 +78,7 @@ const App = () => {
     return () => {
       socket.off("role_updated");
       socket.off("library_role_updated");
+      socket.disconnect();
     };
   }, [currentUser?._id, dispatch]);
   const appReady = authDone && (!showLoader || loaderFinished);

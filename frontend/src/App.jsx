@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import MainRouter from "./routes/MainRouter";
+import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
+const MainRouter = lazy(() => import("./routes/MainRouter"));
 import { useDispatch, useSelector } from "react-redux";
 import api from "./utils/api";
 import {
@@ -12,16 +12,21 @@ import {
 import { Loader } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import { io } from "socket.io-client";
-import MywaLoader from "./components/loader/MywaLoader";
+const MywaLoader = lazy(() => import("./components/loader/MywaLoader"));
 
 const App = () => {
   const dispatch = useDispatch();
   const { user: currentUser } = useSelector((state) => state.auth);
-  const showLoader =  sessionStorage.getItem("mywa-loader") !== "true";
+  const showLoader = sessionStorage.getItem("mywa-loader") !== "true";
   const [loaderFinished, setLoaderFinished] = useState(!showLoader);
   const [authDone, setAuthDone] = useState(false);
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setAuthDone(true);
+      return;
+    }
     const checkAuth = async () => {
       try {
         const res = await api.get("/auth/me");
@@ -37,14 +42,14 @@ const App = () => {
   // socket io
   useEffect(() => {
     if (!currentUser) return;
-    const socket = io("http://localhost:3000",{
+    const socket = io("http://localhost:3000", {
       withCredentials: true,
     });
     if (currentUser?._id) {
-      socket.on("connect",()=>{
+      socket.on("connect", () => {
         // console.log("Socket ID:", socket.id);
         socket.emit("join_user_room", currentUser._id.toString());
-      })
+      });
       // console.log("Room join request sent for ID:", currentUser._id);
 
       // mywaFamilyMember role update
@@ -110,15 +115,19 @@ const App = () => {
           },
         }}
       />
-      {appReady &&  <MainRouter />}
-      {showLoader && !loaderFinished && (
-        <MywaLoader
-          onComplete={() => {
-            sessionStorage.setItem("mywa-loader", "true");
-            setLoaderFinished(true);
-          }}
-        />
-      )}
+      <Suspense fallback={null}>
+        <MainRouter />
+      </Suspense>
+      <Suspense fallback={null}>
+        {showLoader && !loaderFinished && (
+          <MywaLoader
+            onComplete={() => {
+              sessionStorage.setItem("mywa-loader", "true");
+              setLoaderFinished(true);
+            }}
+          />
+        )}
+      </Suspense>
     </>
   );
 };

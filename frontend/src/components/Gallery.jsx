@@ -195,7 +195,7 @@ const Gallery = () => {
                   src={item.image}
                   alt={item.title}
                   loading="lazy"
-                  fetchpriority={index === 0 ? "high" : "auto"}
+                  fetchPriority={index === 0 ? "high" : "auto"}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
 

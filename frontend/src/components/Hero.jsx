@@ -41,7 +41,7 @@ const Hero = () => {
       setCurrentIndex((prevIndex) =>
         prevIndex === sliderImages.length - 1 ? 0 : prevIndex + 1,
       );
-    }, 10000);
+    }, 5000);
     return () => clearInterval(timer);
   }, [sliderImages.length]);
 

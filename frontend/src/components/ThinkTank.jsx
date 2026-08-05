@@ -1,14 +1,49 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ExternalLink, Instagram, Quote } from "lucide-react";
 import { Link } from "react-router-dom";
 import api from "../utils/api";
 import toast from "react-hot-toast";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.2 },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
 const ThinkTank = () => {
   const [visionaries, setVisionaries] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const sectionRef = useRef(null);
+  const [shouldFetch, setShouldFetch] = useState(false);
+
+  useEffect(()=>{
+    const observer = new IntersectionObserver(([entry])=>{
+      if(entry.isIntersecting){
+        setShouldFetch(true);
+        observer.disconnect();
+      }
+    },{
+      threshold:0.2
+    });
+    if(sectionRef.current){
+      observer.observe(sectionRef.current);
+    }
+    return()=>observer.disconnect();
+  },[])
   useEffect(() => {
+    if(!shouldFetch) return;
     const fetchVisionaries = async () => {
       try {
         const res = await api.get("/thinkTank/main");
@@ -22,25 +57,10 @@ const ThinkTank = () => {
       }
     };
     fetchVisionaries();
-  }, []);
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.2 },
-    },
-  };
+  }, [shouldFetch]);
 
-  const cardVariants = {
-    hidden: { opacity: 0, y: 30 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
-    },
-  };
   return (
-    <section className="w-full py-24 px-4 overflow-hidden relative">
+    <section ref={sectionRef} className="w-full py-24 px-4 overflow-hidden relative">
       {/* Subtle Background Elements */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-teal-500/10 blur-[120px] rounded-full -z-10" />
 

@@ -1,30 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Award, Briefcase, Calendar, GraduationCap } from "lucide-react";
 import { Link } from "react-router-dom";
 import ReactParallaxTilt from "react-parallax-tilt";
 import api from "../utils/api";
 
-const Achievements = () => {
-  const [students, setStudents] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchAchievement = async () => {
-      try {
-        const res = await api.get("/achievements/all");
-        if(res.data.success){
-           let student = res.data.achievement.slice(0,4);
-           setStudents(student);
-        }
-      } catch (error) {
-        console.error("Error fetching achievements:", error);
-      }finally{
-        setLoading(false);
-      }
-    };
-    fetchAchievement();
-  }, []);
   
   // Framer Motion Variants
   const containerVariants = {
@@ -45,8 +26,46 @@ const Achievements = () => {
     },
   };
 
+const Achievements = () => {
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true); 
+  const sectionRef = useRef(null);
+  const [shouldFetch, setShouldFetch] = useState(false);
+
+  useEffect(()=>{
+    const observer = new IntersectionObserver(([entry])=>{
+      if(entry.isIntersecting){
+        setShouldFetch(true);
+        observer.disconnect();
+      }
+    },{
+      threshold:0.2
+    })
+    if(sectionRef.current){
+      observer.observe(sectionRef.current)
+    }
+    return()=> observer.disconnect()
+  },[])
+  useEffect(() => {
+    if(!shouldFetch) return;
+    const fetchAchievement = async () => {
+      try {
+        const res = await api.get("/achievements/all");
+        if(res.data.success){
+           let student = res.data.achievement.slice(0,4);
+           setStudents(student);
+        }
+      } catch (error) {
+        console.error("Error fetching achievements:", error);
+      }finally{
+        setLoading(false);
+      }
+    };
+    fetchAchievement();
+  }, [shouldFetch]);
+
   return (
-    <section className="w-full py-24 px-4 overflow-hidden relative">
+    <section ref={sectionRef} className="w-full py-24 px-4 overflow-hidden relative">
       {/* Background Ambient Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-teal-500/10 blur-[100px] rounded-full -z-10" />
 

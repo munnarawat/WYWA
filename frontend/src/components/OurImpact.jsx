@@ -1,17 +1,56 @@
 import CountUp from "react-countup";
 import { motion } from "framer-motion";
 import api from "../utils/api";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BookOpen, CalendarDays, Icon, Trophy, User } from "lucide-react";
 
+// Framer Motion Variants for Container (UL)
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
+};
+
+// Framer Motion Variants for Items(LI)
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
 const ImpactStats = () => {
+  const sectionRef = useRef(null);
+  const [shouldFetch, setShouldFetch] = useState(false);
   const [dynamicCounts, setDynamicCounts] = useState({
     students: 0,
     bookIssued: 0,
     selectedStudents: 0,
   });
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldFetch(true);
+          observer.disconnect();
+        }
+      },
+      {
+        threshold: 0.2,
+      },
+    );
+    observer.observe(sectionRef.current);
+
+    return () => observer.disconnect();
+  }, []);
   // fetch data
   useEffect(() => {
+    if (!shouldFetch) return;
     const fetchStatus = async () => {
       try {
         const res = await api.get("/public/landing-stats");
@@ -23,7 +62,7 @@ const ImpactStats = () => {
       }
     };
     fetchStatus();
-  }, []);
+  }, [shouldFetch]);
 
   const stats = [
     {
@@ -63,29 +102,11 @@ const ImpactStats = () => {
     },
   ];
 
-  // Framer Motion Variants for Container (UL)
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-      },
-    },
-  };
-
-  // Framer Motion Variants for Items(LI)
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
-    },
-  };
-
   return (
-    <section id="impact" className="w-full py-24 px-4 overflow-hidden">
+    <section
+      ref={sectionRef}
+      id="impact"
+      className="w-full py-24 px-4 overflow-hidden">
       {/* header */}
       <div className="max-w-3xl mx-auto text-center mb-16">
         <motion.div
@@ -126,7 +147,7 @@ const ImpactStats = () => {
               aria-hidden="true"
               className={`absolute -bottom-6 left-1/2 -translate-x-1/2 w-24 h-24 ${item.glow} blur-3xl`}
             />
-           
+
             <div className="mb-5 flex justify-center">
               <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
                 <item.icon className={item.color} size={28} />

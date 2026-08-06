@@ -39,10 +39,9 @@ const ImpactStats = () => {
           setShouldFetch(true);
           observer.disconnect();
         }
-      },
-      {
-        threshold: 0.2,
-      },
+      },{
+        rootMargin: "300px 0px 300px 0px"
+      }
     );
     observer.observe(sectionRef.current);
 

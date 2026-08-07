@@ -71,7 +71,6 @@ export const MywaBadge = () => (
     <HeartHandshake size={10} /> MYWA
   </span>
 );
-
 // ── ACTION BUTTONS ──
 export const LibraryBtn = ({ isLibraryMember, onClick, fullWidth = false }) => (
   <motion.button
@@ -80,7 +79,7 @@ export const LibraryBtn = ({ isLibraryMember, onClick, fullWidth = false }) => (
     onClick={onClick}
     className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-[9px] border text-[10px] font-bold tracking-wider uppercase transition-colors ${fullWidth ? "flex-1" : ""} ${isLibraryMember ? "bg-rose-400/8 border-rose-400/20 text-rose-400 hover:bg-rose-400/15" : "bg-emerald-400/8 border-emerald-400/20 text-emerald-400 hover:bg-emerald-400/15"}`}>
     <BookOpen size={11} />{" "}
-    {isLibraryMember ? "Remove Library" : "Grant Library"}
+    {isLibraryMember  ? "Remove Library " : "Grant Library"}
   </motion.button>
 );
 export const MywaBtn = ({ isMywaMember, isPending, onClick }) => (

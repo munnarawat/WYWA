@@ -98,7 +98,7 @@ const Hero = () => {
               to="/login"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="rounded-xl px-8 py-4 font-semibold bg-linear-to-r from-teal-500 to-cyan-500 text-lg md:hover:scale-[1.03] transition-all flex items-center gap-2">
+              className="rounded-xl w-full px-8 lg:w-fit justify-center py-4 font-semibold bg-linear-to-r from-teal-500 to-cyan-500 text-lg md:hover:scale-[1.03] transition-all flex items-center gap-2">
               Join MYWA
               <ArrowRight size={20} />
             </MotionLink>
@@ -107,7 +107,7 @@ const Hero = () => {
               to="/about"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-8 py-3.5 rounded-xl bg-white/5 border border-white/10 text-white font-medium  md:hover:border-teal-500/30 md:hover:bg-white/10 text-lg flex items-center justify-center transition-colors">
+              className="px-8 py-3.5 w-full lg:w-fit rounded-xl bg-white/5 border border-white/10 text-white font-medium  md:hover:border-teal-500/30 md:hover:bg-white/10 text-lg flex items-center justify-center transition-colors">
               Our Journey
             </MotionLink>
           </motion.div>
@@ -126,7 +126,7 @@ const Hero = () => {
               Since 2022
             </p>
           </div>
-          <div className="relative w-full h-full rounded-4xl overflow-hidden shadow-xl shadow-black border border-white/15 bg-black/70">
+          <div className="relative w-full h-full rounded-3xl lg:rounded-4xl overflow-hidden shadow-xl shadow-black border border-white/15 bg-black/70">
             {/* Overlay for dark theme text readability */}
             <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent z-10" />
             {/* Image Counter */}

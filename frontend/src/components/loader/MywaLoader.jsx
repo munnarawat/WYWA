@@ -145,7 +145,7 @@ const MywaLoader = ({ onComplete }) => {
         "
       />
 
-      <div className="relative text-center">
+      <div className="relative text-center ">
         {/* MYWA */}
         <div className="relative inline-block">
           <h1
@@ -155,7 +155,7 @@ const MywaLoader = ({ onComplete }) => {
               sm:text-7xl
               md:text-8xl
               font-black
-              tracking-[0.8em]
+              tracking-[0.5em]
               sm:tracking-widest
               md:tracking-[0.14em]
               uppercase

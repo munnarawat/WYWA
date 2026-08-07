@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { lazy, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Award,  Calendar } from "lucide-react";
+import { Award, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
-import ReactParallaxTilt from "react-parallax-tilt";
+const ReactParallaxTilt = lazy(() => import("react-parallax-tilt"));
 import api from "../utils/api";
 
 // Framer Motion Variants
@@ -79,7 +79,7 @@ const Achievements = () => {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-teal-500/10 blur-[100px] rounded-full -z-10" />
 
       {/* Header Section */}
-      <div className="max-w-3xl mx-auto text-center mb-16">
+      <header className="max-w-3xl mx-auto text-center mb-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -96,7 +96,7 @@ const Achievements = () => {
             through sheer dedication and hard work.
           </p>
         </motion.div>
-      </div>
+      </header>
 
       {/* Students Grid */}
       <motion.div

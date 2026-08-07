@@ -387,7 +387,7 @@ const ManageNoticeBoard = () => {
         <div className="w-full h-64 flex flex-col items-center justify-center text-zinc-500 bg-white/5 border border-white/10 rounded-2xl border-dashed">
           <Megaphone size={48} className="mb-4 opacity-50" />
           <p className="text-lg font-medium">No notices found</p>
-          <p className="text-sm">
+          <p className="text-sm text-center text-zinc-500">
             Click "New Notice" to publish your first announcement.
           </p>
         </div>

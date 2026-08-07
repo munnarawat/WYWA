@@ -14,7 +14,7 @@ const SectionSkeleton = () => {
 };
 const PublicHome = () => {
   return (
-    <div className="w-full min-h-screen text-white relative px-2  md:px-8 py-6 ">
+    <div className="w-full min-h-screen text-white relative px-0  md:px-8 py-6 ">
       {/* hero section */}
       <Hero />
 

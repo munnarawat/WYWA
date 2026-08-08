@@ -16,8 +16,6 @@ const ReactivateLibraryCard = () => {
   const [requested, setRequested] = useState(
     currentUser?.hasRequestedLibrary || false,
   );
-console.log(currentUser);
-
   const handleRequestAccess = async () => {
     try {
       await api.post("/auth/requestLibraryMember");

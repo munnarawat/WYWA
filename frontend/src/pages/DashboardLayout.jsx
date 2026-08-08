@@ -19,10 +19,10 @@ import toast from "react-hot-toast";
 import NotificationDropdown from "./notification/NotificationDropdown";
 import { Helmet } from "react-helmet-async";
 import api from "../utils/api";
-const socket = io(import.meta.env.VITE_MYWA_API_URL.replace("/api",""), {
+const socketUrl = new URL(import.meta.env.VITE_MYWA_API_URL).origin;
+const socket = io(socketUrl, {
   withCredentials: true,
 });
-
 const DashboardLayout = ({ menuItems }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);

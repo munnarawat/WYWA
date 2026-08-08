@@ -39,7 +39,8 @@ const App = () => {
   // socket io
   useEffect(() => {
     if (!currentUser) return;
-    const socket = io(import.meta.env.VITE_MYWA_API_URL.replace("/api",""), {
+    const socketUrl = new URL(import.meta.env.VITE_MYWA_API_URL).origin;
+    const socket = io(socketUrl, {
       withCredentials: true,
     });
     if (currentUser?._id) {

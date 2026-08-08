@@ -2,47 +2,45 @@ import React, { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Maximize2, X, ChevronLeft, ChevronRight } from "lucide-react";
 
+const galleryData = [
+  {
+    id: 1,
+    title: "Career Counseling 2025",
+    category: "Education",
+    image: "https://ik.imagekit.io/fmkamttxp/MYWA/Workshop%20Dehradun.jpeg",
+    span: "md:col-span-2 md:row-span-2",
+  },
+  {
+    id: 2,
+    title: "Health Checkup Camp",
+    category: "Infrastructure",
+    image: "https://ik.imagekit.io/fmkamttxp/MYWA/health-checkUp.jpeg",
+    span: "md:col-span-1 md:row-span-1",
+  },
+  {
+    id: 3,
+    title: "Dehradun Branch celebrate holi 2024 ",
+    category: "Community",
+    image:
+      "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-2.jpeg?updatedAt=1772889783372",
+    span: "md:col-span-1 md:row-span-1",
+  },
+  {
+    id: 4,
+    title: "Independence Day Celebration 2023",
+    category: "Community",
+    image: "https://ik.imagekit.io/fmkamttxp/MYWA/independence_day.jpeg",
+    span: "md:col-span-2 md:row-span-2", // Lumbi (Vertical) image
+  },
+  {
+    id: 5,
+    title: "Haldwani  Workshop",
+    category: "Workshop",
+    image: "https://ik.imagekit.io/fmkamttxp/MYWA/Workshop%20haldwani.jpeg",
+    span: "md:col-span-2 md:row-span-1",
+  },
+];
 const Gallery = () => {
-  const galleryData = [
-    {
-      id: 1,
-      title: "Career Counseling 2025",
-      category: "Education",
-      image: "https://ik.imagekit.io/fmkamttxp/MYWA/Workshop%20Dehradun.jpeg",
-      span: "md:col-span-2 md:row-span-2",
-    },
-    {
-      id: 2,
-      title: "Health Checkup Camp",
-      category: "Infrastructure",
-      image: "https://ik.imagekit.io/fmkamttxp/MYWA/health-checkUp.jpeg",
-      span: "md:col-span-1 md:row-span-1",
-    },
-    {
-      id: 3,
-      title: "Dehradun Branch celebrate holi 2024 ",
-      category: "Community",
-      image:
-        "https://ik.imagekit.io/fmkamttxp/MYWA/mywa-2.jpeg?updatedAt=1772889783372",
-      span: "md:col-span-1 md:row-span-1",
-    },
-    {
-      id: 4,
-      title: "Book Distribution",
-      category: "Education",
-      image:
-        "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=2073&auto=format&fit=crop",
-      span: "md:col-span-2 md:row-span-2", // Lumbi (Vertical) image
-    },
-    {
-      id: 5,
-      title: "Haldwani  Workshop",
-      category: "Workshop",
-      image: "https://ik.imagekit.io/fmkamttxp/MYWA/Workshop%20haldwani.jpeg",
-      span: "md:col-span-2 md:row-span-1",
-    },
-  ];
-
   const [activeFilter, setActiveFilter] = useState("All");
   const [selectedIndex, setSelectedIndex] = useState(null);
 

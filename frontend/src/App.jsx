@@ -20,29 +20,26 @@ const App = () => {
   const showLoader = sessionStorage.getItem("mywa-loader") !== "true";
   const [loaderFinished, setLoaderFinished] = useState(!showLoader);
   const [authDone, setAuthDone] = useState(false);
-
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setAuthDone(true);
-      return;
-    }
     const checkAuth = async () => {
       try {
         const res = await api.get("/auth/me");
-        dispatch(setUser(res.data.user));
+        if (res.data.success) {
+          dispatch(setUser(res.data.user));
+        }
       } catch (error) {
         dispatch(clearUser());
       } finally {
         setAuthDone(true);
       }
     };
+
     checkAuth();
   }, [dispatch]);
   // socket io
   useEffect(() => {
     if (!currentUser) return;
-    const socket = io(import.meta.env.VITE_MYWA_API, {
+    const socket = io(import.meta.env.VITE_MYWA_API_URL.replace("/api",""), {
       withCredentials: true,
     });
     if (currentUser?._id) {

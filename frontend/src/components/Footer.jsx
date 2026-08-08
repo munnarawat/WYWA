@@ -1,14 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import {
-  Mail,
-  MapPin,
-  Instagram,
-  Twitter,
-  ArrowRight,
-  UserPlus,
-  MessageCircle,
-} from "lucide-react";
+import { Mail, MapPin, Instagram, ArrowRight, UserPlus } from "lucide-react";
 
 // ── Data ────────────────────────────────────────────────────────────────────
 const NAV_LINKS = [
@@ -29,15 +21,9 @@ const BRANCHES = [
   {
     name: "Haldwani Branch",
     addr: "456 Knowledge Park, Haldwani, UK",
-    href: "#",
+    href: "https://maps.app.goo.gl/yYoTExF71vbSwuAv6",
     color: "lime", // lime-400 icon
   },
-];
-
-const SOCIALS = [
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: MessageCircle, href: "#", label: "WhatsApp" },
-  { icon: Twitter, href: "#", label: "Twitter" },
 ];
 
 // ── Sub-components ───────────────────────────────────────────────────────────
@@ -212,10 +198,55 @@ const Footer = () => {
             MYWA केवल एक संस्था नहीं, बल्कि शिक्षा, सहयोग और सेवा की भावना से
             जुड़ा एक परिवार है।
           </p>
-          <div className="flex items-center gap-2.5">
-            {SOCIALS.map((s) => (
-              <SocialBtn key={s.label} {...s} />
-            ))}
+          {/* Social Media Links */}
+          <div className="flex items-center gap-2">
+            {/* Dehradun */}
+            <a
+              href="https://www.instagram.com/mywadehradun"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="MYWA Dehradun Instagram"
+              className="group flex items-center gap-2.5 rounded-xl border border-pink-500/30 lg:border-white/10 bg-white/5 px-3 py-2 transition-all duration-300 hover:border-pink-500/30 hover:bg-white/10 hover:-translate-y-0.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 transition-all duration-300 group-hover:bg-pink-500/10">
+                <Instagram
+                  size={17}
+                  className="text-pink-400 lg:text-slate-400 transition-colors duration-300 lg:group-hover:text-pink-400"
+                />
+              </div>
+
+              <div className="flex flex-col leading-none">
+                <span className="text-[10px] uppercase tracking-wider text-slate-500">
+                  Instagram
+                </span>
+                <span className="mt-1 text-xs font-medium text-slate-300 transition-colors group-hover:text-white">
+                  Dehradun
+                </span>
+              </div>
+            </a>
+
+            {/* Haldwani */}
+            <a
+              href="https://www.instagram.com/mywa_haldwani"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="MYWA Haldwani Instagram"
+              className="group flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/5 px-3 py-2 transition-all duration-300 hover:border-pink-500/30 hover:bg-white/10 hover:-translate-y-0.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 transition-all duration-300 group-hover:bg-pink-500/10">
+                <Instagram
+                  size={17}
+                  className="text-pink-400 lg:text-slate-400 transition-colors duration-300 lg:group-hover:text-pink-400"
+                />
+              </div>
+
+              <div className="flex flex-col leading-none">
+                <span className="text-[10px] uppercase tracking-wider text-slate-500">
+                  Instagram
+                </span>
+                <span className="mt-1 text-xs font-medium text-slate-300 transition-colors group-hover:text-white">
+                  Haldwani
+                </span>
+              </div>
+            </a>
           </div>
         </motion.div>
 

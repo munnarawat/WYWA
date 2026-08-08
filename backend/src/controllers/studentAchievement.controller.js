@@ -18,7 +18,7 @@ const autoAwardBadge = async (
         description,
         badgeType,
       });
-      console.log(`🏆 Auto-Awarded: ${title} to student ${studentId}`);
+      // console.log(`🏆 Auto-Awarded: ${title} to student ${studentId}`);
     }
   } catch (error) {
     console.error("Auto Award Error:", error);

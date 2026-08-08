@@ -42,7 +42,7 @@ const App = () => {
   // socket io
   useEffect(() => {
     if (!currentUser) return;
-    const socket = io("http://localhost:3000", {
+    const socket = io(import.meta.env.VITE_MYWA_API, {
       withCredentials: true,
     });
     if (currentUser?._id) {

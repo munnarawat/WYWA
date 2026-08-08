@@ -19,7 +19,7 @@ import toast from "react-hot-toast";
 import NotificationDropdown from "./notification/NotificationDropdown";
 import { Helmet } from "react-helmet-async";
 import api from "../utils/api";
-const socket = io("http://localhost:3000", {
+const socket = io(import.meta.env.VITE_MYWA_API, {
   withCredentials: true,
 });
 

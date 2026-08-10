@@ -28,7 +28,7 @@ const forgotPassword = async (req, res) => {
     await user.save();
 
     // frontend ka reset link
-    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+    const resetUrl = `https://mywa-backend.onrender.com/reset-password/${resetToken}`;
 
     // send to email (nodemailer)
     const transporter = nodemailer.createTransport({

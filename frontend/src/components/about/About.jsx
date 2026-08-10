@@ -92,7 +92,7 @@ const About = () => {
   return (
     <section
       id="about"
-      className="relative py-22 px-6 md:px-12 lg:px-24 bg-[#070C18] text-white overflow-hidden">
+      className="relative py-22 px-4 md:px-12 lg:px-24 bg-[#070C18] text-white overflow-hidden">
       {/* Background grid */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.035]"
@@ -309,7 +309,7 @@ const About = () => {
                 { name: "श्री हेमंत मर्तोलिया", title: "संस्थापक सदस्य" },
                 {
                   name: "श्री धर्मेन्द्र सिंह मर्तोलिया",
-                  title: "CRPF(SI) • संस्थापक सदस्य",
+                  title: "CISF(SI) • संस्थापक सदस्य",
                 },
               ].map((f) => (
                 <div
@@ -618,7 +618,7 @@ const About = () => {
                   },
                   {
                     name: "श्री धर्मेन्द्र मर्तोलिया",
-                    selection: "CRPF (SI)",
+                    selection: "CISF (SI)",
                   },
                   {
                     name: "कु० मनीषा  रावत",
@@ -678,7 +678,7 @@ const About = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
-              className="mt-10 rounded-3xl border border-teal-500/20 bg-gradient-to-br from-teal-500/5 to-indigo-500/5 p-8 relative overflow-hidden">
+              className="mt-10 rounded-3xl border border-teal-500/20 bg-gradient-to-br from-teal-500/5 to-indigo-500/5 p-4 lg:p-8 relative overflow-hidden">
               {/* Glow */}
               <div
                 className="absolute -top-20 -right-20 w-48 h-48 rounded-full blur-3xl opacity-20"

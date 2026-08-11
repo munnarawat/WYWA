@@ -21,7 +21,7 @@ const BRANCHES = [
   {
     name: "Haldwani Branch",
     addr: "456 Knowledge Park, Haldwani, UK",
-    href: "https://maps.app.goo.gl/yYoTExF71vbSwuAv6",
+    href: "https://maps.app.goo.gl/3mRTPoNhtamrNiW38",
     color: "lime", // lime-400 icon
   },
 ];

@@ -28,7 +28,7 @@ const forgotPassword = async (req, res) => {
     await user.save();
 
     // frontend ka reset link
-    const resetUrl = `https://mywa-backend.onrender.com/reset-password/${resetToken}`;
+    const resetUrl = `https://wywa.vercel.app/reset-password/${resetToken}`;
 
     // send to email (nodemailer)
     const transporter = nodemailer.createTransport({
@@ -47,19 +47,20 @@ const forgotPassword = async (req, res) => {
         subject: "MYWA - password reset link",
         text: message,
       });
-      res
-        .status(200)
-        .json({
-          success: true,
-          message: `Email ${user.email} has been sent to`,
-        });
+      res.status(200).json({
+        success: true,
+        message: `Email ${user.email} has been sent to`,
+      });
     } catch (error) {
       user.resetPasswordToken = undefined;
       user.resetPasswordExpire = undefined;
       await user.save();
       return res
         .status(500)
-        .json({ success: false, message: "There was an error sending the email" });
+        .json({
+          success: false,
+          message: "There was an error sending the email",
+        });
     }
   } catch (error) {
     console.error(error);
@@ -67,22 +68,22 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-const resetPassword = async (req, res) =>{
+const resetPassword = async (req, res) => {
   try {
     const resetPasswordToken = crypto
-    .createHash("sha256")
-    .update(req.params.token)
-    .digest("hex");
+      .createHash("sha256")
+      .update(req.params.token)
+      .digest("hex");
 
     const user = await User.findOne({
       resetPasswordToken,
-      resetPasswordExpire:{ $gt:Date.now()},
+      resetPasswordExpire: { $gt: Date.now() },
     });
 
-    if(!user){
+    if (!user) {
       return res.status(400).json({
-        success:false,
-        message:"Invalid token"
+        success: false,
+        message: "Invalid token",
       });
     }
 
@@ -94,15 +95,16 @@ const resetPassword = async (req, res) =>{
     user.resetPasswordExpire = undefined;
 
     await user.save();
-    res.status(200).json({ success: true, message: "Password update successfully " });
+    res
+      .status(200)
+      .json({ success: true, message: "Password update successfully " });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Server error" });
   }
-}
+};
 
-
-module.exports={
+module.exports = {
   forgotPassword,
   resetPassword,
-}
+};

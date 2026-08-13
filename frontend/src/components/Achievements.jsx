@@ -55,7 +55,10 @@ const Achievements = () => {
       try {
         const res = await api.get("/achievements/all");
         if (mounted && res.data.success) {
-          setStudents(res.data.achievement.slice(0, 4));
+          const sortedAchievements = [...res.data.achievement].sort(
+            (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
+          );
+          setStudents(sortedAchievements.slice(0, 4));
         }
       } catch (error) {
         console.error("Error fetching achievements:", error);

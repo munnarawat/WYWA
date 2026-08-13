@@ -45,10 +45,10 @@ const getAllAchievement = async (req, res) => {
     const achievement = await achievementModel
       .find(query)
       .populate("createdBy", "userName email")
-      .sort({ year: -1, createdAt: -1 });
+      .sort({ createdAt: 1, _id:1 });
 
     return res.status(200).json({
-      success:true,
+      success: true,
       message: "getAll achievement fetched successfully 🎉",
       achievement,
     });
@@ -109,7 +109,7 @@ const updateAchievement = async (req, res) => {
         try {
           await deleteFile(achievement.imageId);
         } catch (error) {
-          console.error("Old Image Delete Error:", err);
+          console.error("Old Image Delete Error:", error);
         }
       }
       // upload new image

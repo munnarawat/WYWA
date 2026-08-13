@@ -8,28 +8,42 @@ const api = axios.create({
 let isRefreshing = false;
 let failedQueue = [];
 
-const processQueue = (error, token = null) => {
-  failedQueue.forEach((prom) => {
+const processQueue = (error) => {
+  failedQueue.forEach(({ resolve, reject }) => {
     if (error) {
-      prom.reject(error);
+      reject(error);
     } else {
-      prom.resolve(token);
+      resolve();
     }
   });
+
   failedQueue = [];
 };
 
 api.interceptors.response.use(
   (response) => response,
+
   async (error) => {
     const originalRequest = error.config;
-    if (!error.response) return Promise.reject(error);
 
-    if (error.response.status === 401 && !originalRequest._retry) {
-      if (originalRequest.url?.includes("/auth/refresh")) {
-        return Promise.reject(error);
-      }
+    if (!error.response) {
+      return Promise.reject(error);
+    }
 
+    const url = originalRequest?.url || "";
+
+    const isAuthRoute =
+      url.includes("/auth/login") ||
+      url.includes("/auth/register") ||
+      url.includes("/auth/refresh") ||
+      url.includes("/auth/logout");
+
+    // Only refresh for non-auth requests
+    if (
+      error.response.status === 401 &&
+      !originalRequest?._retry &&
+      !isAuthRoute
+    ) {
       originalRequest._retry = true;
 
       if (!isRefreshing) {
@@ -39,7 +53,9 @@ api.interceptors.response.use(
           await axios.post(
             `${import.meta.env.VITE_MYWA_API_URL}/auth/refresh`,
             {},
-            { withCredentials: true }
+            {
+              withCredentials: true,
+            }
           );
 
           isRefreshing = false;
@@ -49,25 +65,21 @@ api.interceptors.response.use(
         } catch (refreshError) {
           isRefreshing = false;
           processQueue(refreshError);
-          if (window.location.pathname !== "/") {
-            // window.location.href = "/";
-          }
-          
+
           return Promise.reject(refreshError);
         }
       }
 
       return new Promise((resolve, reject) => {
-        failedQueue.push({ resolve, reject });
-      })
-        .then(() => {
-          return api(originalRequest);
-        })
-        .catch((err) => {
-          return Promise.reject(err);
+        failedQueue.push({
+          resolve,
+          reject,
         });
+      }).then(() => api(originalRequest));
     }
 
+    // IMPORTANT:
+    // Login/register/auth errors come here untouched
     return Promise.reject(error);
   }
 );

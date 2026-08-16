@@ -496,7 +496,7 @@ const ManageAchievements = () => {
               {/* Internal Card Background */}
               <div className="bg-[#0d1117] rounded-[19px] flex flex-col h-full relative z-10">
                 {/* Image Container */}
-                <div className="w-full h-48 relative overflow-hidden bg-[#131920] border-b border-white/5 flex items-center justify-center rounded-t-[19px]">
+                <div className="w-full h-74 lg:h-52 relative overflow-hidden bg-[#131920] border-b border-white/5 flex items-center justify-center rounded-t-[19px]">
                   {ach.imageUrl ? (
                     <img
                       src={ach.imageUrl}

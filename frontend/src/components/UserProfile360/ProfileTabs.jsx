@@ -5,7 +5,7 @@ const ProfileTabs = ({ tabs, activeTab, onTabChange }) => (
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: 0.15 }}
-    className="flex gap-1.5 p-1.5 rounded-2xl w-fit overflow-x-auto"
+    className="flex flex-wrap gap-1.5 p-1.5 rounded-2xl w-fit overflow-x-auto"
     style={{
       background: "rgba(255,255,255,0.03)",
       border: "1px solid rgba(255,255,255,0.07)",

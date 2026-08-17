@@ -188,7 +188,7 @@ const loginController = async (req, res) => {
 };
 const getCurrentUser = async (req, res) => {
   return res.status(200).json({
-    success:true,
+    success: true,
     message: "user fetched successfully🎉",
     user: req.user,
   });
@@ -226,40 +226,38 @@ const refreshController = async (req, res) => {
     if (!token) {
       return res.status(401).json({ message: "no refresh token found" });
     }
-    const user = await UserModel.findOne({ refreshToken: token });
-
-    // 🚨 MISUSE DETECTION LOGIC 🚨
-    if (!user) {
-      jwt.verify(
-        token,
-        process.env.REFRESH_TOKEN_SECRET,
-        async (err, decoded) => {
-          if (err) {
-            return res
-              .status(403)
-              .json({ message: "Session expired or invalid token" });
-          }
-          console.warn(
-            `🚨 REFRESH TOKEN THEFT DETECTED FOR USER ID: ${decoded.id} 🚨`,
-          );
-          const compromisedUser = await UserModel.findById(decoded.id);
-          if (compromisedUser) {
-            compromisedUser.refreshToken = null;
-            await compromisedUser.save();
-          }
-        },
-      );
-
-      return res.status(403).json({
-        message: "Suspicious activity detected! Please login again.",
-      });
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+    } catch (error) {
+      return res
+        .status(403)
+        .json({ message: "Session expired or invalid token" });
     }
-    const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+    const user = await UserModel.findById(decoded.id);
+
+    if (!user || user.refreshToken !== token) {
+      console.warn(`🚨 Refresh token mismatch for user ID: ${decoded.id}`);
+      if (user) {
+        user.refreshToken = null;
+        await user.save();
+      }
+      return res
+        .status(403)
+        .json({ message: "Session expired, please login again." });
+    }
     const newAccessToken = jwt.sign(
       { id: decoded.id },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "15m" },
     );
+
+    res.cookie("accessToken", newAccessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 15 * 60 * 1000, //15min
+    });
 
     const newRefreshToken = jwt.sign(
       { id: user._id },
@@ -268,13 +266,6 @@ const refreshController = async (req, res) => {
     );
     user.refreshToken = newRefreshToken;
     await user.save();
-
-    res.cookie("accessToken", newAccessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 15 * 60 * 1000, //15min
-    });
 
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,

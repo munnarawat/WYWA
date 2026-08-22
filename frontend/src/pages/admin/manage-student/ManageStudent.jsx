@@ -9,6 +9,7 @@ import ManageHeader from "./ManageHeader";
 import StudentDesktopTable from "./StudentDesktopTable";
 import StudentMobileList from "./StudentMobileList";
 import { Helmet } from "react-helmet-async";
+import { io } from "socket.io-client";
 
 // ─────────────────────────────────────────
 // SKELETON
@@ -154,9 +155,11 @@ const ManageStudent = () => {
         setUsers((prev) =>
           prev.map((u) =>
             u._id === userId
-              ? { ...u, isMywaFamilyMember: res.data.user.isMywaFamilyMember ,
-                hasRequestedMywaFamily:res.data.user.hasRequestedMywaFamily
-              }
+              ? {
+                  ...u,
+                  isMywaFamilyMember: res.data.user.isMywaFamilyMember,
+                  hasRequestedMywaFamily: res.data.user.hasRequestedMywaFamily,
+                }
               : u,
           ),
         );
@@ -169,6 +172,32 @@ const ManageStudent = () => {
     }
   }, []);
 
+  // socket io
+  useEffect(() => {
+    if (!currentUser?._id) return; 
+    const socketUrl = new URL(import.meta.env.VITE_MYWA_API_URL).origin;
+
+    const socket = io(socketUrl, {
+      withCredentials: true,
+    });
+    socket.on("connect", () => {
+      socket.emit("join_admin_room", currentUser._id.toString());
+
+      socket.on("new-request", (data) => {
+        setUsers((prev) =>
+          prev.map((u) =>
+            u._id === data.userId ? { ...u, hasRequestedMywaFamily: true } : u,
+          ),
+        );
+         toast.success(data.message || "New request received");
+      });
+    });
+
+    return () => {
+      socket.off("new-request");
+      socket.disconnect();
+    };
+  },[currentUser?._id]);
   // ── Confirm popup triggers ─────────────
   const handleConfirmAdmin = useCallback((userId, userName) => {
     setSelectedUserId(userId);

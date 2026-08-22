@@ -11,6 +11,10 @@ function initSocketServer(httpServer) {
   io.on("connection", (socket) => {
     // console.log("a user connected", socket.id);
 
+    // admin joins the admin room
+    socket.on("join_admin_room",(adminId)=>{
+      socket.join("admin-room");
+    })
     // when student send a id and get a room
     socket.on("join_user_room", (userId) => {
       socket.join(userId);

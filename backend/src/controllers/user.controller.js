@@ -134,8 +134,30 @@ const getUserProfile360 = async (req, res) => {
 
 const requestLibraryAccess = async (req, res) => {
   try {
-    const userId = req.user._id;
-    await UserModel.findByIdAndUpdate(userId, { hasRequestedLibrary: true });
+    const user = await UserModel.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    if(user.isLibraryMember){
+      return res.status(400).json({
+        success:false,
+        message:"You are already library member!"
+      })
+    }
+    user.hasRequestedLibrary = true;
+    await user.save();
+
+    const io = req.app.get("io");
+    if(io){
+      io.to("admin-room").emit("new-request",{
+        userId:user._id,
+        userName:`${user.fullName?.firstName} ${user.fullName?.lastName}`,
+        message:"New request received for library membership"
+      })
+    }
     res.status(200).json({ success: true, message: "Request sent to MYWA" });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server Error" });
@@ -160,6 +182,14 @@ const requestMywaAccess = async (req, res) => {
     }
     user.hasRequestedMywaFamily = true;
     await user.save();
+    const io = req.app.get("io");
+    if (io) {
+      io.to("admin-room").emit("new-request", {
+        userId: user._id,
+        userName: `${user.fullName?.firstName} ${user.fullName?.lastName}`,
+        message: "New request received for MYWA membership",
+      });
+    }
 
     return res.status(200).json({
       success: true,

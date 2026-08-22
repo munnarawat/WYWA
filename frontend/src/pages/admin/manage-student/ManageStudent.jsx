@@ -174,7 +174,7 @@ const ManageStudent = () => {
 
   // socket io
   useEffect(() => {
-    if (!currentUser?._id) return; 
+    if (!currentUser?._id) return;
     const socketUrl = new URL(import.meta.env.VITE_MYWA_API_URL).origin;
 
     const socket = io(socketUrl, {
@@ -184,12 +184,18 @@ const ManageStudent = () => {
       socket.emit("join_admin_room", currentUser._id.toString());
 
       socket.on("new-request", (data) => {
+        console.log("Received:", data); 
         setUsers((prev) =>
-          prev.map((u) =>
-            u._id === data.userId ? { ...u, hasRequestedMywaFamily: true } : u,
-          ),
+          prev.map((u) => {
+            if (u._id !== data.userId) return u;
+            if (data.type === "library")
+              return { ...u, hasRequestedLibrary: true };
+            if (data.type === "mywaFamily")
+              return { ...u, hasRequestedMywaFamily: true };
+            return u;
+          }),
         );
-         toast.success(data.message || "New request received");
+        toast.success(data.message || "New request received");
       });
     });
 
@@ -197,7 +203,7 @@ const ManageStudent = () => {
       socket.off("new-request");
       socket.disconnect();
     };
-  },[currentUser?._id]);
+  }, [currentUser?._id]);
   // ── Confirm popup triggers ─────────────
   const handleConfirmAdmin = useCallback((userId, userName) => {
     setSelectedUserId(userId);

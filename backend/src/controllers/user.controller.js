@@ -155,6 +155,7 @@ const requestLibraryAccess = async (req, res) => {
       io.to("admin-room").emit("new-request",{
         userId:user._id,
         userName:`${user.fullName?.firstName} ${user.fullName?.lastName}`,
+        type:"library",
         message:"New request received for library membership"
       })
     }
@@ -187,6 +188,7 @@ const requestMywaAccess = async (req, res) => {
       io.to("admin-room").emit("new-request", {
         userId: user._id,
         userName: `${user.fullName?.firstName} ${user.fullName?.lastName}`,
+        type:"mywaFamily",
         message: "New request received for MYWA membership",
       });
     }

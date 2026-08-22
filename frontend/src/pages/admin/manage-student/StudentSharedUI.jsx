@@ -72,14 +72,25 @@ export const MywaBadge = () => (
   </span>
 );
 // ── ACTION BUTTONS ──
-export const LibraryBtn = ({ isLibraryMember, onClick, fullWidth = false }) => (
+export const LibraryBtn = ({
+  isLibraryMember,
+  isPending,
+  onClick,
+  fullWidth = false,
+}) => (
   <motion.button
     whileHover={{ y: -2 }}
     whileTap={{ scale: 0.96 }}
     onClick={onClick}
-    className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-[9px] border text-[10px] font-bold tracking-wider uppercase transition-colors ${fullWidth ? "flex-1" : ""} ${isLibraryMember ? "bg-rose-400/8 border-rose-400/20 text-rose-400 hover:bg-rose-400/15" : "bg-emerald-400/8 border-emerald-400/20 text-emerald-400 hover:bg-emerald-400/15"}`}>
+    className={`inline-flex relative items-center justify-center gap-1.5 px-3 py-2 rounded-[9px] border text-[10px] font-bold tracking-wider uppercase transition-colors ${fullWidth ? "flex-1" : ""} ${isLibraryMember ? "bg-rose-400/8 border-rose-400/20 text-rose-400 hover:bg-rose-400/15" : "bg-emerald-400/8 border-emerald-400/20 text-emerald-400 hover:bg-emerald-400/15"}`}>
     <BookOpen size={11} />{" "}
-    {isLibraryMember  ? "Remove Library " : "Grant Library"}
+    {isLibraryMember && !isPending ? "Remove Library " : "Grant Library"}
+    {isPending && !isLibraryMember && (
+      <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+      </span>
+    )}
   </motion.button>
 );
 export const MywaBtn = ({ isMywaMember, isPending, onClick }) => (

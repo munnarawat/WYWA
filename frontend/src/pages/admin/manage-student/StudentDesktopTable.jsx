@@ -123,6 +123,7 @@ const StudentDesktopTable = ({
                           />
                           <LibraryBtn
                             isLibraryMember={user.isLibraryMember}
+                            isPending={user.hasRequestedLibrary}
                             onClick={() => handleToggleLibrary(user._id)}
                           />
                           {!isSelf && (

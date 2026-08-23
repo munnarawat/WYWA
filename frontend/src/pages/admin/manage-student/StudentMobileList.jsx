@@ -116,6 +116,7 @@ const StudentMobileList = ({
                 />
                 <LibraryBtn
                   isLibraryMember={user.isLibraryMember}
+                  isPending={user.hasRequestedLibrary}
                   onClick={() => handleToggleLibrary(user._id)}
                   fullWidth
                 />

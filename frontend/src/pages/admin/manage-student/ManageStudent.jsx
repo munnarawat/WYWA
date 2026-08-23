@@ -184,7 +184,6 @@ const ManageStudent = () => {
       socket.emit("join_admin_room", currentUser._id.toString());
 
       socket.on("new-request", (data) => {
-        console.log("Received:", data); 
         setUsers((prev) =>
           prev.map((u) => {
             if (u._id !== data.userId) return u;

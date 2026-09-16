@@ -1,7 +1,15 @@
 const User = require("../models/user.model");
 const crypto = require("crypto");
-const nodemailer = require("nodemailer");
 const bcrypt = require("bcryptjs");
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
 const forgotPassword = async (req, res) => {
   try {
@@ -30,37 +38,27 @@ const forgotPassword = async (req, res) => {
     // frontend ka reset link
     const resetUrl = `https://wywa.vercel.app/reset-password/${resetToken}`;
 
-    // send to email (nodemailer)
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
     const message = `A password reset request has been received for your account.\n\n Click on this link to reset your password:\n\n${resetUrl}`;
     try {
       await transporter.sendMail({
-        from: process.env.EMAIL_USER,
+        from: `MYWA <${process.env.EMAIL_USER}>`,
         to: user.email,
         subject: "MYWA - password reset link",
         text: message,
       });
       res.status(200).json({
         success: true,
-        message: `Email ${user.email} has been sent to`,
+        message: `Email has been sent to ${user.email}`,
       });
     } catch (error) {
+      console.error("Email send error:", error);
       user.resetPasswordToken = undefined;
       user.resetPasswordExpire = undefined;
       await user.save();
-      return res
-        .status(500)
-        .json({
-          success: false,
-          message: "There was an error sending the email",
-        });
+      return res.status(500).json({
+        success: false,
+        message: "There was an error sending the email",
+      });
     }
   } catch (error) {
     console.error(error);

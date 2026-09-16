@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "motion/react";
 import { Mail, ArrowLeft, Loader, KeyRound } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -12,11 +12,13 @@ const ForgotPassword = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
+  const [emailSent, setEmailSent] = useState(false);
   const onSubmit = async (data) => {
     try {
       const res = await api.post("/password/forget", data);
       if (res.data.success) {
         toast.success(res.data.message || "Reset link sent to your email! ✉️");
+        setEmailSent(true);
       }
     } catch (error) {
       console.error("reset password error", error);

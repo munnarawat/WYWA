@@ -1,18 +1,7 @@
 const User = require("../models/user.model");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
-const nodemailer = require("nodemailer");
-
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  family: 4,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+const axios = require("axios");
 
 const forgotPassword = async (req, res) => {
   try {
@@ -41,14 +30,28 @@ const forgotPassword = async (req, res) => {
     // frontend ka reset link
     const resetUrl = `https://wywa.vercel.app/reset-password/${resetToken}`;
 
-    const message = `A password reset request has been received for your account.\n\n Click on this link to reset your password:\n\n${resetUrl}`;
     try {
-      await transporter.sendMail({
-        from: `MYWA <${process.env.EMAIL_USER}>`,
-        to: user.email,
-        subject: "MYWA - password reset link",
-        text: message,
-      });
+      await axios.post(
+        "https://api.brevo.com/v3/smtp/email",
+        {
+          sender: { name: "MYWA", email: process.env.SENDER_EMAIL },
+          to: [{ email: user.email }],
+          subject: "MYWA - Password Reset Link",
+          htmlContent: `
+            <p>Namaste,</p>
+            <p>A password reset request has been received for your account.</p>
+            <p>Click the link below to reset your password:</p>
+            <a href="${resetUrl}">${resetUrl}</a>
+            <p>This link will expire in 15 minutes. If you didn't request this, please ignore this email.</p>
+          `,
+        },
+        {
+          headers: {
+            "api-key": process.env.BREVO_API_KEY,
+            "Content-Type": "application/json",
+          },
+        },
+      );
       res.status(200).json({
         success: true,
         message: `Email has been sent to ${user.email}`,

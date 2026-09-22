@@ -70,6 +70,8 @@ const getUserProfile360 = async (req, res) => {
         branch: targetUser.branch,
         dob: targetUser.profile?.personal?.dob,
         bloodGroup: targetUser.profile?.personal?.bloodGroup,
+        fatherName:targetUser.profile?.personal?.fatherName,
+        motherName:targetUser.profile?.personal?.motherName,
         imageUrl: targetUser.profile?.personal?.imageUrl || "",
         phone: targetUser.profile?.contact?.phone || "N/A",
         currentAddress: targetUser.profile?.contact?.currentAddress,

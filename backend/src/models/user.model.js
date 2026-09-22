@@ -92,6 +92,8 @@ const userSchema = new mongoose.Schema(
           type: String,
           default: "",
         },
+        fatherName:{type:String},
+        motherName:{type:String},
       },
       academic: {
         studentId: { type: String },

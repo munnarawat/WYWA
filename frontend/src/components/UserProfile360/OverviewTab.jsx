@@ -37,6 +37,16 @@ const OverviewTab = ({ personalDetails, staffStats }) => (
         label="Blood Group"
         value={personalDetails.bloodGroup}
       />
+      <OverviewItem
+        emoji="👨"
+        label="Father's Name"
+        value={personalDetails.fatherName}
+      />
+      <OverviewItem
+        emoji="👩"
+        label="Mother's Name"
+        value={personalDetails.motherName}
+      />
       <OverviewItem emoji="🎓" label="Course" value={personalDetails.course} />
       <OverviewItem
         emoji="🏫"

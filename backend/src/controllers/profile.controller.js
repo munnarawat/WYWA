@@ -87,11 +87,15 @@ const updateProfile = async (req, res) => {
       // Ignore client-side image fields so the uploaded ImageKit values are not overwritten.
       delete safePersonalUpdates.imageUrl;
       delete safePersonalUpdates.imageId;
-
+      // Ignore empty string values for gender and bloodGroup to prevent overwriting existing values with empty strings.
       if (safePersonalUpdates.gender === "")
         delete safePersonalUpdates.gender;
       if (safePersonalUpdates.bloodGroup === "")
         delete safePersonalUpdates.bloodGroup;
+      if(safePersonalUpdates.fatherName === "")
+        delete safePersonalUpdates.fatherName;
+      if(safePersonalUpdates.motherName === "")
+        delete safePersonalUpdates.motherName;
 
       user.profile.personal = {
         ...user.profile.personal,

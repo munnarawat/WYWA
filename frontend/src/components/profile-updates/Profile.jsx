@@ -32,12 +32,12 @@ const mapUserToFormValues = (userData = {}) => {
     branch: userData.branch || "",
     personal: {
       gender: "",
-      dob: formattedDob,
       bloodGroup: "",
       imageUrl: "",
       fatherName: "",
       motherName: "",
       ...(userData.profile?.personal || {}),
+      dob: formattedDob,
     },
     academic: {
       studentId: "",
@@ -180,7 +180,7 @@ const Profile = () => {
         <title>{firstName ? `${firstName} Profile | MYWA` : "Profile"}</title>
       </Helmet>
 
-      <div className="sticky top-0 flex items-center justify-between bg-background/80 backdrop-blur-sm  border-white/10 z-10 px-4 sm:px-8 py-3">
+      <div className="sticky top-0 gap-2  flex items-center justify-between bg-background/80 backdrop-blur-sm  border-white/10 z-10  sm:px-8 py-3">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-[11px] font-semibold tracking-widest uppercase">
           <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />{" "}
           MYWA · Profile Settings
@@ -192,7 +192,7 @@ const Profile = () => {
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => setIsEditMode(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-semibold text-teal-400 bg-teal-500/10 border border-teal-500/20 hover:bg-teal-500/15 transition-colors">
+            className="flex  items-center gap-2 px-2 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[13px] font-semibold text-teal-400 bg-teal-500/10 border border-teal-500/20 hover:bg-teal-500/15 transition-colors">
             <Pencil size={14} /> Edit Profile
           </motion.button>
         ) : (
@@ -201,7 +201,7 @@ const Profile = () => {
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.97 }}
             onClick={handleCancel}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-semibold text-slate-400 bg-white/5 border border-white/10 hover:bg-white/8 transition-colors">
+            className="flex items-center gap-2 px-2 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[13px] font-semibold text-slate-400 bg-white/5 border border-white/10 hover:bg-white/8 transition-colors">
             <X size={14} /> Cancel
           </motion.button>
         )}

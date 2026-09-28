@@ -146,7 +146,7 @@ const Hero = () => {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.45, ease: "easeInOut" }}
                 loading={currentIndex === 0 ? "eager" : "lazy"}
-                fetchPriority="high"
+                fetchPriority={currentIndex === 0? "high":"auto"}
                 decoding="async"
                 width="800"
                 height="1000"
@@ -159,6 +159,8 @@ const Hero = () => {
                 <button
                   key={index}
                   onClick={() => setCurrentIndex(index)}
+                  aria-label={`Go to slide ${index + 1}`}
+                  aria-current={currentIndex === index}
                   className={`w-3 h-3 rounded-full transition-all duration-300 ${
                     currentIndex === index
                       ? "bg-teal-400 w-8"

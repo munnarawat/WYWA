@@ -156,6 +156,3 @@ Result: Lighthouse scores went from the 60s to consistently 95+ across all four 
 
 ---
 
-## License
-
-This project is licensed under the MIT License.

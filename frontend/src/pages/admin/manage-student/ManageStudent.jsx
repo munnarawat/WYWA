@@ -173,36 +173,35 @@ const ManageStudent = () => {
   }, []);
 
   // socket io
-  useEffect(() => {
-    if (!currentUser?._id) return;
-    const socketUrl = new URL(import.meta.env.VITE_MYWA_API_URL).origin;
+useEffect(() => {
+  if (!currentUser?._id) return;
+  const socketUrl = new URL(import.meta.env.VITE_MYWA_API_URL).origin;
+  const socket = io(socketUrl, { withCredentials: true });
 
-    const socket = io(socketUrl, {
-      withCredentials: true,
-    });
-    socket.on("connect", () => {
-      socket.emit("join_admin_room", currentUser._id.toString());
+  const onConnect = () =>
+    socket.emit("join_admin_room", currentUser._id.toString());
 
-      socket.on("new-request", (data) => {
-        setUsers((prev) =>
-          prev.map((u) => {
-            if (u._id !== data.userId) return u;
-            if (data.type === "library")
-              return { ...u, hasRequestedLibrary: true };
-            if (data.type === "mywaFamily")
-              return { ...u, hasRequestedMywaFamily: true };
-            return u;
-          }),
-        );
-        toast.success(data.message || "New request received");
-      });
-    });
+  const onNewRequest = (data) => {
+    setUsers((prev) =>
+      prev.map((u) => {
+        if (u._id !== data.userId) return u;
+        if (data.type === "library") return { ...u, hasRequestedLibrary: true };
+        if (data.type === "mywaFamily") return { ...u, hasRequestedMywaFamily: true };
+        return u;
+      }),
+    );
+    toast.success(data.message || "New request received");
+  };
 
-    return () => {
-      socket.off("new-request");
-      socket.disconnect();
-    };
-  }, [currentUser?._id]);
+  socket.on("connect", onConnect);
+  socket.on("new-request", onNewRequest);
+
+  return () => {
+    socket.off("connect", onConnect);
+    socket.off("new-request", onNewRequest);
+    socket.disconnect();
+  };
+}, [currentUser?._id]);
   // ── Confirm popup triggers ─────────────
   const handleConfirmAdmin = useCallback((userId, userName) => {
     setSelectedUserId(userId);

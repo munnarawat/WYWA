@@ -19,6 +19,7 @@ import toast from "react-hot-toast";
 import NotificationDropdown from "./notification/NotificationDropdown";
 import { Helmet } from "react-helmet-async";
 import api from "../utils/api";
+import useUserSocket from "../hooks/useUserSocket";
 const socketUrl = new URL(import.meta.env.VITE_MYWA_API_URL).origin;
 const socket = io(socketUrl, {
   withCredentials: true,
@@ -32,6 +33,9 @@ const DashboardLayout = ({ menuItems }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // socket connection and event listeners
+  useUserSocket(); 
 
   useEffect(() => {
     if (!user?._id) return;

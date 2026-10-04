@@ -45,6 +45,9 @@ const authSlice = createSlice({
         };
       }
     },
+    updateUser:(state,action)=>{
+      if(state.user) state.user = {...state.user, ...action.payload}
+    }
   },
 });
 
@@ -54,7 +57,8 @@ export const {
   setLoading,
   updateMywaAccess,
   updateLibraryAccess,
-  updateMywaRequestStatus
+  updateMywaRequestStatus,
+  updateUser
 } = authSlice.actions;
 
 export default authSlice.reducer;

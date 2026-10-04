@@ -117,7 +117,7 @@ const toggleMywaFamilyMember = async (req, res) => {
       });
     }
     user.isMywaFamilyMember = !user.isMywaFamilyMember;
-    if(user.isMywaFamilyMember === true){
+    if (user.isMywaFamilyMember === true) {
       user.hasRequestedMywaFamily = false;
     }
     await user.save();
@@ -168,6 +168,22 @@ const toggleBlockUser = async (req, res) => {
     }
     user.isActive = !user.isActive;
     await user.save();
+
+    // socket.io
+    const io = req.app.get("io");
+
+    if (io) {
+      io.to(id.toString()).emit(
+        user.isActive ? "account_unblocked" : "account_blocked",
+        {
+          type: user.isActive ? "UNBLOCKED" : "BLOCKED",
+          isActive: user.isActive,
+          message: user.isActive
+            ? "Your account has been unblocked. ✅"
+            : "Your account has been blocked by admin. 🚫",
+        },
+      );
+    }
     return res.status(200).json({
       success: true,
       message: `user ${user.isActive ? "unblocked" : "blocked"} successfully `,
@@ -210,6 +226,16 @@ const makeAdmin = async (req, res) => {
     user.role = "admin";
     await user.save();
 
+    const io = req.app.get("io");
+
+    if (io) {
+      io.to(id.toString()).emit("role_updated", {
+        type: "ADMIN",
+        role: user.role,
+        message: "Congratulations! You are now an Admin.🎉",
+      });
+    }
+
     return res.status(200).json({
       success: true,
       message: "user prompt to admin successfully 🎉",
@@ -249,6 +275,17 @@ const makeThinkTank = async (req, res) => {
     }
     user.role = "thinkTank";
     await user.save();
+
+    // socket.io
+    const io = req.app.get("io");
+
+    if (io) {
+      io.to(id.toString()).emit("role_updated", {
+        type: "THINK_TANK",
+        role: user.role,
+        message: "Congratulations! You are now an Think-Tank.🎉",
+      });
+    }
 
     return res.status(200).json({
       success: true,

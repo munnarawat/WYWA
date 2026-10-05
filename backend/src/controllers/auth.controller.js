@@ -165,19 +165,14 @@ const loginController = async (req, res) => {
     });
     user.refreshToken = refreshToken;
     await user.save();
+
+    const safeUser = await UserModel.findById(user._id).select(
+       "-password -refreshToken -resetPasswordToken -resetPasswordExpire",
+    )
     // return user
     return res.status(200).json({
       message: "user login successfully🎉",
-      user: {
-        _id: user._id,
-        userName: user.userName,
-        email: user.email,
-        fullName: user.fullName,
-        role: user.role,
-        branch: user.branch,
-        isLibraryMember: user.isLibraryMember,
-        isMywaFamilyMember: user.isMywaFamilyMember,
-      },
+      user:safeUser
     });
   } catch (error) {
     console.error("login error", error);

@@ -24,6 +24,7 @@ function uploadFile(file, folderName = "MYWA") {
           file: fileBase64,
           fileName: cleanFileName,
           folder: folderName,
+          useUniqueFileName:true,
         },
         (error, result) => {
           if (error) {

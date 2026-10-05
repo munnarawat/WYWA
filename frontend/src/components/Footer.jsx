@@ -15,7 +15,7 @@ const BRANCHES = [
   {
     name: "Dehradun Branch",
     addr: "1 Negi Road, near DBS(PG) College, Karnpur, Dehradun, UK",
-    href: "https://www.google.com/maps/place/Gyaan+Kumbh+Library/@30.3305422,78.0586874,19.5z",
+    href: "https://maps.app.goo.gl/M2Zum5EohAcfpKC89",
     color: "teal", // teal-400 icon
   },
   {

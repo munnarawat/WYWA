@@ -265,41 +265,45 @@ const getMonthlyAttendance = async (req, res) => {
   }
 };
 
-// 3) Leaderboard (Top attendance in a month)
+const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 const getLeaderboard = async (req, res) => {
   try {
-    const { year, month, limit = 10 } = req.query;
-    if (year === undefined || month === undefined) {
-      return res.status(400).json({ message: "year and month are required" });
-    }
-    const start = new Date(year, month, 1);
-    const end = new Date(year, Number(month) + 1, 0, 23, 59, 59);
+    const year = Number(req.query.year);
+    const month = Number(req.query.month); // 0-11
+    const limit = Math.min(Number(req.query.limit) || 10, 50);
+    const branch = req.user?.branch;
 
-    // Step 1: Check if ANY attendance exists for this month
-    const totalMonthRecords = await Attendance.countDocuments({
-      date: { $gte: start, $lte: end },
-      status: "present",
-    });
-
-    if (totalMonthRecords === 0) {
+    if (
+      !Number.isInteger(year) ||
+      !Number.isInteger(month) ||
+      month < 0 ||
+      month > 12
+    ) {
       return res
-        .status(200)
-        .json({ message: "No data found", leaderboard: [] });
+        .status(400)
+        .json({ message: "Valid year and month (0-11) are required" });
     }
+    if (!branch) {
+      return res.status(400).json({ message: "Branch not found for user" });
+    }
+
+    const start = new Date(year, month-1, 1);
+    const end = new Date(year, month, 1); // exclusive
+
+    const studentIds = await userModel.find({
+      branch: new RegExp(`^${escapeRegex(branch)}$`, "i"),
+    }).distinct("_id");
 
     const leaderboard = await Attendance.aggregate([
       {
         $match: {
-          date: { $gte: start, $lte: end },
+          date: { $gte: start, $lt: end },
           status: "present",
+          student: { $in: studentIds },
         },
       },
-      {
-        $group: {
-          _id: "$student",
-          presentCount: { $sum: 1 },
-        },
-      },
+      { $group: { _id: "$student", presentCount: { $sum: 1 } } },
       {
         $lookup: {
           from: "users",
@@ -308,34 +312,24 @@ const getLeaderboard = async (req, res) => {
           as: "student",
         },
       },
-      {
-        $unwind: "$student",
-      },
-      {
-        $match: {
-          "student.branch": new RegExp(`^${req.user.branch}$`, "i"),
-        },
-      },
-      {
-        $sort: {
-          presentCount: -1,
-          "student.userName": 1,
-        },
-      },
-      { $limit: Number(limit) },
+      { $unwind: "$student" },
+      { $sort: { presentCount: -1, "student.userName": 1 } },
+      { $limit: limit },
       {
         $project: {
           _id: 0,
           studentId: "$student._id",
           userName: "$student.userName",
-          email: "$student.email",
           branch: "$student.branch",
           presentCount: 1,
         },
       },
     ]);
+
     return res.status(200).json({
-      message: `Leaderboard fetched successfully for ${req.user.branch} branch 🏆`,
+      message: leaderboard.length
+        ? `Leaderboard fetched successfully for ${branch} branch 🏆`
+        : "No data found",
       leaderboard,
     });
   } catch (error) {
@@ -343,7 +337,6 @@ const getLeaderboard = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 const getMyStreaks = async (req, res) => {
   try {
     const records = await Attendance.find({
